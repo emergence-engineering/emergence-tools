@@ -15,6 +15,9 @@
       "dependsOn": ["build"],
       "inputs": ["src/**", "test/**", "tests/**"]
     },
+    "format": {
+      "dependsOn": ["^build"]
+    },
     "lint": {
       "dependsOn": ["^build"]
     },

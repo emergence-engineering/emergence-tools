@@ -20,11 +20,14 @@ export const ListItem: FC<{
 }> = ({ menuState, el, view, Icon, idx, clickable, RightIcon }) => {
   useEffect(() => {
     const element = document.getElementById(el.id);
+
     if (!element) return;
+
     if (el.id === menuState.selected) {
       element.classList.add("menu-element-selected");
       return;
     }
+
     if (element.classList.contains("menu-element-selected")) {
       element.classList.remove("menu-element-selected");
     }
@@ -36,6 +39,7 @@ export const ListItem: FC<{
         type: SlashMetaTypes.execute,
       });
     }
+
     if (el.type === "submenu") {
       dispatchWithMeta(view, SlashMenuKey, {
         type: SlashMetaTypes.openSubMenu,

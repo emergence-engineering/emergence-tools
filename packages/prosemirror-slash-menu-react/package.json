@@ -10,8 +10,8 @@
     "prebuild": "rimraf dist",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "lint": "tsc --noEmit && eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "eslint src --ext .ts,.tsx --fix",
+    "lint": "tsc --noEmit && eslint src --ext .ts,.tsx",
     "test": "echo \"no test specified\" && exit 0"
   },
   "dependencies": {

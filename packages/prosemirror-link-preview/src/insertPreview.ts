@@ -7,7 +7,7 @@ export const insertPreview = (
   url: string,
   findPlaceholder: (state: EditorState, id: object) => number | null,
   id: object,
-  callback: (url: string) => Promise<any>
+  callback: (url: string) => Promise<any>,
 ) => {
   if (!id) {
     return;
@@ -23,7 +23,7 @@ export const insertPreview = (
         ]);
         view.dispatch(view.state.tr.replaceSelectionWith(nodeWithMark));
         view.dispatch(
-          view.state.tr.setMeta(previewPluginKey, { type: "remove", id })
+          view.state.tr.setMeta(previewPluginKey, { type: "remove", id }),
         );
         return;
       }
@@ -43,12 +43,12 @@ export const insertPreview = (
       view.dispatch(
         view.state.tr
           .replaceWith(pos, pos + url.length, previewNode)
-          .setMeta(previewPluginKey, { type: "remove", id })
+          .setMeta(previewPluginKey, { type: "remove", id }),
       );
     })
     .catch(() => {
       view.dispatch(
-        view.state.tr.setMeta(previewPluginKey, { type: "remove", id })
+        view.state.tr.setMeta(previewPluginKey, { type: "remove", id }),
       );
     });
 };

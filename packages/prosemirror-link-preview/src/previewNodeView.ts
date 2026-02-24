@@ -6,7 +6,7 @@ export const previewNodeView = (
   node: Node,
   view: EditorView,
   getPos: () => number | undefined,
-  options: IDefaultOptions
+  options: IDefaultOptions,
 ) => {
   const container = document.createElement("div");
   container.className = "preview-root";

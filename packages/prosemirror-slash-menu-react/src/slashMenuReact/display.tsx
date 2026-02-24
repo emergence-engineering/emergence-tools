@@ -272,6 +272,7 @@ export const SlashMenuReact: FC<SlashMenuProps> = ({
         acc[""] = acc[""] || [];
         acc[""].push(el);
       }
+
       return acc;
     }, {} as { [key: string]: MenuElement[] });
   }, [elements]);
@@ -280,7 +281,7 @@ export const SlashMenuReact: FC<SlashMenuProps> = ({
     <>
       {menuState?.open ? (
         <div
-          // @ts-ignore
+          // @ts-expect-error - something is fishy here but it works so 🤷‍♂️
           ref={setPopperElement}
           style={{
             ...styles.popper,

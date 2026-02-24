@@ -1,7 +1,7 @@
 import { Schema } from "prosemirror-model";
 
 export const addPreviewNode = (
-  nodes: Schema["spec"]["nodes"]
+  nodes: Schema["spec"]["nodes"],
 ): typeof nodes => {
   return nodes.addToEnd("preview", {
     inline: true,

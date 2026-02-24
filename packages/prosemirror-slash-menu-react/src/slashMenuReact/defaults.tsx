@@ -24,7 +24,7 @@ const H1Command: CommandItem = {
       view
     );
   },
-  available: (view) => true,
+  available: () => true,
 };
 const H2Command: CommandItem = {
   id: Icons.Level2,
@@ -37,7 +37,7 @@ const H2Command: CommandItem = {
       view
     );
   },
-  available: (view) => true,
+  available: () => true,
 };
 const H3Command: CommandItem = {
   id: Icons.Level3,
@@ -50,7 +50,7 @@ const H3Command: CommandItem = {
       view
     );
   },
-  available: (view) => true,
+  available: () => true,
 };
 
 const BoldCommand: CommandItem = {
@@ -61,7 +61,7 @@ const BoldCommand: CommandItem = {
     const markType = view.state.schema.marks.strong;
     toggleMark(markType)(view.state, view.dispatch, view);
   },
-  available: (view) => true,
+  available: () => true,
 };
 const ItalicCommand: CommandItem = {
   id: Icons.Italic,
@@ -71,7 +71,7 @@ const ItalicCommand: CommandItem = {
     const markType = view.state.schema.marks.em;
     toggleMark(markType)(view.state, view.dispatch, view);
   },
-  available: (view) => true,
+  available: () => true,
 };
 const CodeCommand: CommandItem = {
   id: Icons.Code,
@@ -81,7 +81,7 @@ const CodeCommand: CommandItem = {
     const markType = view.state.schema.marks.code;
     toggleMark(markType)(view.state, view.dispatch, view);
   },
-  available: (view) => true,
+  available: () => true,
 };
 const LinkCommand: CommandItem = {
   id: Icons.Link,
@@ -91,14 +91,14 @@ const LinkCommand: CommandItem = {
     const markType = view.state.schema.marks.link;
     toggleMark(markType)(view.state, view.dispatch, view);
   },
-  available: (view) => true,
+  available: () => true,
 };
 
 const HeadingsMenu: SubMenu = {
   id: Icons.HeaderMenu,
   label: "Headings",
   type: "submenu",
-  available: (view) => true,
+  available: () => true,
   elements: [H1Command, H2Command, H3Command],
 };
 export const defaultElements = [
@@ -277,6 +277,7 @@ export const defaultIcons = {
   H1Icon,
   H2Icon,
   H3Icon,
+  HeadingIcon,
   LinkIcon,
   BoldIcon,
   CodeIcon,

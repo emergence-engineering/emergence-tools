@@ -14,7 +14,7 @@ export const defaultOptions: IDefaultOptions = {
 
 export const createDecorationsYjs = (
   state: EditorState,
-  customYSyncPluginKey?: PluginKey
+  customYSyncPluginKey?: PluginKey,
 ) => {
   const updatedState = previewPluginKey.getState(state);
   if (!updatedState) return DecorationSet.empty;
@@ -25,7 +25,7 @@ export const createDecorationsYjs = (
       YState.doc,
       YState.type,
       i.pos,
-      YState.binding.mapping
+      YState.binding.mapping,
     );
     const widget = document.createElement("placeholder");
     const deco =
@@ -66,7 +66,7 @@ export const applyYjs = (
   value: PreviewPluginState,
   oldState: EditorState,
   newState: EditorState,
-  customYSyncPluginKey?: PluginKey
+  customYSyncPluginKey?: PluginKey,
 ) => {
   const action = tr.getMeta(previewPluginKey);
   if (action && action.type === "add") {
@@ -75,7 +75,7 @@ export const applyYjs = (
     const relPos = absolutePositionToRelativePosition(
       action.pos,
       YState.type,
-      YState.binding.mapping
+      YState.binding.mapping,
     );
     return [
       ...value,
@@ -124,7 +124,7 @@ export const apply = (tr: Transaction, value: PreviewPluginState) => {
 export const findPlaceholderYjs = (
   state: EditorState,
   id: any,
-  customYSyncPluginKey?: PluginKey
+  customYSyncPluginKey?: PluginKey,
 ) => {
   const decos = previewPluginKey.getState(state);
   if (!decos) {
@@ -140,7 +140,7 @@ export const findPlaceholderYjs = (
     ystate.doc,
     ystate.type,
     found.pos,
-    ystate.binding.mapping
+    ystate.binding.mapping,
   );
   return absPos;
 };

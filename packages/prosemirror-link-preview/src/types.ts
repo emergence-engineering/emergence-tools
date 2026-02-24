@@ -11,5 +11,5 @@ export type PreviewPluginState = {
 }[];
 
 export const previewPluginKey = new PluginKey<PreviewPluginState>(
-  "previewPlugin"
+  "previewPlugin",
 );

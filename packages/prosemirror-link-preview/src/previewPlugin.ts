@@ -12,19 +12,19 @@ export const previewPlugin = (
     value: PreviewPluginState,
     oldState: EditorState,
     newState: EditorState,
-    customYSyncPluginKey?: PluginKey
+    customYSyncPluginKey?: PluginKey,
   ) => PreviewPluginState,
   createDecorations: (
     state: EditorState,
-    customYSyncPluginKey?: PluginKey
+    customYSyncPluginKey?: PluginKey,
   ) => DecorationSet,
   findPlaceholder: (
     state: EditorState,
     id: object,
-    customYSyncPluginKey?: PluginKey
+    customYSyncPluginKey?: PluginKey,
   ) => number | null,
   customYSyncPluginKey?: PluginKey,
-  options = defaultOptions
+  options = defaultOptions,
 ) =>
   new Plugin<PreviewPluginState>({
     key: previewPluginKey,
@@ -86,7 +86,7 @@ export const previewPlugin = (
                 const pos = findPlaceholder(
                   view.state,
                   id,
-                  customYSyncPluginKey
+                  customYSyncPluginKey,
                 );
                 if (!pos) {
                   return;
@@ -94,19 +94,19 @@ export const previewPlugin = (
                 view.dispatch(
                   view.state.tr
                     .replaceWith(pos, pos, previewNode)
-                    .setMeta(previewPluginKey, { type: "remove", id })
+                    .setMeta(previewPluginKey, { type: "remove", id }),
                 );
               },
               () => {
                 // On failure, just clean up the placeholder
                 view.dispatch(
-                  tr.setMeta(previewPluginKey, { type: "remove", id })
+                  tr.setMeta(previewPluginKey, { type: "remove", id }),
                 );
-              }
+              },
             )
             .catch(() => {
               view.dispatch(
-                tr.setMeta(previewPluginKey, { type: "remove", id })
+                tr.setMeta(previewPluginKey, { type: "remove", id }),
               );
             });
 
