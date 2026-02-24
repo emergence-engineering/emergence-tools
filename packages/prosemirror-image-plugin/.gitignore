@@ -1,0 +1,9 @@
+dist
+node_modules
+.gitattributes
+/.idea/
+/.log
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
