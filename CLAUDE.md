@@ -3,7 +3,8 @@
 ## Structure
 
 - `packages/` — independently published npm packages
-- `playground/` — Vite + React demo app for all plugins
+- `playground/fe` — Vite + React demo app for all plugins
+- `playground/be` — Express + Hocuspocus backend for demos requiring a server
 - Root uses pnpm workspaces + Turborepo for build orchestration
 
 ## Key Commands
@@ -28,13 +29,13 @@
 ### Migrated
 
 - prosemirror-text-map
+- prosemirror-link-preview
 
 ### Yet to come
 
 - prosemirror-suggestcat-plugin
 - prosemirror-suggestcat-plugin-react
 - prosemirror-suggest-changes
-- prosemirror-link-preview
 - prosemirror-slash-menu-react
 - prosemirror-slash-menu
 - fast-diff-merge
@@ -60,5 +61,5 @@
 
 1. Create `packages/<name>/` with `package.json`, `tsconfig.json`, `src/index.ts`
 2. Add ProseMirror deps as peerDependencies
-3. Add a demo component in `playground/src/demos/`
-4. Register the demo in `playground/src/App.tsx`
+3. Add a demo component in `playground/fe/src/demos/`
+4. Register the demo in `playground/fe/src/App.tsx`

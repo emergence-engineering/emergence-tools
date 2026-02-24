@@ -10,7 +10,7 @@ A monorepo of ProseMirror plugins and utilities by [Emergence Engineering](https
 | `prosemirror-suggestcat-plugin` | AI-powered suggestion plugin | Planned |
 | `prosemirror-suggestcat-plugin-react` | React bindings for suggestcat | Planned |
 | `prosemirror-suggest-changes` | Track changes / suggestions | Planned |
-| `prosemirror-link-preview` | Link preview cards | Planned |
+| [`prosemirror-link-preview`](./packages/prosemirror-link-preview) | Link preview cards | Migrated |
 | `prosemirror-slash-menu-react` | Slash menu (React) | Planned |
 | `prosemirror-slash-menu` | Slash menu (vanilla) | Planned |
 | `fast-diff-merge` | Fast diff and merge utilities | Planned |

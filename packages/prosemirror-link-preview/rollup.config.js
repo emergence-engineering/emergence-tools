@@ -1,5 +1,4 @@
 import typescript from "rollup-plugin-typescript2";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import { terser } from "rollup-plugin-minification";
 import copy from "rollup-plugin-copy";
 
@@ -14,9 +13,11 @@ export default {
     },
     { file: pkg.module, format: "es" },
   ],
-  external: [...Object.keys(pkg.dependencies || {})],
+  external: [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.peerDependencies || {}),
+  ],
   plugins: [
-    peerDepsExternal(),
     copy({
       targets: [{ src: "src/styles/**/*", dest: "dist/styles" }],
     }),

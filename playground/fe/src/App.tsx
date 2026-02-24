@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { BasicEditor } from "./demos/BasicEditor";
+import { LinkPreviewDemo } from "./demos/LinkPreviewDemo";
 import { TextMapDemo } from "./demos/TextMapDemo";
 
 const demos = {
+  linkPreview: { label: "Link Preview", component: LinkPreviewDemo },
   textMap: { label: "Text Map", component: TextMapDemo },
   basic: { label: "Basic Editor", component: BasicEditor },
-  // Add more demos here as packages are migrated:
-  // imagePlugin: { label: "Image Plugin", component: ImagePluginDemo },
 } as const;
 
 type DemoKey = keyof typeof demos;

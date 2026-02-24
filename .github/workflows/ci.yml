@@ -58,13 +58,13 @@ jobs:
 
       - run: pnpm build
 
-      - run: pnpm --filter playground build
+      - run: pnpm --filter playground-fe build
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: playground/dist
+          path: playground/fe/dist
 
       - id: deployment
         uses: actions/deploy-pages@v4

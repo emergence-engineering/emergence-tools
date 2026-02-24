@@ -11,7 +11,9 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "turbo run build && changeset publish",
-    "playground": "pnpm --filter playground dev"
+    "playground": "pnpm --filter playground-fe dev & pnpm --filter playground-be dev",
+    "playground:fe": "pnpm --filter playground-fe dev",
+    "playground:be": "pnpm --filter playground-be dev"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",
