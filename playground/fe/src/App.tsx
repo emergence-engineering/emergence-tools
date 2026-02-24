@@ -2,10 +2,14 @@ import { useState } from "react";
 import { BasicEditor } from "./demos/BasicEditor";
 import { LinkPreviewDemo } from "./demos/LinkPreviewDemo";
 import { TextMapDemo } from "./demos/TextMapDemo";
+import { SlashMenuVanillaDemo } from "./demos/SlashMenuVanillaDemo";
+import { SlashMenuReactDemo } from "./demos/SlashMenuReactDemo";
 
 const demos = {
   linkPreview: { label: "Link Preview", component: LinkPreviewDemo },
   textMap: { label: "Text Map", component: TextMapDemo },
+  slashMenuVanilla: { label: "Slash Menu (Vanilla)", component: SlashMenuVanillaDemo },
+  slashMenuReact: { label: "Slash Menu (React)", component: SlashMenuReactDemo },
   basic: { label: "Basic Editor", component: BasicEditor },
 } as const;
 

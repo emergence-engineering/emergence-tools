@@ -30,14 +30,14 @@
 
 - prosemirror-text-map
 - prosemirror-link-preview
+- prosemirror-slash-menu
+- prosemirror-slash-menu-react
 
 ### Yet to come
 
 - prosemirror-suggestcat-plugin
 - prosemirror-suggestcat-plugin-react
 - prosemirror-suggest-changes
-- prosemirror-slash-menu-react
-- prosemirror-slash-menu
 - fast-diff-merge
 - prosemirror-loading-plugin
 - prosemirror-slash-menu-ui

@@ -9,7 +9,6 @@
     "plugin:react/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint", "react", "prettier", "jest"],
   "rules": {
     "padding-line-between-statements": [

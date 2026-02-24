@@ -12,6 +12,8 @@
     "@emergence-engineering/prosemirror-link-preview": "workspace:*",
     "@emergence-engineering/prosemirror-text-map": "workspace:*",
     "@hocuspocus/provider": "^2.13.0",
+    "prosemirror-slash-menu": "workspace:*",
+    "prosemirror-slash-menu-react": "workspace:*",
     "prosemirror-commands": "^1.5.0",
     "prosemirror-model": "^1.24.0",
     "prosemirror-state": "^1.4.3",
