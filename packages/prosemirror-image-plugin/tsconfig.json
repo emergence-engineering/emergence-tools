@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": { "outDir": "./dist", "declarationDir": "./dist" },
-  "include": ["src", "e2e", "playwright.config.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "**/*.test.ts"]
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BasicEditor } from "./demos/BasicEditor";
+import { WelcomePage } from "./demos/WelcomePage";
 import { LinkPreviewDemo } from "./demos/LinkPreviewDemo";
 import { TextMapDemo } from "./demos/TextMapDemo";
 import { SlashMenuVanillaDemo } from "./demos/SlashMenuVanillaDemo";
@@ -14,20 +14,30 @@ const demos = {
   slashMenuVanilla: { label: "Slash Menu (Vanilla)", component: SlashMenuVanillaDemo },
   slashMenuReact: { label: "Slash Menu (React)", component: SlashMenuReactDemo },
   imagePlugin: { label: "Image Plugin", component: ImagePluginDemo },
-  basic: { label: "Basic Editor", component: BasicEditor },
 } as const;
 
 type DemoKey = keyof typeof demos;
+type PageKey = "welcome" | DemoKey;
 
 export function App() {
-  const [activeDemo, setActiveDemo] = useState<DemoKey>("textMap");
-  const ActiveComponent = demos[activeDemo].component;
+  const [activePage, setActivePage] = useState<PageKey>("welcome");
+  const ActiveComponent =
+    activePage === "welcome"
+      ? WelcomePage
+      : demos[activePage].component;
 
   return (
     <div className="app-layout">
       <nav className="sidebar">
-        <div className="sidebar-header">
-          <div className="sidebar-logo">EE</div>
+        <div
+          className="sidebar-header"
+          onClick={() => setActivePage("welcome")}
+        >
+          <img
+            src="https://emergence-engineering.com/ee-icon-4848.png"
+            alt="Emergence Engineering"
+            className="sidebar-logo-img"
+          />
           <div>
             <div className="sidebar-title">ProseMirror Tools</div>
             <div className="sidebar-subtitle">Plugin Playground</div>
@@ -43,8 +53,8 @@ export function App() {
               <button
                 key={key}
                 className="sidebar-link"
-                data-active={activeDemo === key}
-                onClick={() => setActiveDemo(key)}
+                data-active={activePage === key}
+                onClick={() => setActivePage(key)}
               >
                 <span className="sidebar-link-dot" />
                 {label}

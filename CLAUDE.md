@@ -24,6 +24,13 @@
 - React is a **peer dependency** for React-specific packages
 - Prefer `rimraf` over `rm -rf` for cross-platform compatibility
 
+## Package Naming
+
+Some packages are published under the `@emergence-engineering` scope, others are published globally (no scope). This is intentional — each package keeps its original npm name from before the monorepo migration. **Never rename a package or change its scope during import/migration.**
+
+- **Scoped** (`@emergence-engineering/`): prosemirror-text-map, prosemirror-link-preview, fast-diff-merge
+- **Global** (no scope): prosemirror-slash-menu, prosemirror-slash-menu-react, prosemirror-image-plugin
+
 ## Packages
 
 ### Migrated
@@ -63,3 +70,4 @@
 2. Add ProseMirror deps as peerDependencies
 3. Add a demo component in `playground/fe/src/demos/`
 4. Register the demo in `playground/fe/src/App.tsx`
+5. Add the package to the `packages` array in `playground/fe/src/demos/WelcomePage.tsx` (set `scoped: true` for `@emergence-engineering/` packages, `scoped: false` for global packages)
