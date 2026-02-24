@@ -24,13 +24,13 @@
 
 ## Packages
 
+- prosemirror-text-map
 - prosemirror-suggestcat-plugin
 - prosemirror-suggestcat-plugin-react
 - prosemirror-suggest-changes
 - prosemirror-link-preview
 - prosemirror-slash-menu-react
 - prosemirror-slash-menu
-- prosemirror-text-map
 - fast-diff-merge
 - prosemirror-loading-plugin
 - prosemirror-slash-menu-ui
