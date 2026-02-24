@@ -5,6 +5,7 @@ import { TextMapDemo } from "./demos/TextMapDemo";
 import { SlashMenuVanillaDemo } from "./demos/SlashMenuVanillaDemo";
 import { SlashMenuReactDemo } from "./demos/SlashMenuReactDemo";
 import { FastDiffMergeDemo } from "./demos/FastDiffMergeDemo";
+import { ImagePluginDemo } from "./demos/ImagePluginDemo";
 
 const demos = {
   fastDiffMerge: { label: "Fast Diff Merge", component: FastDiffMergeDemo },
@@ -12,6 +13,7 @@ const demos = {
   linkPreview: { label: "Link Preview", component: LinkPreviewDemo },
   slashMenuVanilla: { label: "Slash Menu (Vanilla)", component: SlashMenuVanillaDemo },
   slashMenuReact: { label: "Slash Menu (React)", component: SlashMenuReactDemo },
+  imagePlugin: { label: "Image Plugin", component: ImagePluginDemo },
   basic: { label: "Basic Editor", component: BasicEditor },
 } as const;
 

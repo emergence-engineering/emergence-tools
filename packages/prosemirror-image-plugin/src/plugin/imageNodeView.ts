@@ -97,7 +97,7 @@ const imageNodeView =
       // Handle contentDOM
       contentDOM.addEventListener("click", (e) => {
         const pos = getPos();
-        if (!pos || contentDOM.innerText.length > 1) {
+        if (pos == null || contentDOM.innerText.length > 1) {
           return;
         }
         e.preventDefault();
@@ -126,7 +126,7 @@ const imageNodeView =
       }
 
       const pos = getPos();
-      if (!pos || (pluginSettings.enableResize && !dimensions)) {
+      if (pos == null || (pluginSettings.enableResize && !dimensions)) {
         return;
       }
 
@@ -196,7 +196,7 @@ const imageNodeView =
           !(node.attrs.width && node.attrs.height && node.attrs.maxWidth);
         if (shouldUpdateInitialDimensions) {
           const pos = getPos();
-          if (pos) {
+          if (pos != null) {
             const maxWidth = getMaxWidth(root, pluginSettings);
             const attrs = {
               ...node.attrs,

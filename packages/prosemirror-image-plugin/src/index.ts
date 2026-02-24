@@ -3,6 +3,9 @@ import imagePlugin from "./plugin/index";
 
 import {
   imageAlign,
+} from "./types";
+
+import type {
   ImagePluginSettings,
   RemoveImagePlaceholder,
   InsertImagePlaceholder,
@@ -15,29 +18,35 @@ import {
   startImageUpload,
   startImageUploadFn,
   imagePluginKey,
-  ImageUploadReturn,
   fetchImageAsBase64,
-  Store,
   localStorageCache,
   imageCache,
+} from "./utils";
+
+import type {
+  ImageUploadReturn,
+  Store,
 } from "./utils";
 
 export {
   updateImageNode,
   imageAlign,
+  imagePlugin,
+  startImageUpload,
+  startImageUploadFn,
+  defaultSettings,
+  imagePluginKey,
+  fetchImageAsBase64,
+  localStorageCache,
+  imageCache,
+};
+
+export type {
   ImagePluginSettings,
   RemoveImagePlaceholder,
   InsertImagePlaceholder,
   ImagePluginAction,
   ImagePluginState,
-  imagePlugin,
-  startImageUpload,
-  startImageUploadFn,
   ImageUploadReturn,
-  defaultSettings,
-  imagePluginKey,
-  fetchImageAsBase64,
   Store,
-  localStorageCache,
-  imageCache,
 };

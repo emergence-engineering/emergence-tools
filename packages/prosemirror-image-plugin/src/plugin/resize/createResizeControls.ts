@@ -86,7 +86,7 @@ const createMouseDownHandler =
         wrapper.classList.remove("active");
         if (typeof getPos !== "function") return;
         const pos = getPos();
-        if (!pos) return;
+        if (pos == null) return;
         const currentNode = view.state.doc.nodeAt(pos);
         if (currentNode?.type.name !== "image") {
           return;

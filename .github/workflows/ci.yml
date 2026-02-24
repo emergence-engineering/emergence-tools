@@ -30,7 +30,11 @@ jobs:
 
       - run: pnpm lint
 
-      - run: pnpm test
+      - run: pnpm --filter prosemirror-image-plugin exec playwright install --with-deps chromium
+
+      - run: pnpm test --filter='!prosemirror-image-plugin'
+
+      - run: pnpm --filter prosemirror-image-plugin test -- --project=chromium
 
       - run: pnpm typecheck
 

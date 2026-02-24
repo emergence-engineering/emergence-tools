@@ -1,16 +1,6 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "lib": ["es6", "es2015", "dom", "es2017"],
-    "module": "esnext",
-    "moduleResolution": "Node",
-    "declaration": true,
-    "declarationDir": "./dist",
-    "outDir": "./dist",
-    "strict": true,
-    "allowSyntheticDefaultImports": true
-  },
-  "compileOnSave": true,
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": { "outDir": "./dist", "declarationDir": "./dist" },
+  "include": ["src", "e2e", "playwright.config.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

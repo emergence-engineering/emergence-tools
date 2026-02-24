@@ -33,6 +33,7 @@
 - prosemirror-slash-menu
 - prosemirror-slash-menu-react
 - fast-diff-merge
+- prosemirror-image-plugin
 
 ### Yet to come
 
@@ -41,7 +42,6 @@
 - prosemirror-suggest-changes
 - prosemirror-loading-plugin
 - prosemirror-slash-menu-ui
-- prosemirror-image-plugin
 - prosemirror-codemirror-block
 - prosemirror-paste-link
 - prosemirror-link-plugin

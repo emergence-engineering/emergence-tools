@@ -16,7 +16,7 @@ A monorepo of ProseMirror plugins and utilities by [Emergence Engineering](https
 | [`fast-diff-merge`](./packages/fast-diff-merge) | Fast diff and merge utilities | Migrated |
 | `prosemirror-loading-plugin` | Loading state plugin | Planned |
 | `prosemirror-slash-menu-ui` | Slash menu UI components | Planned |
-| `prosemirror-image-plugin` | Image handling plugin | Planned |
+| [`prosemirror-image-plugin`](./packages/prosemirror-image-plugin) | Image handling plugin | Migrated |
 | `prosemirror-codemirror-block` | CodeMirror code blocks | Planned |
 | `prosemirror-paste-link` | Paste URL as link | Planned |
 | `prosemirror-link-plugin` | Link editing plugin | Planned |
