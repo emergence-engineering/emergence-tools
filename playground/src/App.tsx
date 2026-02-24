@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { BasicEditor } from "./demos/BasicEditor";
+import { TextMapDemo } from "./demos/TextMapDemo";
 
 const demos = {
+  textMap: { label: "Text Map", component: TextMapDemo },
   basic: { label: "Basic Editor", component: BasicEditor },
   // Add more demos here as packages are migrated:
   // imagePlugin: { label: "Image Plugin", component: ImagePluginDemo },
@@ -10,44 +12,51 @@ const demos = {
 type DemoKey = keyof typeof demos;
 
 export function App() {
-  const [activeDemo, setActiveDemo] = useState<DemoKey>("basic");
+  const [activeDemo, setActiveDemo] = useState<DemoKey>("textMap");
   const ActiveComponent = demos[activeDemo].component;
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <nav
-        style={{
-          width: 240,
-          padding: 16,
-          borderRight: "1px solid #ddd",
-          overflowY: "auto",
-        }}
-      >
-        <h2 style={{ margin: "0 0 16px" }}>Plugins</h2>
-        {(Object.entries(demos) as [DemoKey, (typeof demos)[DemoKey]][]).map(
-          ([key, { label }]) => (
-            <button
-              key={key}
-              onClick={() => setActiveDemo(key)}
-              style={{
-                display: "block",
-                width: "100%",
-                padding: "8px 12px",
-                marginBottom: 4,
-                textAlign: "left",
-                background: activeDemo === key ? "#e8f0fe" : "transparent",
-                border: "1px solid transparent",
-                borderRadius: 4,
-                cursor: "pointer",
-                fontWeight: activeDemo === key ? 600 : 400,
-              }}
-            >
-              {label}
-            </button>
-          ),
-        )}
+    <div className="app-layout">
+      <nav className="sidebar">
+        <div className="sidebar-header">
+          <div className="sidebar-logo">EE</div>
+          <div>
+            <div className="sidebar-title">ProseMirror Tools</div>
+            <div className="sidebar-subtitle">Plugin Playground</div>
+          </div>
+        </div>
+
+        <div className="sidebar-section">
+          <div className="sidebar-section-label">Demos</div>
+          <div className="sidebar-nav">
+            {(
+              Object.entries(demos) as [DemoKey, (typeof demos)[DemoKey]][]
+            ).map(([key, { label }]) => (
+              <button
+                key={key}
+                className="sidebar-link"
+                data-active={activeDemo === key}
+                onClick={() => setActiveDemo(key)}
+              >
+                <span className="sidebar-link-dot" />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="sidebar-footer">
+          <a
+            href="https://github.com/emergence-engineering/ee-prosemirror-tools"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+        </div>
       </nav>
-      <main style={{ flex: 1, padding: 24, overflowY: "auto" }}>
+
+      <main className="main-content">
         <ActiveComponent />
       </main>
     </div>

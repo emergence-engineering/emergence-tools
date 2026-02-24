@@ -18,13 +18,19 @@
 
 - Each package lives in `packages/<name>/`
 - Each package has its own `package.json`, `tsconfig.json` (extends `../../tsconfig.base.json`), and `src/` directory
-- Build output goes to `dist/` using tsup or tsc
+- Build output goes to `dist/` using rollup (or tsup/tsc)
 - ProseMirror core libs (`prosemirror-model`, `prosemirror-state`, `prosemirror-view`) are **peer dependencies**
 - React is a **peer dependency** for React-specific packages
+- Prefer `rimraf` over `rm -rf` for cross-platform compatibility
 
 ## Packages
 
+### Migrated
+
 - prosemirror-text-map
+
+### Yet to come
+
 - prosemirror-suggestcat-plugin
 - prosemirror-suggestcat-plugin-react
 - prosemirror-suggest-changes

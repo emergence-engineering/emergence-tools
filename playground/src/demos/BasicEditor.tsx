@@ -26,19 +26,16 @@ export function BasicEditor() {
 
   return (
     <div>
-      <h2>Basic ProseMirror Editor</h2>
-      <p style={{ color: "#666" }}>
-        Base editor with example-setup. Use this as a starting point for plugin
-        demos.
-      </p>
-      <div
-        ref={editorRef}
-        style={{
-          border: "1px solid #ddd",
-          borderRadius: 4,
-          minHeight: 300,
-        }}
-      />
+      <div className="demo-header">
+        <h1 className="demo-title">Basic Editor</h1>
+        <p className="demo-description">
+          Base ProseMirror editor with example-setup. Use this as a starting
+          point for plugin demos.
+        </p>
+      </div>
+      <div className="card editor-card">
+        <div ref={editorRef} />
+      </div>
     </div>
   );
 }
