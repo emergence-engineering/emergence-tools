@@ -727,6 +727,112 @@ body {
   background: #fef3c7;
 }
 
+/* ===== Fast Diff Merge Demo ===== */
+.diff-textarea {
+  width: 100%;
+  font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--surface);
+  border: none;
+  outline: none;
+  resize: vertical;
+  padding: 0;
+}
+
+.diff-options {
+  margin-bottom: 16px;
+}
+
+.diff-option-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.diff-option-label code {
+  font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  font-size: 12px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-light);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.diff-results {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.diff-replace-item {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.diff-replace-item.diff-identity {
+  background: var(--surface-alt);
+  opacity: 0.6;
+}
+
+.diff-replace-item.diff-change {
+  background: var(--accent-soft);
+  border: 1px solid var(--border);
+}
+
+.diff-replace-positions {
+  font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.diff-replace-text {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.diff-label {
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.diff-replace-text code {
+  font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.diff-del {
+  color: #b91c1c;
+  background: #fef2f2;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.diff-ins {
+  color: #15803d;
+  background: #f0fdf4;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.diff-empty {
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 16px 0;
+  text-align: center;
+}
+
 /* ===== Utilities ===== */
 .mt-4 { margin-top: 16px; }
 .mb-4 { margin-bottom: 16px; }

@@ -13,7 +13,7 @@ A monorepo of ProseMirror plugins and utilities by [Emergence Engineering](https
 | [`prosemirror-link-preview`](./packages/prosemirror-link-preview) | Link preview cards | Migrated |
 | [`prosemirror-slash-menu`](./packages/prosemirror-slash-menu) | Slash menu state management | Migrated |
 | [`prosemirror-slash-menu-react`](./packages/prosemirror-slash-menu-react) | Slash menu React UI | Migrated |
-| `fast-diff-merge` | Fast diff and merge utilities | Planned |
+| [`fast-diff-merge`](./packages/fast-diff-merge) | Fast diff and merge utilities | Migrated |
 | `prosemirror-loading-plugin` | Loading state plugin | Planned |
 | `prosemirror-slash-menu-ui` | Slash menu UI components | Planned |
 | `prosemirror-image-plugin` | Image handling plugin | Planned |

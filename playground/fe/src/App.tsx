@@ -4,10 +4,12 @@ import { LinkPreviewDemo } from "./demos/LinkPreviewDemo";
 import { TextMapDemo } from "./demos/TextMapDemo";
 import { SlashMenuVanillaDemo } from "./demos/SlashMenuVanillaDemo";
 import { SlashMenuReactDemo } from "./demos/SlashMenuReactDemo";
+import { FastDiffMergeDemo } from "./demos/FastDiffMergeDemo";
 
 const demos = {
-  linkPreview: { label: "Link Preview", component: LinkPreviewDemo },
+  fastDiffMerge: { label: "Fast Diff Merge", component: FastDiffMergeDemo },
   textMap: { label: "Text Map", component: TextMapDemo },
+  linkPreview: { label: "Link Preview", component: LinkPreviewDemo },
   slashMenuVanilla: { label: "Slash Menu (Vanilla)", component: SlashMenuVanillaDemo },
   slashMenuReact: { label: "Slash Menu (React)", component: SlashMenuReactDemo },
   basic: { label: "Basic Editor", component: BasicEditor },

@@ -32,13 +32,13 @@
 - prosemirror-link-preview
 - prosemirror-slash-menu
 - prosemirror-slash-menu-react
+- fast-diff-merge
 
 ### Yet to come
 
 - prosemirror-suggestcat-plugin
 - prosemirror-suggestcat-plugin-react
 - prosemirror-suggest-changes
-- fast-diff-merge
 - prosemirror-loading-plugin
 - prosemirror-slash-menu-ui
 - prosemirror-image-plugin
