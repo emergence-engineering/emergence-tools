@@ -1,0 +1,6 @@
+dist
+node_modules
+.gitattributes
+/.idea/
+
+.DS_Store

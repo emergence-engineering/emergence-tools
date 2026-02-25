@@ -4,22 +4,22 @@ A monorepo of ProseMirror plugins and utilities by [Emergence Engineering](https
 
 ## Packages
 
-| Package | Description | Status |
-|---------|-------------|--------|
-| [`prosemirror-text-map`](./packages/prosemirror-text-map) | Text mapping utilities for ProseMirror documents | Migrated |
-| `prosemirror-suggestcat-plugin` | AI-powered suggestion plugin | Planned |
-| `prosemirror-suggestcat-plugin-react` | React bindings for suggestcat | Planned |
-| `prosemirror-suggest-changes` | Track changes / suggestions | Planned |
-| [`prosemirror-link-preview`](./packages/prosemirror-link-preview) | Link preview cards | Migrated |
-| [`prosemirror-slash-menu`](./packages/prosemirror-slash-menu) | Slash menu state management | Migrated |
-| [`prosemirror-slash-menu-react`](./packages/prosemirror-slash-menu-react) | Slash menu React UI | Migrated |
-| [`fast-diff-merge`](./packages/fast-diff-merge) | Fast diff and merge utilities | Migrated |
-| `prosemirror-loading-plugin` | Loading state plugin | Planned |
-| `prosemirror-slash-menu-ui` | Slash menu UI components | Planned |
-| [`prosemirror-image-plugin`](./packages/prosemirror-image-plugin) | Image handling plugin | Migrated |
-| `prosemirror-codemirror-block` | CodeMirror code blocks | Planned |
-| `prosemirror-paste-link` | Paste URL as link | Planned |
-| `prosemirror-link-plugin` | Link editing plugin | Planned |
+| Package | Description | Status      |
+|---------|-------------|-------------|
+| [`fast-diff-merge`](./packages/fast-diff-merge) | Fast diff and merge utilities | Migrated    |
+| [`prosemirror-text-map`](./packages/prosemirror-text-map) | Text mapping utilities for ProseMirror documents | Migrated    |
+| [`prosemirror-link-preview`](./packages/prosemirror-link-preview) | Link preview cards | Migrated    |
+| [`prosemirror-image-plugin`](./packages/prosemirror-image-plugin) | Image handling plugin | Migrated    |
+| [`prosemirror-slash-menu`](./packages/prosemirror-slash-menu) | Slash menu state management | Migrated    |
+| [`prosemirror-slash-menu-react`](./packages/prosemirror-slash-menu-react) | Slash menu React UI | Migrated    |
+| `prosemirror-suggestcat-plugin` | AI-powered suggestion plugin | Planned     |
+| `prosemirror-suggestcat-plugin-react` | React bindings for suggestcat | Planned     |
+| `prosemirror-suggest-changes` | Track changes / suggestions | Privat fork |
+| `prosemirror-loading-plugin` | Loading state plugin | Empty repo  |
+| `prosemirror-codemirror-block` | CodeMirror code blocks | Planned     |
+| `prosemirror-paste-link` | Paste URL as link | Planned     |
+| `prosemirror-link-plugin` | Link editing plugin | Planned     |
+| `prosemirror-slash-menu-ui` | Slash menu UI components | Planned     |
 
 ## Quick Start
 
