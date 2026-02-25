@@ -44,7 +44,7 @@ export function computeChange(oldVal: string, newVal: string) {
 export const asProseMirrorSelection = (
   pmDoc: Node,
   cmView: EditorView,
-  getPos: (() => number) | boolean
+  getPos: () => number | undefined
 ) => {
   const offset = (typeof getPos === "function" ? getPos() || 0 : 0) + 1;
   const anchor = cmView.state.selection.main.from + offset;
@@ -55,7 +55,7 @@ export const asProseMirrorSelection = (
 export const forwardSelection = (
   cmView: EditorView,
   pmView: PMEditorView,
-  getPos: (() => number) | boolean
+  getPos: () => number | undefined
 ) => {
   if (!cmView.hasFocus) return;
   const selection = asProseMirrorSelection(pmView.state.doc, cmView, getPos);
@@ -66,12 +66,14 @@ export const forwardSelection = (
 export const valueChanged = (
   textUpdate: string,
   node: Node,
-  getPos: (() => number) | boolean,
+  getPos: () => number | undefined,
   view: PMEditorView
 ) => {
   const change = computeChange(node.textContent, textUpdate);
   if (change && typeof getPos === "function") {
-    const start = getPos() + 1;
+    const pos = getPos();
+    if (pos === undefined) return;
+    const start = pos + 1;
 
     let pmTr = view.state.tr;
     pmTr = pmTr.replaceWith(
@@ -88,7 +90,7 @@ export const maybeEscape = (
   dir: -1 | 1,
   cm: EditorView,
   view: PMEditorView,
-  getPos: boolean | (() => number)
+  getPos: () => number | undefined
 ) => {
   const sel = cm.state.selection.main;
   const line = cm.state.doc.lineAt(sel.from);
@@ -101,9 +103,11 @@ export const maybeEscape = (
   )
     return false;
   view.focus();
-  const node = view.state.doc.nodeAt(getPos());
+  const pos = getPos();
+  if (pos === undefined) return false;
+  const node = view.state.doc.nodeAt(pos);
   if (!node) return false;
-  const targetPos = getPos() + (dir < 0 ? 0 : node.nodeSize);
+  const targetPos = pos + (dir < 0 ? 0 : node.nodeSize);
   const selection = Selection.near(view.state.doc.resolve(targetPos), dir);
   view.dispatch(view.state.tr.setSelection(selection).scrollIntoView());
   view.focus();

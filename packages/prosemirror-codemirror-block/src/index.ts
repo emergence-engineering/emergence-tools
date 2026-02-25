@@ -43,8 +43,6 @@ export {
   codeMirrorBlockNodeView,
   codeBlockArrowHandlers,
   codeMirrorBlockPlugin,
-  CodeBlockSettings,
-  LanguageLoaders,
   CodeBlockLanguages,
   LegacyLanguages,
   defaultSettings,
@@ -57,3 +55,5 @@ export {
   codeBlockKeymap,
   updateTheme,
 };
+
+export type { CodeBlockSettings, LanguageLoaders };

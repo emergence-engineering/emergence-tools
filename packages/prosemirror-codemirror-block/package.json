@@ -10,20 +10,16 @@
     "build": "rollup -c --bundleConfigAsCjs",
     "dev": "rollup -c -w --bundleConfigAsCjs",
     "format": "eslint src --ext .ts --fix",
-    "prepublishOnly": "npm run build && npm test && npm run lint",
-    "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags",
-    "lint": "tsc --noEmit && eslint src --ext .ts",
-    "test": "echo \"no test specified\" && exit 0",
-    "upgrade-interactive": "npm-check --update",
-    "publish:np": "np"
+    "lint": "tsc --noEmit",
+    "test": "echo \"no test specified\" && exit 0"
   },
   "engines": {
     "node": ">=16.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/emergence-engineering/prosemirror-codemirror-block.git"
+    "url": "git+https://github.com/emergence-engineering/ee-prosemirror-tools.git",
+    "directory": "packages/prosemirror-codemirror-block"
   },
   "files": [
     "dist/**/*"
@@ -37,9 +33,9 @@
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/emergence-engineering/prosemirror-codemirror-block/issues"
+    "url": "https://github.com/emergence-engineering/ee-prosemirror-tools/issues"
   },
-  "homepage": "https://gitlab.com/emergence-engineering/prosemirror-codemirror-block#readme",
+  "homepage": "https://github.com/emergence-engineering/ee-prosemirror-tools/tree/main/packages/prosemirror-codemirror-block#readme",
   "publishConfig": {
     "access": "public"
   },
@@ -74,6 +70,7 @@
     "prosemirror-view": "^1.29.1"
   },
   "devDependencies": {
+    "@codemirror/state": "^6.1.4",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
     "eslint": "^8.49.0",
@@ -83,12 +80,14 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.33.2",
-    "np": "^8.0.4",
-    "npm-check": "^6.0.1",
     "prettier": "^2.8.1",
+    "rimraf": "^5.0.0",
+    "prosemirror-commands": "^1.5.0",
+    "prosemirror-model": "^1.18.3",
+    "prosemirror-state": "^1.4.2",
+    "prosemirror-view": "^1.29.1",
     "rollup": "^3.29.2",
     "rollup-plugin-minification": "^0.2.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-typescript2": "^0.35.0",
     "typescript": "^5.2.2"
   }

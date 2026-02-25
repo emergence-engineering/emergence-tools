@@ -15,14 +15,14 @@ export type CodeBlockSettings = {
     dom: HTMLElement,
     node: Node,
     view: EditorView,
-    getPos: (() => number) | boolean
+    getPos: () => number | undefined
   ) => () => void;
   updateSelect: (
     settings: CodeBlockSettings,
     dom: HTMLElement,
     node: Node,
     view: EditorView,
-    getPos: (() => number) | boolean,
+    getPos: () => number | undefined,
     oldNode: Node
   ) => void;
   createCopyButton: (
@@ -31,12 +31,12 @@ export type CodeBlockSettings = {
     node: Node,
     view: EditorView,
     codeMirrorView: CodemirrorView,
-    getPos: (() => number) | boolean
+    getPos: () => number | undefined
   ) => () => void;
   stopEvent: (
     e: Event,
     node: Node,
-    getPos: (() => number) | boolean,
+    getPos: () => number | undefined,
     view: EditorView,
     dom: HTMLElement
   ) => boolean;

@@ -48,7 +48,7 @@ export const codeMirrorBlockNodeView: (
 ) => (
   pmNode: Node,
   view: PMEditorView,
-  getPos: (() => number) | boolean
+  getPos: () => number | undefined
 ) => NodeView = (settings) => (pmNode, view, getPos) => {
   let node = pmNode;
   let updating = false;

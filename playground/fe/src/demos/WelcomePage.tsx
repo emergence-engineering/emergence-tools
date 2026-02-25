@@ -40,6 +40,12 @@ const packages = [
     description:
       "Advanced image handling with drag & drop, clipboard paste, resize handles, and lazy loading.",
   },
+  {
+    name: "prosemirror-codemirror-block",
+    scoped: false,
+    description:
+      "CodeMirror 6 code blocks with syntax highlighting for 100+ languages, language selection, and theme support.",
+  },
 ];
 
 export function WelcomePage() {

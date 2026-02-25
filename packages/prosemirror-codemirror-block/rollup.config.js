@@ -2,10 +2,8 @@ import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-minification";
 
 import pkg from "./package.json";
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 
 export default {
-  name: "prosemirror-codemirror-block",
   input: "src/index.ts",
   inlineDynamicImports: true,
   output: [
@@ -15,11 +13,12 @@ export default {
     },
     { file: pkg.module, format: "es" },
   ],
-  external: [...Object.keys(pkg.peerDependenciesx || {})],
+  external: [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.peerDependencies || {}),
+  ],
   plugins: [
-    peerDepsExternal(),
-    typescript(),
+    typescript({ clean: true }),
     terser(),
   ],
-  sourcemap: true,
 };
