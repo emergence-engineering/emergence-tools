@@ -1,0 +1,212 @@
+import { Decoration, DecorationSet, EditorView } from "prosemirror-view";
+import { TextSelection } from "prosemirror-state";
+
+export type TextMappingItem = {
+  docPos: number;
+  textPos: number;
+};
+
+export interface ChangedRegion {
+  oldStart: number;
+  oldEnd: number;
+  start: number;
+  end: number;
+  oldText: string;
+  newText: string;
+}
+
+export type GrammarSuggestPluginState = {
+  lastText?: string;
+  timer?: number;
+  decorations: DecorationSet;
+  popupDecoration: DecorationSet;
+  currentSuggestionId?: object;
+  enabled: boolean;
+};
+export type GrammarSuggestPluginOptions = {
+  debounceMs: number;
+  createUpdatePopup: (
+    view: EditorView,
+    decoration: Decoration,
+    pos: number,
+    applySuggestion: (view: EditorView, decoration: Decoration) => void,
+    discardSuggestion: (view: EditorView, decoration: Decoration) => void,
+  ) => HTMLElement;
+  withYjs: boolean;
+};
+
+export enum GrammarSuggestMetaType {
+  suggestionUpdate = "suggestionUpdate",
+  acceptSuggestion = "acceptSuggestion",
+  openSuggestion = "openSuggestion",
+  closeSuggestion = "closeSuggestion",
+  discardSuggestion = "discardSuggestion",
+  setEnabled = "setEnabled",
+}
+
+export interface AcceptSuggestionMeta {
+  type: GrammarSuggestMetaType.acceptSuggestion;
+  id: object;
+}
+
+export type FixMistakeResultData = {
+  result: string;
+  fixed: boolean;
+  mod?: {
+    original: string;
+    fixed: string;
+    position: number;
+    type: string;
+  }[];
+};
+
+export interface UpdateSuggestionMeta {
+  type: GrammarSuggestMetaType.suggestionUpdate;
+  fix: FixMistakeResultData;
+  changedRegion: ChangedRegion;
+  mapping: TextMappingItem[];
+  text: string;
+}
+
+export interface OpenSuggestionMeta {
+  type: GrammarSuggestMetaType.openSuggestion;
+  decoration: Decoration;
+}
+
+export interface DiscardSuggestionMeta {
+  type: GrammarSuggestMetaType.discardSuggestion;
+  id: object;
+}
+
+export interface CloseSuggestionMeta {
+  type: GrammarSuggestMetaType.closeSuggestion;
+}
+
+export interface SetEnabledMeta {
+  type: GrammarSuggestMetaType.setEnabled;
+  enabled: boolean;
+}
+
+export type GrammarPluginMeta =
+  | UpdateSuggestionMeta
+  | AcceptSuggestionMeta
+  | OpenSuggestionMeta
+  | CloseSuggestionMeta
+  | DiscardSuggestionMeta
+  | SetEnabledMeta;
+
+export type GrammarSuggestDecorationSpec = {
+  originalText: string;
+  text: string;
+  id: object; // TODO: Maybe not needed?
+};
+
+export type PopupDecorationSpec = {
+  id: object; // The same id as the suggestion
+};
+
+export enum GrammarSuggestElementClass {
+  grammarSuggestPopup = "grammar-suggest-popup",
+}
+
+export enum MoodParamType {
+  Casual = "Casual",
+  Confident = "Confident",
+  Straightforward = "Straightforward",
+  Friendly = "Friendly",
+}
+
+export enum TranslationTargetLanguage {
+  English = "English",
+  Spanish = "Spanish",
+  French = "French",
+  German = "German",
+  Italian = "Italian",
+  Portuguese = "Portuguese",
+  Dutch = "Dutch",
+  Russian = "Russian",
+  Chinese = "Chinese",
+  Korean = "Korean",
+  Japanese = "Japanese",
+}
+
+export type TranslationParams = { targetLanguage: TranslationTargetLanguage };
+export type MoodParams = { mood: MoodParamType };
+
+export type HintParams = {
+  previousPromptType: string;
+  oldVersion: string;
+  newVersion: string;
+  language?: string;
+};
+
+export type CustomParams = {
+  systemPrompt: string;
+};
+
+// AI task types without additional parameters
+export enum AiPromptsWithoutParam {
+  Complete = "Complete",
+  SmallComplete = "SmallComplete",
+  Improve = "Improve",
+  MakeLonger = "MakeLonger",
+  MakeShorter = "MakeShorter",
+  Simplify = "Simplify",
+  Explain = "Explain",
+  ActionItems = "ActionItems",
+}
+
+// AI task types that require additional parameters
+export enum AiPromptsWithParam {
+  ChangeTone = "ChangeTone",
+  Translate = "Translate",
+  Hint = "Hint",
+  Custom = "Custom",
+}
+
+// Backward compatibility aliases
+/** @deprecated Use AiPromptsWithoutParam instead */
+export const OpenAiPromptsWithoutParam = AiPromptsWithoutParam;
+/** @deprecated Use AiPromptsWithParam instead */
+export const OpenAiPromptsWithParam = AiPromptsWithParam;
+
+export type TaskType = AiPromptsWithoutParam | AiPromptsWithParam;
+
+// Union type for all task parameters
+export type TaskParams =
+  | MoodParams
+  | TranslationParams
+  | HintParams
+  | CustomParams;
+
+export enum Status {
+  idle = "idle",
+  new = "new",
+  streaming = "streaming",
+  finished = "finished",
+  accepted = "accepted",
+  cancelled = "cancelled",
+  rejected = "rejected",
+  done = "done",
+  error = "error",
+}
+
+export interface CompletePluginState {
+  type?: TaskType;
+  params?: TaskParams | undefined;
+  status?: Status;
+  result?: string;
+  selection?: TextSelection;
+  error?: string;
+  isCancelled?: boolean;
+  enabled: boolean;
+}
+
+export interface TaskMeta {
+  type: TaskType;
+  status: Status.new | Status.accepted | Status.rejected | Status.cancelled;
+}
+
+export interface DefaultCompleteOptions {
+  maxSelection: number;
+}
