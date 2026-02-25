@@ -8,6 +8,7 @@ import { FastDiffMergeDemo } from "./demos/FastDiffMergeDemo";
 import { ImagePluginDemo } from "./demos/ImagePluginDemo";
 import { CodeMirrorBlockDemo } from "./demos/CodeMirrorBlockDemo";
 import { PasteLinkDemo } from "./demos/PasteLinkDemo";
+import { LinkPluginDemo } from "./demos/LinkPluginDemo";
 
 const demos = {
   fastDiffMerge: { label: "Fast Diff Merge", component: FastDiffMergeDemo },
@@ -18,6 +19,7 @@ const demos = {
   imagePlugin: { label: "Image Plugin", component: ImagePluginDemo },
   codeMirrorBlock: { label: "CodeMirror Block", component: CodeMirrorBlockDemo },
   pasteLink: { label: "Paste Link", component: PasteLinkDemo },
+  linkPlugin: { label: "Link Plugin", component: LinkPluginDemo },
 } as const;
 
 type DemoKey = keyof typeof demos;

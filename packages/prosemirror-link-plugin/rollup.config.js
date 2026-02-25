@@ -4,7 +4,6 @@ import { terser } from "rollup-plugin-minification";
 import pkg from "./package.json";
 
 export default {
-  name: "prosemirror-link-plugin",
   input: "src/index.ts",
   output: [
     {
@@ -13,7 +12,10 @@ export default {
     },
     { file: pkg.module, format: "es" },
   ],
-  external: [...Object.keys(pkg.dependencies || {})],
-  plugins: [typescript(), terser()],
+  external: [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.peerDependencies || {}),
+  ],
+  plugins: [typescript({ clean: true }), terser()],
   sourcemap: true,
 };

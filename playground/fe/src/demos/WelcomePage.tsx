@@ -52,6 +52,12 @@ const packages = [
     description:
       "Paste a URL with text selected to wrap the selection in a link, instead of replacing it with the URL text.",
   },
+  {
+    name: "prosemirror-link-plugin",
+    scoped: false,
+    description:
+      "Automatically decorate words matching a configurable alias list — useful for auto-linking terms to pages or glossary entries.",
+  },
 ];
 
 export function WelcomePage() {

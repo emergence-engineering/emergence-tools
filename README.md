@@ -18,7 +18,7 @@ A monorepo of ProseMirror plugins and utilities by [Emergence Engineering](https
 | `prosemirror-loading-plugin` | Loading state plugin | Empty repo  |
 | [`prosemirror-codemirror-block`](./packages/prosemirror-codemirror-block) | CodeMirror code blocks | Migrated    |
 | [`prosemirror-paste-link`](./packages/prosemirror-paste-link) | Paste URL as link | Migrated    |
-| `prosemirror-link-plugin` | Link editing plugin | Planned     |
+| [`prosemirror-link-plugin`](./packages/prosemirror-link-plugin) | Automatic alias linking plugin | Migrated    |
 | `prosemirror-slash-menu-ui` | Slash menu UI components | Planned     |
 
 ## Quick Start

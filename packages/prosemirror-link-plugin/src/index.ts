@@ -1,20 +1,9 @@
-import { autoLinkingPlugin, linksKey } from "./plugin";
-import defaultAliasDecoration from "./defaultAliasDecoration";
-import {
+export { autoLinkingPlugin, linksKey } from "./plugin";
+export { LinksMetaType } from "./types";
+export type {
   SpecWithAlias,
   LinksKeyState,
   LinksMeta,
-  LinksMetaType,
   LinksUpdateMeta,
 } from "./types";
-
-export {
-  SpecWithAlias,
-  LinksKeyState,
-  LinksMeta,
-  LinksMetaType,
-  LinksUpdateMeta,
-  defaultAliasDecoration,
-  autoLinkingPlugin,
-  linksKey,
-};
+export { default as defaultAliasDecoration } from "./defaultAliasDecoration";

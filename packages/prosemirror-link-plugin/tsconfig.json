@@ -1,17 +1,9 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es5",
-    "module": "esnext",
-    "declaration": true,
-    "declarationDir": "./dist",
     "outDir": "./dist",
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "Node",
-    "lib": ["es2020"],
-    "skipLibCheck": true
+    "declarationDir": "./dist"
   },
-  "compileOnSave": true,
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "**/tests"]
+  "include": ["src"],
+  "exclude": ["node_modules", "**/*.test.ts"]
 }

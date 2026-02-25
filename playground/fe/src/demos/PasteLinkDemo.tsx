@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
-import { EditorState, Plugin, PluginKey, Transaction } from "prosemirror-state";
+import { EditorState, Transaction } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { Schema, Node, Mark } from "prosemirror-model";
 import { schema as basicSchema } from "prosemirror-schema-basic";
 import { exampleSetup } from "prosemirror-example-setup";
 import pasteLinkPlugin from "prosemirror-paste-link";
 import { InstallCommand } from "../components/InstallCommand";
+import { linkTooltipPlugin } from "../components/linkTooltipPlugin";
 
 // Extend basic schema with a link mark
 const schema = new Schema({
@@ -40,77 +41,6 @@ function linkMarkAt(state: EditorState, pos: number): Mark | undefined {
   const { link } = state.schema.marks;
   const storedMarks = state.storedMarks || $pos.marks();
   return link ? storedMarks.find((m) => m.type === link) : undefined;
-}
-
-/**
- * A simple ProseMirror plugin that shows a tooltip below the cursor
- * whenever it sits inside a link mark.
- */
-function linkTooltipPlugin() {
-  const key = new PluginKey("link-tooltip");
-
-  let tooltip: HTMLDivElement | null = null;
-
-  function createTooltip(view: EditorView) {
-    tooltip = document.createElement("div");
-    tooltip.className = "link-tooltip";
-    view.dom.parentNode!.appendChild(tooltip);
-  }
-
-  function updateTooltip(view: EditorView) {
-    if (!tooltip) return;
-
-    const { state } = view;
-    const { from, to } = state.selection;
-
-    // Only show for cursor (collapsed selection) or small selection within one link
-    const mark = linkMarkAt(state, from);
-    if (!mark || (from !== to && !linkMarkAt(state, to))) {
-      tooltip.style.display = "none";
-      return;
-    }
-
-    const href = mark.attrs.href as string;
-    tooltip.innerHTML = "";
-
-    const urlSpan = document.createElement("span");
-    urlSpan.className = "link-tooltip-url";
-    urlSpan.textContent = href.length > 50 ? href.slice(0, 50) + "\u2026" : href;
-    tooltip.appendChild(urlSpan);
-
-    const openLink = document.createElement("a");
-    openLink.className = "link-tooltip-open";
-    openLink.href = href;
-    openLink.target = "_blank";
-    openLink.rel = "noopener noreferrer";
-    openLink.textContent = "Open \u2197";
-    openLink.addEventListener("mousedown", (e) => e.preventDefault());
-    tooltip.appendChild(openLink);
-
-    // Position the tooltip below the link text
-    const start = view.coordsAtPos(from);
-    const box = (view.dom.parentNode as HTMLElement).getBoundingClientRect();
-    tooltip.style.display = "flex";
-    tooltip.style.left = `${start.left - box.left}px`;
-    tooltip.style.top = `${start.bottom - box.top + 4}px`;
-  }
-
-  return new Plugin({
-    key,
-    view(editorView) {
-      createTooltip(editorView);
-      updateTooltip(editorView);
-      return {
-        update(view) {
-          updateTooltip(view);
-        },
-        destroy() {
-          tooltip?.remove();
-          tooltip = null;
-        },
-      };
-    },
-  });
 }
 
 function createInitialDoc(): Node {
@@ -158,7 +88,11 @@ export function PasteLinkDemo() {
       plugins: [
         ...exampleSetup({ schema }),
         pasteLinkPlugin,
-        linkTooltipPlugin(),
+        linkTooltipPlugin((state, from, to) => {
+          const mark = linkMarkAt(state, from);
+          if (!mark || (from !== to && !linkMarkAt(state, to))) return undefined;
+          return mark.attrs.href as string;
+        }),
       ],
     });
 
