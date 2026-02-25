@@ -7,6 +7,7 @@ import { SlashMenuReactDemo } from "./demos/SlashMenuReactDemo";
 import { FastDiffMergeDemo } from "./demos/FastDiffMergeDemo";
 import { ImagePluginDemo } from "./demos/ImagePluginDemo";
 import { CodeMirrorBlockDemo } from "./demos/CodeMirrorBlockDemo";
+import { PasteLinkDemo } from "./demos/PasteLinkDemo";
 
 const demos = {
   fastDiffMerge: { label: "Fast Diff Merge", component: FastDiffMergeDemo },
@@ -16,6 +17,7 @@ const demos = {
   slashMenuReact: { label: "Slash Menu (React)", component: SlashMenuReactDemo },
   imagePlugin: { label: "Image Plugin", component: ImagePluginDemo },
   codeMirrorBlock: { label: "CodeMirror Block", component: CodeMirrorBlockDemo },
+  pasteLink: { label: "Paste Link", component: PasteLinkDemo },
 } as const;
 
 type DemoKey = keyof typeof demos;

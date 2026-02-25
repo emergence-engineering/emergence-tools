@@ -29,7 +29,7 @@
 Some packages are published under the `@emergence-engineering` scope, others are published globally (no scope). This is intentional — each package keeps its original npm name from before the monorepo migration. **Never rename a package or change its scope during import/migration.**
 
 - **Scoped** (`@emergence-engineering/`): prosemirror-text-map, prosemirror-link-preview, fast-diff-merge
-- **Global** (no scope): prosemirror-slash-menu, prosemirror-slash-menu-react, prosemirror-image-plugin, prosemirror-codemirror-block
+- **Global** (no scope): prosemirror-slash-menu, prosemirror-slash-menu-react, prosemirror-image-plugin, prosemirror-codemirror-block, prosemirror-paste-link
 
 ## Packages
 
@@ -42,6 +42,7 @@ Some packages are published under the `@emergence-engineering` scope, others are
 - fast-diff-merge
 - prosemirror-image-plugin
 - prosemirror-codemirror-block
+- prosemirror-paste-link
 
 ### Yet to come
 
@@ -50,7 +51,6 @@ Some packages are published under the `@emergence-engineering` scope, others are
 - prosemirror-suggest-changes
 - prosemirror-loading-plugin
 - prosemirror-slash-menu-ui
-- prosemirror-paste-link
 - prosemirror-link-plugin
 
 ## Versioning

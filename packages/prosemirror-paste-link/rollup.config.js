@@ -1,11 +1,9 @@
 import typescript from "rollup-plugin-typescript2";
-import { terser } from "rollup-plugin-terser";
-import copy from "rollup-plugin-copy";
+import { terser } from "rollup-plugin-minification";
 
 import pkg from "./package.json";
 
 export default {
-  name: "prosemirror-image-plugin",
   input: "src/index.ts",
   output: [
     {
@@ -14,15 +12,12 @@ export default {
     },
     { file: pkg.module, format: "es" },
   ],
-  external: [...Object.keys(pkg.dependencies || {})],
+  external: [
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.peerDependencies || {}),
+  ],
   plugins: [
-    copy({
-      targets: [
-        { src: "src/styles/**/*", dest: "dist/styles" },
-      ],
-    }),
-    typescript(),
+    typescript({ clean: true }),
     terser(),
   ],
-  sourcemap: true,
 };

@@ -17,7 +17,7 @@ A monorepo of ProseMirror plugins and utilities by [Emergence Engineering](https
 | `prosemirror-suggest-changes` | Track changes / suggestions | Privat fork |
 | `prosemirror-loading-plugin` | Loading state plugin | Empty repo  |
 | [`prosemirror-codemirror-block`](./packages/prosemirror-codemirror-block) | CodeMirror code blocks | Migrated    |
-| `prosemirror-paste-link` | Paste URL as link | Planned     |
+| [`prosemirror-paste-link`](./packages/prosemirror-paste-link) | Paste URL as link | Migrated    |
 | `prosemirror-link-plugin` | Link editing plugin | Planned     |
 | `prosemirror-slash-menu-ui` | Slash menu UI components | Planned     |
 

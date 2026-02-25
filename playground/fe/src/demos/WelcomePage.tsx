@@ -46,6 +46,12 @@ const packages = [
     description:
       "CodeMirror 6 code blocks with syntax highlighting for 100+ languages, language selection, and theme support.",
   },
+  {
+    name: "prosemirror-paste-link",
+    scoped: false,
+    description:
+      "Paste a URL with text selected to wrap the selection in a link, instead of replacing it with the URL text.",
+  },
 ];
 
 export function WelcomePage() {
