@@ -159,7 +159,8 @@ export const SuggestionOverlay: FC<{
           <div className={"loader"}></div>
         </div>
       )}
-      {(status === CompleteStatus.STREAMING || status === CompleteStatus.PREVIEW) && (
+      {(status === CompleteStatus.STREAMING ||
+        status === CompleteStatus.PREVIEW) && (
         <div
           className={"overLayContainer"}
           ref={rootRef}

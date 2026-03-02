@@ -33,9 +33,7 @@ export const GrammarPopup: FC<{
     return getSelectedDecoration(editorView, grammarSuggestV2Key);
   }, [editorView, editorState]);
 
-  const spec = selectedDecoration?.spec as
-    | GrammarDecorationSpec
-    | undefined;
+  const spec = selectedDecoration?.spec as GrammarDecorationSpec | undefined;
 
   const virtualRef = useMemo(() => {
     if (!editorView || !selectedDecoration) return undefined;
@@ -136,7 +134,9 @@ export const GrammarPopup: FC<{
         </span>
         <span className="grammarPopupV2-arrow"> → </span>
         <span className="grammarPopupV2-replacement">
-          {spec.replacement === "" ? "(remove)" : `\u201C${spec.replacement}\u201D`}
+          {spec.replacement === ""
+            ? "(remove)"
+            : `\u201C${spec.replacement}\u201D`}
         </span>
         <button
           className="grammarPopupV2-hint"

@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "rollup -c --bundleConfigAsCjs",
     "dev": "rollup -c -w --bundleConfigAsCjs",
-    "format": "eslint src --ext .ts --fix",
+    "format": "echo 'no formatter configured'",
     "lint": "tsc --noEmit",
     "test": "jest"
   },

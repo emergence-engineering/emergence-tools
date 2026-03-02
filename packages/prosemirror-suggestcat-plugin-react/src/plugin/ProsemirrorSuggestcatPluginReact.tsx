@@ -22,8 +22,9 @@ export const ProsemirrorSuggestcatPluginReact: FC<{
       return;
     }
 
-    const currentNode = editorView.domAtPos(editorView.state.selection.to)
-      ?.node;
+    const currentNode = editorView.domAtPos(
+      editorView.state.selection.to,
+    )?.node;
 
     if (!currentNode) {
       return;

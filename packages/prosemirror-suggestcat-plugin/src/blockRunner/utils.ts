@@ -93,10 +93,9 @@ const mapDecorationArray = <D extends Decoration>(
   mapping: Mapping,
 ): D[] => {
   return decorationArray
-    .map(
-      (deco) =>
-        // @ts-expect-error the `Decoration.map` is internal
-        deco?.map(mapping, 0, 0),
+    .map((deco) =>
+      // @ts-expect-error the `Decoration.map` is internal
+      deco?.map(mapping, 0, 0),
     )
     .filter((deco): deco is D => deco !== null);
 };
