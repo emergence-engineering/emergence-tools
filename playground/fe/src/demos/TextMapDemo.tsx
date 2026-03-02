@@ -69,7 +69,7 @@ function docPosToTextPos(
 }
 
 const SOURCE_URL =
-  "https://github.com/emergence-engineering/ee-prosemirror-tools/blob/main/playground/fe/src/demos/TextMapDemo.tsx";
+  "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/TextMapDemo.tsx";
 
 export function TextMapDemo() {
   const editorRef = useRef<HTMLDivElement>(null);

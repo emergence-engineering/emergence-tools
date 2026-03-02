@@ -60,7 +60,7 @@ function createInitialDoc(): Node {
 }
 
 const SOURCE_URL =
-  "https://github.com/emergence-engineering/ee-prosemirror-tools/blob/main/playground/fe/src/demos/LinkPluginDemo.tsx";
+  "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/LinkPluginDemo.tsx";
 
 export function LinkPluginDemo() {
   const editorRef = useRef<HTMLDivElement>(null);

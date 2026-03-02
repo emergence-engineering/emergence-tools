@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emergence-engineering/ee-prosemirror-tools.git",
+    "url": "git+https://github.com/emergence-engineering/emergence-tools.git",
     "directory": "packages/prosemirror-image-plugin"
   },
   "files": [
@@ -35,9 +35,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/emergence-engineering/ee-prosemirror-tools/issues"
+    "url": "https://github.com/emergence-engineering/emergence-tools/issues"
   },
-  "homepage": "https://github.com/emergence-engineering/ee-prosemirror-tools/tree/main/packages/prosemirror-image-plugin#readme",
+  "homepage": "https://github.com/emergence-engineering/emergence-tools/tree/main/packages/prosemirror-image-plugin#readme",
   "publishConfig": {
     "access": "public"
   },

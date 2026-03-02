@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emergence-engineering/ee-prosemirror-tools.git",
+    "url": "git+https://github.com/emergence-engineering/emergence-tools.git",
     "directory": "packages/prosemirror-text-map"
   },
   "files": [
@@ -25,9 +25,9 @@
   "author": "Emergence Engineering",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/emergence-engineering/ee-prosemirror-tools/issues"
+    "url": "https://github.com/emergence-engineering/emergence-tools/issues"
   },
-  "homepage": "https://github.com/emergence-engineering/ee-prosemirror-tools/tree/main/packages/prosemirror-text-map#readme",
+  "homepage": "https://github.com/emergence-engineering/emergence-tools/tree/main/packages/prosemirror-text-map#readme",
   "peerDependencies": {
     "prosemirror-model": "^1.19.3"
   },

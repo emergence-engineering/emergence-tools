@@ -115,7 +115,7 @@ export function App() {
 
         <div className="sidebar-footer">
           <a
-            href="https://github.com/emergence-engineering/ee-prosemirror-tools"
+            href="https://github.com/emergence-engineering/emergence-tools"
             target="_blank"
             rel="noopener noreferrer"
           >

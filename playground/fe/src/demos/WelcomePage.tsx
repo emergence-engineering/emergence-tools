@@ -1,5 +1,5 @@
 const REPO_URL =
-  "https://github.com/emergence-engineering/ee-prosemirror-tools";
+  "https://github.com/emergence-engineering/emergence-tools";
 const DEMOS_URL = `${REPO_URL}/tree/main/playground/fe/src/demos`;
 const EE_URL = "https://emergence-engineering.com";
 

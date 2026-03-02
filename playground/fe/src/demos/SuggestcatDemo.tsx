@@ -24,7 +24,7 @@ import {
 import { InstallCommand } from "../components/InstallCommand";
 
 const SOURCE_URL =
-  "https://github.com/emergence-engineering/ee-prosemirror-tools/blob/main/playground/fe/src/demos/SuggestcatDemo.tsx";
+  "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/SuggestcatDemo.tsx";
 
 const apiKey = "-qKivjCv6MfQSmgF438PjEY7RnLfqoVe";
 const mainModel = "cerebras:gpt-oss-120b";

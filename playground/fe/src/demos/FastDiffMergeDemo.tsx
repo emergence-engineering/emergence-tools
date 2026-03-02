@@ -15,7 +15,7 @@ She sells sea shells on the sea shore.
 Pack my box with five dozen liquor jugs!`;
 
 const SOURCE_URL =
-  "https://github.com/emergence-engineering/ee-prosemirror-tools/blob/main/playground/fe/src/demos/FastDiffMergeDemo.tsx";
+  "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/FastDiffMergeDemo.tsx";
 
 function ReplaceItem({ r }: { r: Replace }) {
   const identity = r.original === r.replacement;

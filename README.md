@@ -24,8 +24,8 @@ A monorepo of ProseMirror plugins and utilities by [Emergence Engineering](https
 ## Quick Start
 
 ```bash
-git clone https://github.com/emergence-engineering/ee-prosemirror-tools.git
-cd ee-prosemirror-tools
+git clone https://github.com/emergence-engineering/emergence-tools.git
+cd emergence-tools
 pnpm install
 pnpm build
 ```
@@ -48,7 +48,7 @@ pnpm changeset
 
 ## Playground
 
-The interactive playground demos all available plugins. Run it locally with `pnpm playground` or visit the [live demo](https://emergence-engineering.github.io/ee-prosemirror-tools/).
+The interactive playground demos all available plugins. Run it locally with `pnpm playground` or visit the [live demo](https://emergence-engineering.github.io/emergence-tools/).
 
 ## License
 

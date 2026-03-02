@@ -1,5 +1,5 @@
 {
-  "name": "ee-prosemirror-tools",
+  "name": "emergence-tools",
   "private": true,
   "scripts": {
     "build": "turbo run build",

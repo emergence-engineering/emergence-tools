@@ -78,7 +78,7 @@ const menuElements: MenuElement[] = [
 ];
 
 const SOURCE_URL =
-  "https://github.com/emergence-engineering/ee-prosemirror-tools/blob/main/playground/fe/src/demos/SlashMenuVanillaDemo.tsx";
+  "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/SlashMenuVanillaDemo.tsx";
 
 export function SlashMenuVanillaDemo() {
   const editorRef = useRef<HTMLDivElement>(null);

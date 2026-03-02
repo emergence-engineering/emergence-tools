@@ -128,7 +128,7 @@ function CollaborativeEditor({ label }: { label: string }) {
 }
 
 const SOURCE_URL =
-  "https://github.com/emergence-engineering/ee-prosemirror-tools/blob/main/playground/fe/src/demos/LinkPreviewDemo.tsx";
+  "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/LinkPreviewDemo.tsx";
 
 export function LinkPreviewDemo() {
   return (

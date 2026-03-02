@@ -74,7 +74,7 @@ function createInitialDoc(): Node {
 }
 
 const SOURCE_URL =
-  "https://github.com/emergence-engineering/ee-prosemirror-tools/blob/main/playground/fe/src/demos/PasteLinkDemo.tsx";
+  "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/PasteLinkDemo.tsx";
 
 export function PasteLinkDemo() {
   const editorRef = useRef<HTMLDivElement>(null);
