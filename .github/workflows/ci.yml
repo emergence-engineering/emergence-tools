@@ -63,6 +63,9 @@ jobs:
       - run: pnpm build
 
       - run: pnpm --filter playground-fe build
+        env:
+          VITE_API_URL: https://emergence-tools-backend.fly.dev
+          VITE_WS_URL: wss://emergence-tools-backend.fly.dev/hocuspocus
 
       - uses: actions/configure-pages@v5
 
