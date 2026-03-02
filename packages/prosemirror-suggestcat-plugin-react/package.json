@@ -1,27 +1,23 @@
 {
   "name": "prosemirror-suggestcat-plugin-react",
   "version": "2.2.0",
-  "description": "",
+  "description": "React UI components for prosemirror-suggestcat-plugin",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.es.js",
+  "source": "src/index.ts",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "rollup -c",
-    "rebuild": "rollup -c",
-    "dev": "rollup -c -w --bundleConfigAsCjs",
-    "format": "eslint src --ext .ts --fix",
-    "prepublishOnly": "pnpm run build && pnpm run lint",
-    "version": "pnpm run format && git add -A src",
-    "postversion": "git push && git push --tags",
-    "lint": "tsc --noEmit && eslint src --ext .ts",
-    "test": "exit 0",
-    "upgrade-interactive": "npm-check --update",
-    "publish:np": "np"
+    "dev": "rollup -c -w",
+    "format": "eslint src --ext .ts,.tsx --fix",
+    "lint": "tsc --noEmit && eslint src --ext .ts,.tsx",
+    "test": "echo \"no test specified\" && exit 0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emergence-engineering/prosemirror-suggestcat-plugin-react.git"
+    "url": "git+https://github.com/emergence-engineering/ee-prosemirror-tools.git",
+    "directory": "packages/prosemirror-suggestcat-plugin-react"
   },
   "files": [
     "dist/**/*"
@@ -29,24 +25,26 @@
   "author": "Emergence Engineering",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/emergence-engineering/prosemirror-suggestcat-plugin-react/issues"
+    "url": "https://github.com/emergence-engineering/ee-prosemirror-tools/issues"
   },
-  "homepage": "https://github.com/emergence-engineering/prosemirror-suggestcat-plugin-react#readme",
+  "homepage": "https://github.com/emergence-engineering/ee-prosemirror-tools/tree/main/packages/prosemirror-suggestcat-plugin-react#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
-    "eslint": "^8.45.0",
-    "eslint-plugin-import": "^2.26.0",
-    "next": "^13.4.10",
+    "react-popper": "^2.3.0"
+  },
+  "peerDependencies": {
     "prosemirror-slash-menu": "workspace:*",
     "prosemirror-slash-menu-react": "workspace:*",
     "prosemirror-state": "^1.4.3",
     "prosemirror-suggestcat-plugin": "workspace:*",
     "prosemirror-view": "^1.31.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-popper": "^2.3.0",
-    "rollup-plugin-copy": "^3.4.0",
-    "rimraf": "^6.0.1",
-    "rollup-plugin-import-css": "^3.3.1"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
@@ -54,19 +52,26 @@
     "@babel/preset-react": "^7.22.5",
     "@types/react": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^5.59.11",
+    "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "np": "^8.0.4",
     "prettier": "^3.0.0",
+    "prosemirror-slash-menu": "workspace:*",
+    "prosemirror-slash-menu-react": "workspace:*",
+    "prosemirror-state": "^1.4.3",
+    "prosemirror-suggestcat-plugin": "workspace:*",
+    "prosemirror-view": "^1.31.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rimraf": "^6.0.1",
     "rollup": "^2.79.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-copy": "^3.4.0",
+    "rollup-plugin-import-css": "^3.3.1",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript2": "^0.35.0",
     "typescript": "^5.1.6"
-  },
-  "engines": {
-    "npm": ">=8.0.0",
-    "node": ">=16.0.0"
   }
 }

@@ -9,8 +9,18 @@ import { ImagePluginDemo } from "./demos/ImagePluginDemo";
 import { CodeMirrorBlockDemo } from "./demos/CodeMirrorBlockDemo";
 import { PasteLinkDemo } from "./demos/PasteLinkDemo";
 import { LinkPluginDemo } from "./demos/LinkPluginDemo";
+import { SuggestcatDemo } from "./demos/SuggestcatDemo";
+import { SuggestcatGrammarDemo } from "./demos/SuggestcatGrammarDemo";
+import { SuggestcatAutoCompleteDemo } from "./demos/SuggestcatAutoCompleteDemo";
+import { SuggestcatFixDemo } from "./demos/SuggestcatFixDemo";
 
-const demos = {
+interface DemoEntry {
+  label: string;
+  component: React.ComponentType;
+  group?: string;
+}
+
+const demos: Record<string, DemoEntry> = {
   fastDiffMerge: { label: "Fast Diff Merge", component: FastDiffMergeDemo },
   textMap: { label: "Text Map", component: TextMapDemo },
   linkPreview: { label: "Link Preview", component: LinkPreviewDemo },
@@ -20,7 +30,11 @@ const demos = {
   codeMirrorBlock: { label: "CodeMirror Block", component: CodeMirrorBlockDemo },
   pasteLink: { label: "Paste Link", component: PasteLinkDemo },
   linkPlugin: { label: "Link Plugin", component: LinkPluginDemo },
-} as const;
+  suggestcat: { label: "Full Demo", component: SuggestcatDemo, group: "Suggestcat (AI)" },
+  suggestcatGrammar: { label: "Grammar", component: SuggestcatGrammarDemo, group: "Suggestcat (AI)" },
+  suggestcatAutoComplete: { label: "Autocomplete", component: SuggestcatAutoCompleteDemo, group: "Suggestcat (AI)" },
+  suggestcatFix: { label: "AI Actions", component: SuggestcatFixDemo, group: "Suggestcat (AI)" },
+};
 
 type DemoKey = keyof typeof demos;
 type PageKey = "welcome" | DemoKey;
@@ -31,6 +45,19 @@ export function App() {
     activePage === "welcome"
       ? WelcomePage
       : demos[activePage].component;
+
+  // Group demos: ungrouped first, then grouped
+  const ungrouped = Object.entries(demos).filter(([, d]) => !d.group);
+  const groups = Object.entries(demos).reduce<Record<string, [string, DemoEntry][]>>(
+    (acc, entry) => {
+      const group = entry[1].group;
+      if (group) {
+        (acc[group] ??= []).push(entry);
+      }
+      return acc;
+    },
+    {},
+  );
 
   return (
     <div className="app-layout">
@@ -53,9 +80,7 @@ export function App() {
         <div className="sidebar-section">
           <div className="sidebar-section-label">Demos</div>
           <div className="sidebar-nav">
-            {(
-              Object.entries(demos) as [DemoKey, (typeof demos)[DemoKey]][]
-            ).map(([key, { label }]) => (
+            {ungrouped.map(([key, { label }]) => (
               <button
                 key={key}
                 className="sidebar-link"
@@ -68,6 +93,25 @@ export function App() {
             ))}
           </div>
         </div>
+
+        {Object.entries(groups).map(([groupName, entries]) => (
+          <div key={groupName} className="sidebar-section">
+            <div className="sidebar-section-label">{groupName}</div>
+            <div className="sidebar-nav">
+              {entries.map(([key, { label }]) => (
+                <button
+                  key={key}
+                  className="sidebar-link"
+                  data-active={activePage === key}
+                  onClick={() => setActivePage(key)}
+                >
+                  <span className="sidebar-link-dot" />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
 
         <div className="sidebar-footer">
           <a

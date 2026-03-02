@@ -58,6 +58,18 @@ const packages = [
     description:
       "Automatically decorate words matching a configurable alias list — useful for auto-linking terms to pages or glossary entries.",
   },
+  {
+    name: "prosemirror-suggestcat-plugin",
+    scoped: false,
+    description:
+      "AI-powered grammar checking, text completion, and prompt-based editing for ProseMirror editors.",
+  },
+  {
+    name: "prosemirror-suggestcat-plugin-react",
+    scoped: false,
+    description:
+      "React UI components for prosemirror-suggestcat-plugin — grammar popups, suggestion overlays, and slash menu integration.",
+  },
 ];
 
 export function WelcomePage() {

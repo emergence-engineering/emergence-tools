@@ -12,8 +12,8 @@ A monorepo of ProseMirror plugins and utilities by [Emergence Engineering](https
 | [`prosemirror-image-plugin`](./packages/prosemirror-image-plugin) | Image handling plugin | Migrated       |
 | [`prosemirror-slash-menu`](./packages/prosemirror-slash-menu) | Slash menu state management | Migrated       |
 | [`prosemirror-slash-menu-react`](./packages/prosemirror-slash-menu-react) | Slash menu React UI | Migrated       |
-| `prosemirror-suggestcat-plugin` | AI-powered suggestion plugin | Planned        |
-| `prosemirror-suggestcat-plugin-react` | React bindings for suggestcat | Planned        |
+| [`prosemirror-suggestcat-plugin`](./packages/prosemirror-suggestcat-plugin) | AI-powered suggestion plugin | Migrated       |
+| [`prosemirror-suggestcat-plugin-react`](./packages/prosemirror-suggestcat-plugin-react) | React bindings for suggestcat | Migrated       |
 | `prosemirror-suggest-changes` | Track changes / suggestions | Privat fork    |
 | `prosemirror-loading-plugin` | Loading state plugin | Empty repo     |
 | [`prosemirror-codemirror-block`](./packages/prosemirror-codemirror-block) | CodeMirror code blocks | Migrated       |
