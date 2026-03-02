@@ -75,3 +75,17 @@ jobs:
 
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  deploy-backend:
+    needs: build-and-test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: superfly/flyctl-actions/setup-flyctl@1
+
+      - run: flyctl deploy --remote-only
+        working-directory: playground/be
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
