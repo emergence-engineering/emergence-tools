@@ -1,5 +1,14 @@
 # prosemirror-suggestcat-plugin
 
+## 2.2.1
+
+### Patch Changes
+
+- Moved to a monorepo
+- Updated dependencies
+  - @emergence-engineering/fast-diff-merge@0.0.6
+  - @emergence-engineering/prosemirror-text-map@0.1.5
+
 ## 2.2.0
 
 ### Minor Changes

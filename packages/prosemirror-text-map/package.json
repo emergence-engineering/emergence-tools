@@ -1,6 +1,6 @@
 {
   "name": "@emergence-engineering/prosemirror-text-map",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Text mapping utilities for ProseMirror documents",
   "source": "src/index.ts",
   "main": "dist/index.js",
