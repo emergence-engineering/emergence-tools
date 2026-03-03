@@ -24,7 +24,9 @@ const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
 const PACKAGES_DIR = join(ROOT, "packages");
 const PLAYGROUND_FE_DIR = join(ROOT, "playground", "fe");
 const PLAYGROUND_PKG_PATH = join(PLAYGROUND_FE_DIR, "package.json");
+const PLAYGROUND_VITE_CONFIG_PATH = join(PLAYGROUND_FE_DIR, "vite.config.ts");
 const BACKUP_PATH = join(PLAYGROUND_FE_DIR, "package.json.bak");
+const VITE_BACKUP_PATH = join(PLAYGROUND_FE_DIR, "vite.config.ts.bak");
 
 // ── Package discovery ──────────────────────────────────────────────────────────
 
@@ -75,6 +77,24 @@ function swapToPublishedVersions(packages: PackageInfo[]): void {
   console.log(`\nSwapped ${swapCount} dependencies to published versions.\n`);
 }
 
+// ── Patch vite config for published packages ──────────────────────────────────
+// In workspace mode, mainFields includes "source" so Vite compiles TS directly.
+// Published packages don't ship src/, so we remove "source" from mainFields.
+
+function patchViteConfig(): void {
+  const content = readFileSync(PLAYGROUND_VITE_CONFIG_PATH, "utf-8");
+  const patched = content.replace(
+    'mainFields: ["source", "module", "main"]',
+    'mainFields: ["module", "main"]',
+  );
+  if (patched === content) {
+    console.log("Note: vite.config.ts mainFields already patched or format changed.\n");
+    return;
+  }
+  writeFileSync(PLAYGROUND_VITE_CONFIG_PATH, patched);
+  console.log('Patched vite.config.ts: removed "source" from mainFields\n');
+}
+
 // ── Install with retries ───────────────────────────────────────────────────────
 
 function getRetryDelay(attempt: number): number {
@@ -92,7 +112,7 @@ async function installWithRetries(maxRetries: number = 10): Promise<void> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       console.log(`Install attempt ${attempt}/${maxRetries}...`);
-      execSync("pnpm install --no-frozen-lockfile", {
+      execSync("pnpm install --no-frozen-lockfile --no-strict-peer-dependencies", {
         cwd: ROOT,
         stdio: "inherit",
       });
@@ -126,11 +146,16 @@ function cleanup(): void {
 
   console.log("\n\nCleaning up...");
 
-  // Restore backup
+  // Restore backups
   if (existsSync(BACKUP_PATH)) {
     copyFileSync(BACKUP_PATH, PLAYGROUND_PKG_PATH);
     rmSync(BACKUP_PATH);
     console.log("Restored original playground/fe/package.json");
+  }
+  if (existsSync(VITE_BACKUP_PATH)) {
+    copyFileSync(VITE_BACKUP_PATH, PLAYGROUND_VITE_CONFIG_PATH);
+    rmSync(VITE_BACKUP_PATH);
+    console.log("Restored original playground/fe/vite.config.ts");
   }
 
   // Clear node_modules so workspace links are properly re-established
@@ -159,6 +184,20 @@ async function main(): Promise<void> {
   console.log("=== Verify Published Packages ===\n");
   console.log("WARNING: Do NOT commit playground/fe/package.json while this script is running.\n");
 
+  // 0. Detect leftover backups from a previous run that didn't clean up
+  if (existsSync(BACKUP_PATH) || existsSync(VITE_BACKUP_PATH)) {
+    console.log("Detected leftover backups from a previous run. Restoring...");
+    if (existsSync(BACKUP_PATH)) {
+      copyFileSync(BACKUP_PATH, PLAYGROUND_PKG_PATH);
+      rmSync(BACKUP_PATH);
+    }
+    if (existsSync(VITE_BACKUP_PATH)) {
+      copyFileSync(VITE_BACKUP_PATH, PLAYGROUND_VITE_CONFIG_PATH);
+      rmSync(VITE_BACKUP_PATH);
+    }
+    console.log("Restored. Continuing with fresh run.\n");
+  }
+
   // 1. Discover packages
   console.log("Scanning workspace packages...\n");
   const packages = discoverWorkspacePackages();
@@ -174,18 +213,20 @@ async function main(): Promise<void> {
   }
   console.log();
 
-  // 2. Backup playground package.json
+  // 2. Backup playground files
   copyFileSync(PLAYGROUND_PKG_PATH, BACKUP_PATH);
-  console.log("Backed up playground/fe/package.json\n");
+  copyFileSync(PLAYGROUND_VITE_CONFIG_PATH, VITE_BACKUP_PATH);
+  console.log("Backed up playground/fe/package.json and vite.config.ts\n");
 
   // Register cleanup handlers
   process.on("SIGINT", () => { cleanup(); process.exit(0); });
   process.on("SIGTERM", () => { cleanup(); process.exit(0); });
   process.on("exit", cleanup);
 
-  // 3. Swap to published versions
+  // 3. Swap to published versions and patch vite config
   console.log("Swapping workspace dependencies to published versions:\n");
   swapToPublishedVersions(packages);
+  patchViteConfig();
 
   // 4. Clear node_modules
   const nodeModulesPath = join(PLAYGROUND_FE_DIR, "node_modules");
@@ -204,7 +245,6 @@ async function main(): Promise<void> {
   const playgroundProcess: ChildProcess = spawn("pnpm", ["playground"], {
     cwd: ROOT,
     stdio: "inherit",
-    shell: true,
   });
 
   await new Promise<void>((resolve) => {
