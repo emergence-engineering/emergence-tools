@@ -84,7 +84,7 @@ Commit the resulting changes.
 pnpm release
 ```
 
-This builds all packages (via Turborepo) and publishes changed packages to npm.
+This builds all packages (via Turborepo) and publishes changed packages to npm using `pnpm publish -r`. It will open your browser for npm authentication (requires `auth-type=web` in your `.npmrc`). Packages whose version already exists on npm are automatically skipped.
 
 ### 4. Tag and push
 

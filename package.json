@@ -11,7 +11,7 @@
     "clean": "turbo run clean",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo run build && changeset publish",
+    "release": "turbo run build && pnpm publish -r --access public",
     "playground": "pnpm --filter playground-fe dev & pnpm --filter playground-be dev",
     "playground:fe": "pnpm --filter playground-fe dev",
     "playground:be": "pnpm --filter playground-be dev",
