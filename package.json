@@ -14,10 +14,13 @@
     "release": "turbo run build && changeset publish",
     "playground": "pnpm --filter playground-fe dev & pnpm --filter playground-be dev",
     "playground:fe": "pnpm --filter playground-fe dev",
-    "playground:be": "pnpm --filter playground-be dev"
+    "playground:be": "pnpm --filter playground-be dev",
+    "verify:published": "tsx scripts/verify-published-packages.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.0",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.19.0",
     "turbo": "^2.4.0",
     "typescript": "^5.7.0"
   },
