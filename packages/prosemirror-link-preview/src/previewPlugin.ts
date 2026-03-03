@@ -70,7 +70,11 @@ export const previewPlugin = (
                 const { title, description, images } = data;
                 if (!images?.[0]) {
                   const node = view.state.schema.text(textContent);
-                  view.dispatch(view.state.tr.replaceSelectionWith(node));
+                  view.dispatch(
+                    view.state.tr
+                      .replaceSelectionWith(node)
+                      .setMeta(previewPluginKey, { type: "remove", id }),
+                  );
                   return;
                 }
                 const attrs = {
@@ -88,7 +92,7 @@ export const previewPlugin = (
                   id,
                   customYSyncPluginKey,
                 );
-                if (!pos) {
+                if (pos == null) {
                   return;
                 }
                 view.dispatch(
@@ -100,13 +104,19 @@ export const previewPlugin = (
               () => {
                 // On failure, just clean up the placeholder
                 view.dispatch(
-                  tr.setMeta(previewPluginKey, { type: "remove", id }),
+                  view.state.tr.setMeta(previewPluginKey, {
+                    type: "remove",
+                    id,
+                  }),
                 );
               },
             )
             .catch(() => {
               view.dispatch(
-                tr.setMeta(previewPluginKey, { type: "remove", id }),
+                view.state.tr.setMeta(previewPluginKey, {
+                  type: "remove",
+                  id,
+                }),
               );
             });
 

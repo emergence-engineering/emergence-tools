@@ -152,5 +152,5 @@ export const findPlaceholder = (state: EditorState, id: any) => {
   }
   const found = decos.find((spec) => spec.id === id);
 
-  return found?.pos || null;
+  return found?.pos ?? null;
 };

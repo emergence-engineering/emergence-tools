@@ -37,7 +37,7 @@ export const insertPreview = (
       const previewNode = view.state.schema.nodes.preview.create(attrs);
 
       const pos = findPlaceholder(view.state, id);
-      if (!pos) {
+      if (pos == null) {
         return;
       }
       view.dispatch(
