@@ -10,7 +10,7 @@ import {
   promptCommands,
   slashOpeningCondition,
 } from "prosemirror-suggestcat-plugin-react";
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/SuggestcatFixDemo.tsx";
@@ -37,7 +37,30 @@ const initialDoc = schema.nodes.doc.create(null, [
   ),
 ]);
 
-export function SuggestcatFixDemo() {
+function SuggestcatFixUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        <strong>Select text</strong> in the editor, then press{" "}
+        <code>/</code> to open the AI command menu.
+      </li>
+      <li>
+        Choose an action: <strong>Complete</strong>, <strong>Simplify</strong>,{" "}
+        <strong>Make Shorter</strong>, <strong>Translate</strong>, etc.
+      </li>
+      <li>
+        The result streams in as a <strong>suggestion overlay</strong> —
+        accept or reject it.
+      </li>
+      <li>
+        <strong>Change Tone</strong> and <strong>Translate</strong> open
+        sub-menus with additional options.
+      </li>
+    </ul>
+  );
+}
+
+function SuggestcatFixEditor() {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [editorState, setEditorState] = useState<EditorState | null>(null);
@@ -81,58 +104,35 @@ export function SuggestcatFixDemo() {
   }, []);
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">Suggestcat: AI Actions</h1>
-        <p className="demo-description">
+    <div className="card editor-card">
+      <div ref={editorRef} />
+      {editorState && viewRef.current && (
+        <ProsemirrorSuggestcatPluginReact
+          editorView={viewRef.current}
+          editorState={editorState}
+        />
+      )}
+    </div>
+  );
+}
+
+export function SuggestcatFixDemo() {
+  return (
+    <DemoLayout
+      title="Suggestcat: AI Actions"
+      description={
+        <>
           Prompt-based AI editing via a slash menu. Select text and press{" "}
           <strong>/</strong> to open the command menu with actions like Complete,
           Simplify, Translate, Change Tone, Make Longer/Shorter, Explain, and
           Action Items. Results stream in as a suggestion overlay.
-        </p>
-        <InstallCommand packageName="prosemirror-suggestcat-plugin" />
-        <InstallCommand packageName="prosemirror-suggestcat-plugin-react" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            <strong>Select text</strong> in the editor, then press{" "}
-            <code>/</code> to open the AI command menu.
-          </li>
-          <li>
-            Choose an action: <strong>Complete</strong>, <strong>Simplify</strong>,{" "}
-            <strong>Make Shorter</strong>, <strong>Translate</strong>, etc.
-          </li>
-          <li>
-            The result streams in as a <strong>suggestion overlay</strong> —
-            accept or reject it.
-          </li>
-          <li>
-            <strong>Change Tone</strong> and <strong>Translate</strong> open
-            sub-menus with additional options.
-          </li>
-        </ul>
-      </div>
-
-      <div className="card editor-card">
-        <div ref={editorRef} />
-        {editorState && viewRef.current && (
-          <ProsemirrorSuggestcatPluginReact
-            editorView={viewRef.current}
-            editorState={editorState}
-          />
-        )}
-      </div>
-    </div>
+        </>
+      }
+      packageNames={["prosemirror-suggestcat-plugin", "prosemirror-suggestcat-plugin-react"]}
+      sourceUrl={SOURCE_URL}
+      usage={<SuggestcatFixUsage />}
+    >
+      <SuggestcatFixEditor />
+    </DemoLayout>
   );
 }

@@ -4,7 +4,7 @@ import {
   whitespaceSeparators,
   type Replace,
 } from "@emergence-engineering/fast-diff-merge";
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 
 const EXAMPLE_ORIGINAL = `The quick brown fox jumps over the lazy dog.
 She sells sea shells by the sea shore.
@@ -45,6 +45,26 @@ function ReplaceItem({ r }: { r: Replace }) {
   );
 }
 
+function FastDiffMergeUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        <strong>Edit</strong> the Original or Modified text to see diffs
+        update in real time.
+      </li>
+      <li>
+        <strong>Toggle whitespace separators</strong> to use the full
+        Unicode whitespace set instead of the default space separator.
+      </li>
+      <li>
+        Changes are shown in{" "}
+        <strong style={{ color: "var(--color-accent)" }}>blue</strong>;
+        identity (unchanged) spans are dimmed.
+      </li>
+    </ul>
+  );
+}
+
 export function FastDiffMergeDemo() {
   const [original, setOriginal] = useState(EXAMPLE_ORIGINAL);
   const [modified, setModified] = useState(EXAMPLE_MODIFIED);
@@ -58,44 +78,19 @@ export function FastDiffMergeDemo() {
   const changes = result.filter((r) => r.original !== r.replacement);
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">fast-diff-merge</h1>
-        <p className="demo-description">
+    <DemoLayout
+      title="fast-diff-merge"
+      description={
+        <>
           Computes word-level diffs between two strings. Returns a{" "}
           <code>Replace[]</code> array describing changes with positions,
           originals, and replacements — useful for building track-changes UIs.
-        </p>
-        <InstallCommand packageName="@emergence-engineering/fast-diff-merge" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            <strong>Edit</strong> the Original or Modified text to see diffs
-            update in real time.
-          </li>
-          <li>
-            <strong>Toggle whitespace separators</strong> to use the full
-            Unicode whitespace set instead of the default space separator.
-          </li>
-          <li>
-            Changes are shown in{" "}
-            <strong style={{ color: "var(--color-accent)" }}>blue</strong>;
-            identity (unchanged) spans are dimmed.
-          </li>
-        </ul>
-      </div>
-
+        </>
+      }
+      packageNames={["@emergence-engineering/fast-diff-merge"]}
+      sourceUrl={SOURCE_URL}
+      usage={<FastDiffMergeUsage />}
+    >
       <div className="diff-options">
         <label className="diff-option-label">
           <input
@@ -157,6 +152,6 @@ export function FastDiffMergeDemo() {
           </div>
         </div>
       </div>
-    </div>
+    </DemoLayout>
   );
 }

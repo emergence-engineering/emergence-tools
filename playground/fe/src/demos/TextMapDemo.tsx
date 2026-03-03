@@ -9,7 +9,7 @@ import {
   textPosToDocPos,
   TextMappingItem,
 } from "@emergence-engineering/prosemirror-text-map";
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 
 function createInitialDoc(): Node {
   const { nodes, marks } = schema;
@@ -70,6 +70,30 @@ function docPosToTextPos(
 
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/TextMapDemo.tsx";
+
+function TextMapUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        <strong>Select text in the editor</strong> to see the corresponding
+        range highlighted in the extracted text panel.
+      </li>
+      <li>
+        <strong>Select text in the extracted text panel</strong> to see the
+        corresponding range highlighted in the editor.
+      </li>
+      <li>
+        <strong>Hover a row</strong> in the position mapping table to
+        highlight the range it represents in both the editor and the
+        extracted text.
+      </li>
+      <li>
+        <strong>Edit the document</strong> and watch all panels update in
+        real time.
+      </li>
+    </ul>
+  );
+}
 
 export function TextMapDemo() {
   const editorRef = useRef<HTMLDivElement>(null);
@@ -265,48 +289,19 @@ export function TextMapDemo() {
   };
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">prosemirror-text-map</h1>
-        <p className="demo-description">
+    <DemoLayout
+      title="prosemirror-text-map"
+      description={
+        <>
           Converts a ProseMirror document to plain text with position mapping.
           Useful for integrating with text-only libraries (diffing, NLP,
           search).
-        </p>
-        <InstallCommand packageName="@emergence-engineering/prosemirror-text-map" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            <strong>Select text in the editor</strong> to see the corresponding
-            range highlighted in the extracted text panel.
-          </li>
-          <li>
-            <strong>Select text in the extracted text panel</strong> to see the
-            corresponding range highlighted in the editor.
-          </li>
-          <li>
-            <strong>Hover a row</strong> in the position mapping table to
-            highlight the range it represents in both the editor and the
-            extracted text.
-          </li>
-          <li>
-            <strong>Edit the document</strong> and watch all panels update in
-            real time.
-          </li>
-        </ul>
-      </div>
-
+        </>
+      }
+      packageNames={["@emergence-engineering/prosemirror-text-map"]}
+      sourceUrl={SOURCE_URL}
+      usage={<TextMapUsage />}
+    >
       <div className="card editor-card">
         <div className="card-header">
           <span className="card-label">Editor</span>
@@ -370,6 +365,6 @@ export function TextMapDemo() {
           </div>
         </div>
       </div>
-    </div>
+    </DemoLayout>
   );
 }

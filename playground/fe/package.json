@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@emergence-engineering/fast-diff-merge": "workspace:*",
-    "@emergence-engineering/prosemirror-link-preview": "workspace:*",
+    "prosemirror-link-preview": "workspace:*",
     "@emergence-engineering/prosemirror-text-map": "workspace:*",
     "@hocuspocus/provider": "^2.13.0",
     "prosemirror-slash-menu": "workspace:*",

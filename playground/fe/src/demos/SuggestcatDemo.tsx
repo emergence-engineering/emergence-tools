@@ -21,7 +21,7 @@ import {
   promptCommands,
   slashOpeningCondition,
 } from "prosemirror-suggestcat-plugin-react";
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/SuggestcatDemo.tsx";
@@ -51,7 +51,30 @@ const initialDoc = schema.nodes.doc.create(null, [
   ),
 ]);
 
-export function SuggestcatDemo() {
+function SuggestcatUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        <strong>Grammar checking</strong> runs automatically — mistakes
+        appear as underlined decorations. Click to see the suggestion popup.
+      </li>
+      <li>
+        <strong>Auto-complete</strong> suggests text as you type — press{" "}
+        <code>Tab</code> to accept ghost text.
+      </li>
+      <li>
+        <strong>Select text</strong> and press <code>/</code> to open the
+        AI command menu (Complete, Simplify, Translate, Change Tone, etc.).
+      </li>
+      <li>
+        <strong>Suggestion overlay</strong> shows streaming results that you
+        can accept or reject.
+      </li>
+    </ul>
+  );
+}
+
+function SuggestcatEditor() {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [editorState, setEditorState] = useState<EditorState | null>(null);
@@ -160,49 +183,7 @@ export function SuggestcatDemo() {
   };
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">prosemirror-suggestcat-plugin</h1>
-        <p className="demo-description">
-          AI-powered grammar checking, text completion, and prompt-based editing.
-          Includes a React UI layer with grammar popups, suggestion overlays,
-          and slash menu integration for AI actions like translate, simplify,
-          change tone, and more.
-        </p>
-        <InstallCommand packageName="prosemirror-suggestcat-plugin" />
-        <InstallCommand packageName="prosemirror-suggestcat-plugin-react" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            <strong>Grammar checking</strong> runs automatically — mistakes
-            appear as underlined decorations. Click to see the suggestion popup.
-          </li>
-          <li>
-            <strong>Auto-complete</strong> suggests text as you type — press{" "}
-            <code>Tab</code> to accept ghost text.
-          </li>
-          <li>
-            <strong>Select text</strong> and press <code>/</code> to open the
-            AI command menu (Complete, Simplify, Translate, Change Tone, etc.).
-          </li>
-          <li>
-            <strong>Suggestion overlay</strong> shows streaming results that you
-            can accept or reject.
-          </li>
-        </ul>
-      </div>
-
+    <>
       <div className="suggestcat-controls">
         <button
           className={`suggestcat-toggle-btn ${grammarRunning ? "suggestcat-toggle-on" : "suggestcat-toggle-off"}`}
@@ -238,6 +219,27 @@ export function SuggestcatDemo() {
           </>
         )}
       </div>
-    </div>
+    </>
+  );
+}
+
+export function SuggestcatDemo() {
+  return (
+    <DemoLayout
+      title="prosemirror-suggestcat-plugin"
+      description={
+        <>
+          AI-powered grammar checking, text completion, and prompt-based editing.
+          Includes a React UI layer with grammar popups, suggestion overlays,
+          and slash menu integration for AI actions like translate, simplify,
+          change tone, and more.
+        </>
+      }
+      packageNames={["prosemirror-suggestcat-plugin", "prosemirror-suggestcat-plugin-react"]}
+      sourceUrl={SOURCE_URL}
+      usage={<SuggestcatUsage />}
+    >
+      <SuggestcatEditor />
+    </DemoLayout>
   );
 }

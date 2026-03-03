@@ -11,7 +11,7 @@ import {
   type SlashMenuState,
   type MenuElement,
 } from "prosemirror-slash-menu";
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 
 const menuElements: MenuElement[] = [
   {
@@ -80,7 +80,31 @@ const menuElements: MenuElement[] = [
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/SlashMenuVanillaDemo.tsx";
 
-export function SlashMenuVanillaDemo() {
+function SlashMenuVanillaUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        <strong>Type <code>/</code></strong> in an empty paragraph to open
+        the slash menu.
+      </li>
+      <li>
+        <strong>Arrow keys</strong> to navigate between items.
+      </li>
+      <li>
+        <strong>Type to filter</strong> — the menu narrows to matching
+        items.
+      </li>
+      <li>
+        <strong>Enter or Tab</strong> to execute the selected command.
+      </li>
+      <li>
+        <strong>Escape</strong> to close the menu.
+      </li>
+    </ul>
+  );
+}
+
+function SlashMenuVanillaEditor() {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [menuState, setMenuState] = useState<SlashMenuState | null>(null);
@@ -114,99 +138,76 @@ export function SlashMenuVanillaDemo() {
   }, []);
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">prosemirror-slash-menu</h1>
-        <p className="demo-description">
+    <div className="card editor-card" style={{ position: "relative" }}>
+      <div ref={editorRef} />
+      {menuState?.open && (
+        <div
+          style={{
+            position: "absolute",
+            background: "white",
+            border: "1px solid #ddd",
+            borderRadius: 6,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            padding: 4,
+            zIndex: 10,
+            minWidth: 160,
+          }}
+        >
+          {menuState.filter && (
+            <div
+              style={{
+                padding: "4px 8px",
+                fontSize: 12,
+                color: "#888",
+                borderBottom: "1px solid #eee",
+              }}
+            >
+              Filter: {menuState.filter}
+            </div>
+          )}
+          {menuState.filteredElements.map((el) => (
+            <div
+              key={el.id}
+              id={el.id}
+              style={{
+                padding: "6px 12px",
+                cursor: "pointer",
+                borderRadius: 4,
+                background:
+                  menuState.selected === el.id ? "#e8f0fe" : "transparent",
+                fontWeight: menuState.selected === el.id ? 600 : 400,
+              }}
+            >
+              {el.label}
+            </div>
+          ))}
+          {menuState.filteredElements.length === 0 && (
+            <div style={{ padding: "6px 12px", color: "#999" }}>
+              No matching items
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function SlashMenuVanillaDemo() {
+  return (
+    <DemoLayout
+      title="prosemirror-slash-menu"
+      description={
+        <>
           Headless slash menu plugin for ProseMirror. Type <code>/</code> in an
           empty paragraph to open the menu. This demo renders a custom UI by
           reading plugin state — no React dependency required.
-        </p>
-        <InstallCommand packageName="prosemirror-slash-menu" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            <strong>Type <code>/</code></strong> in an empty paragraph to open
-            the slash menu.
-          </li>
-          <li>
-            <strong>Arrow keys</strong> to navigate between items.
-          </li>
-          <li>
-            <strong>Type to filter</strong> — the menu narrows to matching
-            items.
-          </li>
-          <li>
-            <strong>Enter or Tab</strong> to execute the selected command.
-          </li>
-          <li>
-            <strong>Escape</strong> to close the menu.
-          </li>
-        </ul>
-      </div>
-
-      <div className="card editor-card" style={{ position: "relative" }}>
-        <div ref={editorRef} />
-        {menuState?.open && (
-          <div
-            style={{
-              position: "absolute",
-              background: "white",
-              border: "1px solid #ddd",
-              borderRadius: 6,
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-              padding: 4,
-              zIndex: 10,
-              minWidth: 160,
-            }}
-          >
-            {menuState.filter && (
-              <div
-                style={{
-                  padding: "4px 8px",
-                  fontSize: 12,
-                  color: "#888",
-                  borderBottom: "1px solid #eee",
-                }}
-              >
-                Filter: {menuState.filter}
-              </div>
-            )}
-            {menuState.filteredElements.map((el) => (
-              <div
-                key={el.id}
-                id={el.id}
-                style={{
-                  padding: "6px 12px",
-                  cursor: "pointer",
-                  borderRadius: 4,
-                  background:
-                    menuState.selected === el.id ? "#e8f0fe" : "transparent",
-                  fontWeight: menuState.selected === el.id ? 600 : 400,
-                }}
-              >
-                {el.label}
-              </div>
-            ))}
-            {menuState.filteredElements.length === 0 && (
-              <div style={{ padding: "6px 12px", color: "#999" }}>
-                No matching items
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+        </>
+      }
+      packageNames={["prosemirror-slash-menu"]}
+      sourceUrl={SOURCE_URL}
+      usage={<SlashMenuVanillaUsage />}
+    >
+      <SlashMenuVanillaEditor />
+    </DemoLayout>
   );
 }

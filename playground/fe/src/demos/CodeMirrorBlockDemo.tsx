@@ -15,7 +15,7 @@ import {
   codeBlockKeymap,
 } from "prosemirror-codemirror-block";
 
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/CodeMirrorBlockDemo.tsx";
@@ -64,7 +64,30 @@ const initialDoc = {
   ],
 };
 
-export function CodeMirrorBlockDemo() {
+function CodeMirrorBlockUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        Click inside a code block to edit with full CodeMirror features
+        (autocomplete, search, etc.)
+      </li>
+      <li>
+        Use the <strong>language selector dropdown</strong> above the code
+        block to switch syntax highlighting
+      </li>
+      <li>
+        Press <strong>Cmd/Ctrl + Alt + C</strong> to toggle a code block on
+        the current selection
+      </li>
+      <li>
+        Arrow keys escape the code block when the cursor is at the
+        top/bottom edge
+      </li>
+    </ul>
+  );
+}
+
+function CodeMirrorBlockEditor() {
   const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -102,53 +125,31 @@ export function CodeMirrorBlockDemo() {
   }, []);
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">prosemirror-codemirror-block</h1>
-        <p className="demo-description">
+    <div className="card editor-card">
+      <div className="card-header">
+        <span className="card-label">Editor</span>
+      </div>
+      <div ref={editorRef} />
+    </div>
+  );
+}
+
+export function CodeMirrorBlockDemo() {
+  return (
+    <DemoLayout
+      title="prosemirror-codemirror-block"
+      description={
+        <>
           Replaces ProseMirror code blocks with full CodeMirror 6 editors —
           syntax highlighting for 100+ languages, a language selector dropdown,
           theme support, and keyboard shortcuts.
-        </p>
-        <InstallCommand packageName="prosemirror-codemirror-block" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            Click inside a code block to edit with full CodeMirror features
-            (autocomplete, search, etc.)
-          </li>
-          <li>
-            Use the <strong>language selector dropdown</strong> above the code
-            block to switch syntax highlighting
-          </li>
-          <li>
-            Press <strong>Cmd/Ctrl + Alt + C</strong> to toggle a code block on
-            the current selection
-          </li>
-          <li>
-            Arrow keys escape the code block when the cursor is at the
-            top/bottom edge
-          </li>
-        </ul>
-      </div>
-
-      <div className="card editor-card">
-        <div className="card-header">
-          <span className="card-label">Editor</span>
-        </div>
-        <div ref={editorRef} />
-      </div>
-    </div>
+        </>
+      }
+      packageNames={["prosemirror-codemirror-block"]}
+      sourceUrl={SOURCE_URL}
+      usage={<CodeMirrorBlockUsage />}
+    >
+      <CodeMirrorBlockEditor />
+    </DemoLayout>
   );
 }

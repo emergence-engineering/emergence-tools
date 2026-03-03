@@ -950,9 +950,6 @@ importers:
       '@emergence-engineering/fast-diff-merge':
         specifier: workspace:*
         version: link:../../packages/fast-diff-merge
-      '@emergence-engineering/prosemirror-link-preview':
-        specifier: workspace:*
-        version: link:../../packages/prosemirror-link-preview
       '@emergence-engineering/prosemirror-text-map':
         specifier: workspace:*
         version: link:../../packages/prosemirror-text-map
@@ -980,6 +977,9 @@ importers:
       prosemirror-link-plugin:
         specifier: workspace:*
         version: link:../../packages/prosemirror-link-plugin
+      prosemirror-link-preview:
+        specifier: workspace:*
+        version: link:../../packages/prosemirror-link-preview
       prosemirror-menu:
         specifier: ^1.3.0
         version: 1.3.0

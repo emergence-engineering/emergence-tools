@@ -8,7 +8,7 @@ import {
   setAutoCompleteEnabled,
   isAutoCompleteEnabled,
 } from "prosemirror-suggestcat-plugin";
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/SuggestcatAutoCompleteDemo.tsx";
@@ -33,7 +33,25 @@ const initialDoc = schema.nodes.doc.create(null, [
   ),
 ]);
 
-export function SuggestcatAutoCompleteDemo() {
+function SuggestcatAutoCompleteUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        Type some text and pause — a ghost-text suggestion will appear after
+        a 2-second debounce.
+      </li>
+      <li>
+        Press <code>Tab</code> to accept the suggestion, or keep typing to
+        dismiss it.
+      </li>
+      <li>
+        Use the toggle button below to enable/disable autocomplete.
+      </li>
+    </ul>
+  );
+}
+
+function SuggestcatAutoCompleteEditor() {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [enabled, setEnabled] = useState(true);
@@ -76,42 +94,7 @@ export function SuggestcatAutoCompleteDemo() {
   };
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">Suggestcat: Autocomplete</h1>
-        <p className="demo-description">
-          Inline ghost-text autocomplete powered by AI. As you type, the plugin
-          debounces and requests a completion — the suggestion appears as faded
-          text after the cursor. Press <strong>Tab</strong> to accept.
-        </p>
-        <InstallCommand packageName="prosemirror-suggestcat-plugin" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            Type some text and pause — a ghost-text suggestion will appear after
-            a 2-second debounce.
-          </li>
-          <li>
-            Press <code>Tab</code> to accept the suggestion, or keep typing to
-            dismiss it.
-          </li>
-          <li>
-            Use the toggle button below to enable/disable autocomplete.
-          </li>
-        </ul>
-      </div>
-
+    <>
       <div className="suggestcat-controls">
         <button
           className={`suggestcat-toggle-btn ${enabled ? "suggestcat-toggle-on" : "suggestcat-toggle-off"}`}
@@ -124,6 +107,26 @@ export function SuggestcatAutoCompleteDemo() {
       <div className="card editor-card">
         <div ref={editorRef} />
       </div>
-    </div>
+    </>
+  );
+}
+
+export function SuggestcatAutoCompleteDemo() {
+  return (
+    <DemoLayout
+      title="Suggestcat: Autocomplete"
+      description={
+        <>
+          Inline ghost-text autocomplete powered by AI. As you type, the plugin
+          debounces and requests a completion — the suggestion appears as faded
+          text after the cursor. Press <strong>Tab</strong> to accept.
+        </>
+      }
+      packageNames={["prosemirror-suggestcat-plugin"]}
+      sourceUrl={SOURCE_URL}
+      usage={<SuggestcatAutoCompleteUsage />}
+    >
+      <SuggestcatAutoCompleteEditor />
+    </DemoLayout>
   );
 }

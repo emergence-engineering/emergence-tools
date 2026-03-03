@@ -9,66 +9,77 @@ const packages = [
     scoped: true,
     description:
       "Document-to-text conversion with precise position mapping between ProseMirror document positions and plain-text offsets.",
-  },
-  {
-    name: "prosemirror-link-preview",
-    scoped: true,
-    description:
-      "Rich link previews that fetch and display metadata for URLs pasted into the editor. Supports collaborative editing via Yjs.",
-  },
-  {
-    name: "prosemirror-slash-menu",
-    scoped: false,
-    description:
-      "Headless slash-command menu plugin. Provides the state machine and keyboard handling — bring your own UI.",
-  },
-  {
-    name: "prosemirror-slash-menu-react",
-    scoped: false,
-    description:
-      "React-based slash-command menu with built-in UI components and Popper positioning, ready to drop into any React + ProseMirror setup.",
+    demoKey: "textMap",
   },
   {
     name: "fast-diff-merge",
     scoped: true,
     description:
-      "Fast word-level text diffing that produces a Replace array — useful for merging concurrent edits or showing inline diffs.",
+        "Fast word-level text diffing that produces a Replace array — useful for merging concurrent edits or showing inline diffs.",
+    demoKey: "fastDiffMerge",
+  },
+  {
+    name: "prosemirror-link-preview",
+    scoped: false,
+    description:
+      "Rich link previews that fetch and display metadata for URLs pasted into the editor. Supports collaborative editing via Yjs.",
+    demoKey: "linkPreview",
   },
   {
     name: "prosemirror-image-plugin",
     scoped: false,
     description:
       "Advanced image handling with drag & drop, clipboard paste, resize handles, and lazy loading.",
-  },
-  {
-    name: "prosemirror-codemirror-block",
-    scoped: false,
-    description:
-      "CodeMirror 6 code blocks with syntax highlighting for 100+ languages, language selection, and theme support.",
+    demoKey: "imagePlugin",
   },
   {
     name: "prosemirror-paste-link",
     scoped: false,
     description:
       "Paste a URL with text selected to wrap the selection in a link, instead of replacing it with the URL text.",
+    demoKey: "pasteLink",
   },
   {
     name: "prosemirror-link-plugin",
     scoped: false,
     description:
       "Automatically decorate words matching a configurable alias list — useful for auto-linking terms to pages or glossary entries.",
+    demoKey: "linkPlugin",
+  },
+  {
+    name: "prosemirror-codemirror-block",
+    scoped: false,
+    description:
+        "CodeMirror 6 code blocks with syntax highlighting for 100+ languages, language selection, and theme support.",
+    demoKey: "codeMirrorBlock",
+  },
+  {
+    name: "prosemirror-slash-menu",
+    scoped: false,
+    description:
+        "Headless slash-command menu plugin. Provides the state machine and keyboard handling — bring your own UI.",
+    demoKey: "slashMenuVanilla",
+  },
+  {
+    name: "prosemirror-slash-menu-react",
+    scoped: false,
+    description:
+        "React-based slash-command menu with built-in UI components and Popper positioning, ready to drop into any React + ProseMirror setup.",
+    demoKey: "slashMenuReact",
   },
   {
     name: "prosemirror-suggestcat-plugin",
     scoped: false,
     description:
       "AI-powered grammar checking, text completion, and prompt-based editing for ProseMirror editors.",
+    demoKey: "suggestcat",
   },
   {
     name: "prosemirror-suggestcat-plugin-react",
     scoped: false,
     description:
       "React UI components for prosemirror-suggestcat-plugin — grammar popups, suggestion overlays, and slash menu integration.",
+    demoKey: "suggestcatFix",
   },
 ];
 
@@ -98,9 +109,9 @@ export function WelcomePage() {
           {packages.map((pkg) => (
             <a
               key={pkg.name}
-              href={`${REPO_URL}/tree/main/packages/${pkg.name}`}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={pkg.demoKey ? `#${pkg.demoKey}` : `${REPO_URL}/tree/main/packages/${pkg.name}`}
+              target={pkg.demoKey ? undefined : "_blank"}
+              rel={pkg.demoKey ? undefined : "noopener noreferrer"}
               className="welcome-card"
             >
               <div className="welcome-card-name">

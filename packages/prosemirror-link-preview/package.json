@@ -1,5 +1,5 @@
 {
-  "name": "@emergence-engineering/prosemirror-link-preview",
+  "name": "prosemirror-link-preview",
   "version": "3.0.0",
   "description": "prosemirror-link-preview adds link preview node to your editor",
   "source": "src/index.ts",

@@ -14,7 +14,7 @@ import {
   ProsemirrorSuggestcatPluginReact,
   GrammarPopup,
 } from "prosemirror-suggestcat-plugin-react";
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/SuggestcatGrammarDemo.tsx";
@@ -41,7 +41,30 @@ const initialDoc = schema.nodes.doc.create(null, [
   ),
 ]);
 
-export function SuggestcatGrammarDemo() {
+function SuggestcatGrammarUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        Grammar errors are detected automatically and shown as{" "}
+        <strong>underlined text</strong>.
+      </li>
+      <li>
+        Click a highlighted word to open the <strong>grammar popup</strong>{" "}
+        showing the original and suggested replacement.
+      </li>
+      <li>
+        Use the <strong>?</strong> button in the popup to get an AI
+        explanation of the correction.
+      </li>
+      <li>
+        Use the controls below to <strong>pause/resume</strong> or{" "}
+        <strong>reset</strong> the grammar checker.
+      </li>
+    </ul>
+  );
+}
+
+function SuggestcatGrammarEditor() {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [editorState, setEditorState] = useState<EditorState | null>(null);
@@ -122,49 +145,7 @@ export function SuggestcatGrammarDemo() {
   };
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">Suggestcat: Grammar</h1>
-        <p className="demo-description">
-          AI-powered grammar checking that runs automatically in the background.
-          Mistakes are highlighted with underline decorations. Click a
-          highlighted word to see the suggestion popup with accept/discard
-          actions and an optional hint explanation.
-        </p>
-        <InstallCommand packageName="prosemirror-suggestcat-plugin" />
-        <InstallCommand packageName="prosemirror-suggestcat-plugin-react" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            Grammar errors are detected automatically and shown as{" "}
-            <strong>underlined text</strong>.
-          </li>
-          <li>
-            Click a highlighted word to open the <strong>grammar popup</strong>{" "}
-            showing the original and suggested replacement.
-          </li>
-          <li>
-            Use the <strong>?</strong> button in the popup to get an AI
-            explanation of the correction.
-          </li>
-          <li>
-            Use the controls below to <strong>pause/resume</strong> or{" "}
-            <strong>reset</strong> the grammar checker.
-          </li>
-        </ul>
-      </div>
-
+    <>
       <div className="suggestcat-controls">
         <button
           className={`suggestcat-toggle-btn ${running ? "suggestcat-toggle-on" : "suggestcat-toggle-off"}`}
@@ -194,6 +175,27 @@ export function SuggestcatGrammarDemo() {
           </>
         )}
       </div>
-    </div>
+    </>
+  );
+}
+
+export function SuggestcatGrammarDemo() {
+  return (
+    <DemoLayout
+      title="Suggestcat: Grammar"
+      description={
+        <>
+          AI-powered grammar checking that runs automatically in the background.
+          Mistakes are highlighted with underline decorations. Click a
+          highlighted word to see the suggestion popup with accept/discard
+          actions and an optional hint explanation.
+        </>
+      }
+      packageNames={["prosemirror-suggestcat-plugin", "prosemirror-suggestcat-plugin-react"]}
+      sourceUrl={SOURCE_URL}
+      usage={<SuggestcatGrammarUsage />}
+    >
+      <SuggestcatGrammarEditor />
+    </DemoLayout>
   );
 }

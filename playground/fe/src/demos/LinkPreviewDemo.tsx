@@ -13,9 +13,9 @@ import {
   createDecorationsYjs,
   findPlaceholderYjs,
   previewPlugin,
-} from "@emergence-engineering/prosemirror-link-preview";
-import "@emergence-engineering/prosemirror-link-preview/dist/styles/styles.css";
-import { InstallCommand } from "../components/InstallCommand";
+} from "prosemirror-link-preview";
+import "prosemirror-link-preview/dist/styles/styles.css";
+import { DemoLayout } from "../components/DemoLayout";
 
 const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:4000/hocuspocus";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
@@ -130,50 +130,51 @@ function CollaborativeEditor({ label }: { label: string }) {
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/LinkPreviewDemo.tsx";
 
+function LinkPreviewUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        <strong>Paste a URL</strong> (e.g.{" "}
+        <code>https://github.com</code>) into either editor to trigger a
+        link preview.
+      </li>
+      <li>
+        <strong>Type in one editor</strong> and watch the other update in
+        real time via Yjs collaboration.
+      </li>
+      <li>
+        <strong>Toggle online/offline</strong> to disconnect an editor from
+        the Hocuspocus server and reconnect later to see changes merge.
+      </li>
+    </ul>
+  );
+}
+
+function LinkPreviewEditor() {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+      <CollaborativeEditor label="Editor A" />
+      <CollaborativeEditor label="Editor B" />
+    </div>
+  );
+}
+
 export function LinkPreviewDemo() {
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">prosemirror-link-preview</h1>
-        <p className="demo-description">
+    <DemoLayout
+      title="prosemirror-link-preview"
+      description={
+        <>
           Paste a URL into either editor to see a rich link preview card appear.
           Both editors share a Yjs document via Hocuspocus — changes sync in
           real time.
-        </p>
-        <InstallCommand packageName="@emergence-engineering/prosemirror-link-preview" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            <strong>Paste a URL</strong> (e.g.{" "}
-            <code>https://github.com</code>) into either editor to trigger a
-            link preview.
-          </li>
-          <li>
-            <strong>Type in one editor</strong> and watch the other update in
-            real time via Yjs collaboration.
-          </li>
-          <li>
-            <strong>Toggle online/offline</strong> to disconnect an editor from
-            the Hocuspocus server and reconnect later to see changes merge.
-          </li>
-        </ul>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <CollaborativeEditor label="Editor A" />
-        <CollaborativeEditor label="Editor B" />
-      </div>
-    </div>
+        </>
+      }
+      packageNames={["prosemirror-link-preview"]}
+      sourceUrl={SOURCE_URL}
+      usage={<LinkPreviewUsage />}
+    >
+      <LinkPreviewEditor />
+    </DemoLayout>
   );
 }

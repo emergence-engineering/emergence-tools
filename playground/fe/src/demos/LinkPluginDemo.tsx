@@ -11,7 +11,7 @@ import {
   defaultAliasDecoration,
   LinksMetaType,
 } from "prosemirror-link-plugin";
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 import { linkTooltipPlugin } from "../components/linkTooltipPlugin";
 
 const schema = new Schema({
@@ -62,7 +62,30 @@ function createInitialDoc(): Node {
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/LinkPluginDemo.tsx";
 
-export function LinkPluginDemo() {
+function LinkPluginUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        Words matching the <strong>active aliases</strong> are automatically
+        highlighted in the editor.
+      </li>
+      <li>
+        <strong>Add or remove aliases</strong> using the controls below the
+        editor — decorations update in real time.
+      </li>
+      <li>
+        <strong>Type an alias</strong> into the editor to see it get
+        decorated on the fly.
+      </li>
+      <li>
+        <strong>Click on a decorated alias</strong> to see a tooltip with
+        the alias name and a link to open its URL.
+      </li>
+    </ul>
+  );
+}
+
+function LinkPluginContent() {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [aliases, setAliases] = useState<AliasSpec[]>(INITIAL_ALIASES);
@@ -138,48 +161,7 @@ export function LinkPluginDemo() {
   }
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">prosemirror-link-plugin</h1>
-        <p className="demo-description">
-          Automatically decorates words matching a configurable alias list.
-          Useful for auto-linking terms to wiki pages, glossary entries, or any
-          other resource. Aliases can be updated dynamically, and decorations
-          are recalculated efficiently.
-        </p>
-        <InstallCommand packageName="prosemirror-link-plugin" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            Words matching the <strong>active aliases</strong> are automatically
-            highlighted in the editor.
-          </li>
-          <li>
-            <strong>Add or remove aliases</strong> using the controls below the
-            editor — decorations update in real time.
-          </li>
-          <li>
-            <strong>Type an alias</strong> into the editor to see it get
-            decorated on the fly.
-          </li>
-          <li>
-            <strong>Click on a decorated alias</strong> to see a tooltip with
-            the alias name and a link to open its URL.
-          </li>
-        </ul>
-      </div>
-
+    <>
       <div className="card editor-card">
         <div className="card-header">
           <span className="card-label">Editor</span>
@@ -266,6 +248,27 @@ export function LinkPluginDemo() {
           padding: 0 2px;
         }
       `}</style>
-    </div>
+    </>
+  );
+}
+
+export function LinkPluginDemo() {
+  return (
+    <DemoLayout
+      title="prosemirror-link-plugin"
+      description={
+        <>
+          Automatically decorates words matching a configurable alias list.
+          Useful for auto-linking terms to wiki pages, glossary entries, or any
+          other resource. Aliases can be updated dynamically, and decorations
+          are recalculated efficiently.
+        </>
+      }
+      packageNames={["prosemirror-link-plugin"]}
+      sourceUrl={SOURCE_URL}
+      usage={<LinkPluginUsage />}
+    >
+      <LinkPluginContent />
+    </DemoLayout>
   );
 }

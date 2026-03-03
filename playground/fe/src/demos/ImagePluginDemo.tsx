@@ -16,7 +16,7 @@ import "prosemirror-image-plugin/dist/styles/common.css";
 import "prosemirror-image-plugin/dist/styles/withResize.css";
 import "prosemirror-image-plugin/dist/styles/sideResize.css";
 
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/ImagePluginDemo.tsx";
@@ -217,47 +217,31 @@ function InfiniteLoadEditor() {
   );
 }
 
-// --- Main demo component with mode toggle ---
+// --- Usage and Content components ---
+
+function ImagePluginUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        <strong>Normal mode:</strong> Drag &amp; drop or paste an image into
+        the editor. Resize and align using the handles.
+      </li>
+      <li>
+        <strong>Infinite Load mode:</strong> Click &quot;Add image&quot; to
+        insert an image with a deferred download. Click &quot;Resolve All
+        Image&quot; to resolve pending downloads and load images.
+      </li>
+    </ul>
+  );
+}
 
 type Mode = "normal" | "infiniteLoad";
 
-export function ImagePluginDemo() {
+function ImagePluginContent() {
   const [mode, setMode] = useState<Mode>("normal");
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">prosemirror-image-plugin</h1>
-        <p className="demo-description">
-          A ProseMirror plugin for advanced image handling — drag &amp; drop,
-          paste, resize, align, and lazy loading with placeholders.
-        </p>
-        <InstallCommand packageName="prosemirror-image-plugin" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            <strong>Normal mode:</strong> Drag &amp; drop or paste an image into
-            the editor. Resize and align using the handles.
-          </li>
-          <li>
-            <strong>Infinite Load mode:</strong> Click &quot;Add image&quot; to
-            insert an image with a deferred download. Click &quot;Resolve All
-            Image&quot; to resolve pending downloads and load images.
-          </li>
-        </ul>
-      </div>
-
+    <>
       <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
         <button
           type="button"
@@ -280,6 +264,27 @@ export function ImagePluginDemo() {
       ) : (
         <InfiniteLoadEditor key="infiniteLoad" />
       )}
-    </div>
+    </>
+  );
+}
+
+// --- Main demo component ---
+
+export function ImagePluginDemo() {
+  return (
+    <DemoLayout
+      title="prosemirror-image-plugin"
+      description={
+        <>
+          A ProseMirror plugin for advanced image handling — drag &amp; drop,
+          paste, resize, align, and lazy loading with placeholders.
+        </>
+      }
+      packageNames={["prosemirror-image-plugin"]}
+      sourceUrl={SOURCE_URL}
+      usage={<ImagePluginUsage />}
+    >
+      <ImagePluginContent />
+    </DemoLayout>
   );
 }

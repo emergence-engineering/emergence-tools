@@ -5,7 +5,7 @@ import { Schema, Node, Mark } from "prosemirror-model";
 import { schema as basicSchema } from "prosemirror-schema-basic";
 import { exampleSetup } from "prosemirror-example-setup";
 import pasteLinkPlugin from "prosemirror-paste-link";
-import { InstallCommand } from "../components/InstallCommand";
+import { DemoLayout } from "../components/DemoLayout";
 import { linkTooltipPlugin } from "../components/linkTooltipPlugin";
 
 // Extend basic schema with a link mark
@@ -76,7 +76,29 @@ function createInitialDoc(): Node {
 const SOURCE_URL =
   "https://github.com/emergence-engineering/emergence-tools/blob/main/playground/fe/src/demos/PasteLinkDemo.tsx";
 
-export function PasteLinkDemo() {
+function PasteLinkUsage() {
+  return (
+    <ul className="demo-usage-list">
+      <li>
+        <strong>Copy a URL</strong> to your clipboard (e.g.{" "}
+        <code>https://github.com</code>).
+      </li>
+      <li>
+        <strong>Select some text</strong> in the editor below.
+      </li>
+      <li>
+        <strong>Paste</strong> (<code>Ctrl+V</code> / <code>Cmd+V</code>) —
+        the selected text becomes a link pointing to the pasted URL.
+      </li>
+      <li>
+        <strong>Click on a link</strong> to see a tooltip with the URL and
+        an option to open it.
+      </li>
+    </ul>
+  );
+}
+
+function PasteLinkEditor() {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
 
@@ -111,55 +133,34 @@ export function PasteLinkDemo() {
   }, []);
 
   return (
-    <div>
-      <div className="demo-header">
-        <h1 className="demo-title">prosemirror-paste-link</h1>
-        <p className="demo-description">
+    <div className="card editor-card">
+      <div className="card-header">
+        <span className="card-label">Editor</span>
+        <span className="card-hint">
+          Select text, then paste a URL to create a link
+        </span>
+      </div>
+      <div ref={editorRef} style={{ position: "relative" }} />
+    </div>
+  );
+}
+
+export function PasteLinkDemo() {
+  return (
+    <DemoLayout
+      title="prosemirror-paste-link"
+      description={
+        <>
           When you paste a URL with text selected, the plugin wraps the selection
           in a link instead of replacing it with the URL text. A simple quality-of-life
           improvement for any ProseMirror editor with link support.
-        </p>
-        <InstallCommand packageName="prosemirror-paste-link" />
-        <a
-          className="source-link"
-          href={SOURCE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View source on GitHub
-        </a>
-      </div>
-
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        <ul className="demo-usage-list">
-          <li>
-            <strong>Copy a URL</strong> to your clipboard (e.g.{" "}
-            <code>https://github.com</code>).
-          </li>
-          <li>
-            <strong>Select some text</strong> in the editor below.
-          </li>
-          <li>
-            <strong>Paste</strong> (<code>Ctrl+V</code> / <code>Cmd+V</code>) —
-            the selected text becomes a link pointing to the pasted URL.
-          </li>
-          <li>
-            <strong>Click on a link</strong> to see a tooltip with the URL and
-            an option to open it.
-          </li>
-        </ul>
-      </div>
-
-      <div className="card editor-card">
-        <div className="card-header">
-          <span className="card-label">Editor</span>
-          <span className="card-hint">
-            Select text, then paste a URL to create a link
-          </span>
-        </div>
-        <div ref={editorRef} style={{ position: "relative" }} />
-      </div>
-    </div>
+        </>
+      }
+      packageNames={["prosemirror-paste-link"]}
+      sourceUrl={SOURCE_URL}
+      usage={<PasteLinkUsage />}
+    >
+      <PasteLinkEditor />
+    </DemoLayout>
   );
 }
