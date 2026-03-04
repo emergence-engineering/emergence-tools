@@ -11,7 +11,8 @@
     "build": "rollup -c --bundleConfigAsCjs",
     "dev": "rollup -c -w --bundleConfigAsCjs",
     "lint": "tsc --noEmit",
-    "test": "playwright test --trace on",
+    "test": "pnpm test:e2e",
+    "test:e2e": "playwright test --trace on",
     "test:ui": "playwright test --ui"
   },
   "engines": {

@@ -7,14 +7,16 @@ import { SlashMenuPlugin } from "prosemirror-slash-menu";
 import {
   grammarSuggestPluginV2,
   grammarSuggestV2Key,
-  ActionType,
   completePluginV2,
   autoCompletePlugin,
-  pauseRunner,
-  resumeRunner,
   setAutoCompleteEnabled,
   isAutoCompleteEnabled,
 } from "prosemirror-suggestcat-plugin";
+import {
+  ActionType,
+  pauseRunner,
+  resumeRunner,
+} from "@emergence-engineering/prosemirror-block-runner";
 import {
   ProsemirrorSuggestcatPluginReact,
   GrammarPopup,

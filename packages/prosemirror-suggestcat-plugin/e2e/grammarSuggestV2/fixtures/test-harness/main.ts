@@ -22,7 +22,7 @@ import {
   ActionType,
   RunnerStatus,
   UnitStatus,
-} from "../../../../src/blockRunner";
+} from "@emergence-engineering/prosemirror-block-runner";
 
 import {
   mockControls,

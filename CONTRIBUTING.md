@@ -1,4 +1,4 @@
-# Contributing to EE ProseMirror Tools
+# Contributing to Emergence Tools
 
 ## Getting Started
 
@@ -46,7 +46,7 @@ pnpm typecheck
 
 | Scope | Packages |
 |-------|----------|
-| `@emergence-engineering/` | `prosemirror-text-map`, `fast-diff-merge` |
+| `@emergence-engineering/` | `prosemirror-text-map`, `fast-diff-merge`, `prosemirror-block-runner` |
 | Global (no scope) | All other packages |
 
 ## Versioning & Publishing

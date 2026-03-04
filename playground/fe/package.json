@@ -19,6 +19,7 @@
     "prosemirror-codemirror-block": "workspace:*",
     "prosemirror-paste-link": "workspace:*",
     "prosemirror-link-plugin": "workspace:*",
+    "@emergence-engineering/prosemirror-block-runner": "workspace:*",
     "prosemirror-suggestcat-plugin": "workspace:*",
     "prosemirror-suggestcat-plugin-react": "workspace:*",
     "@codemirror/state": "^6.1.4",

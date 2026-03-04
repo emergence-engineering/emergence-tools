@@ -1,0 +1,82 @@
+{
+  "name": "@emergence-engineering/prosemirror-block-runner",
+  "version": "0.0.1",
+  "description": "Generic task queue processor for ProseMirror — process document blocks through configurable parallel workers with state management, retry logic, and visual feedback decorations",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "rollup -c --bundleConfigAsCjs",
+    "dev": "rollup -c -w --bundleConfigAsCjs",
+    "format": "eslint src --ext .ts --fix",
+    "lint": "tsc --noEmit",
+    "test": "pnpm test:unit && pnpm test:e2e",
+    "test:unit": "jest",
+    "test:e2e": "playwright test",
+    "e2e": "playwright test",
+    "e2e:server": "vite --config e2e/vite.config.ts"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emergence-engineering/emergence-tools.git",
+    "directory": "packages/prosemirror-block-runner"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "author": "Emergence Engineering",
+  "keywords": [
+    "ProseMirror",
+    "block-runner",
+    "task-queue",
+    "processor",
+    "decorations"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emergence-engineering/emergence-tools/issues"
+  },
+  "homepage": "https://github.com/emergence-engineering/emergence-tools/tree/main/packages/prosemirror-block-runner#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "prosemirror-model": "^1.19.3",
+    "prosemirror-state": "^1.4.3",
+    "prosemirror-transform": "^1.7.3",
+    "prosemirror-view": "^1.31.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.41.0",
+    "@types/jest": "^29.5.1",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "eslint": "^8.49.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.33.2",
+    "jest": "^29.5.0",
+    "prettier": "^2.8.1",
+    "prosemirror-example-setup": "^1.2.2",
+    "prosemirror-model": "^1.19.3",
+    "prosemirror-schema-basic": "^1.2.2",
+    "prosemirror-state": "^1.4.3",
+    "prosemirror-test-builder": "^1.1.1",
+    "prosemirror-transform": "^1.7.3",
+    "prosemirror-view": "^1.31.4",
+    "rimraf": "^5.0.0",
+    "rollup": "^3.29.2",
+    "rollup-plugin-minification": "^0.2.0",
+    "rollup-plugin-typescript2": "^0.35.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0"
+  }
+}

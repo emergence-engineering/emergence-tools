@@ -1,7 +1,11 @@
 import { PluginKey, TextSelection } from "prosemirror-state";
 import { Decoration, EditorView } from "prosemirror-view";
 import { Fragment, Slice } from "prosemirror-model";
-import { ActionType, dispatchAction, RunnerState } from "../blockRunner";
+import {
+  ActionType,
+  dispatchAction,
+  RunnerState,
+} from "@emergence-engineering/prosemirror-block-runner";
 import {
   GrammarContextState,
   GrammarDecorationSpec,

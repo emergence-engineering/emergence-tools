@@ -7,3 +7,5 @@ dist
 .vscode
 *.log
 .playwright-mcp
+test-results
+playwright-report

@@ -10,7 +10,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@grammarSuggestV2": resolve(__dirname, "../../src/grammarSuggestV2"),
-      "@blockRunner": resolve(__dirname, "../../src/blockRunner"),
       "@src": resolve(__dirname, "../../src"),
     },
   },

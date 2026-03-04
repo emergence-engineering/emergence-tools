@@ -4,7 +4,7 @@ import {
   blockRunnerPlugin,
   createBlockRunnerKey,
   RunnerState,
-} from "../blockRunner";
+} from "@emergence-engineering/prosemirror-block-runner";
 import {
   grammarDecorationFactory,
   grammarDecorationTransformer,

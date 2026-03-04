@@ -7,8 +7,8 @@ import {
   RunnerState,
   UnitStatus,
   WidgetFactory,
-} from "../blockRunner/types";
-import { textToDocPos } from "../blockRunner/utils";
+  textToDocPos,
+} from "@emergence-engineering/prosemirror-block-runner";
 import {
   GrammarContextState,
   GrammarDecorationSpec,

@@ -17,10 +17,7 @@ export { getDiff } from "@emergence-engineering/fast-diff-merge";
 // Centralized API module
 export * from "./api";
 
-// Block Runner exports
-export * from "./blockRunner";
-
-// Grammar Suggest V2 (uses blockRunner)
+// Grammar Suggest V2 (uses @emergence-engineering/prosemirror-block-runner)
 export * from "./grammarSuggestV2";
 
 // Complete V2 (modular completion plugin)

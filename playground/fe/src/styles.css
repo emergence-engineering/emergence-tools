@@ -1484,6 +1484,52 @@ body {
   to { transform: rotate(360deg); }
 }
 
+/* ===== Demo Button ===== */
+.demo-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 550;
+  font-family: inherit;
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.demo-button:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.demo-button-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.demo-button-primary:hover {
+  opacity: 0.85;
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.demo-button-danger {
+  color: var(--text-muted);
+}
+
+.demo-button-danger:hover {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
 /* ===== Utilities ===== */
 .mt-4 { margin-top: 16px; }
 .mb-4 { margin-bottom: 16px; }

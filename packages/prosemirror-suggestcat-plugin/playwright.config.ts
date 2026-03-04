@@ -12,14 +12,6 @@ export default defineConfig({
 
   projects: [
     {
-      name: "blockRunner",
-      testDir: "./e2e/blockRunner/tests",
-      use: {
-        ...devices["Desktop Chrome"],
-        baseURL: "http://localhost:3333",
-      },
-    },
-    {
       name: "completeV2",
       testDir: "./e2e/completeV2/tests",
       use: {
@@ -38,12 +30,6 @@ export default defineConfig({
   ],
 
   webServer: [
-    {
-      command: "pnpm e2e:server:blockRunner",
-      url: "http://localhost:3333",
-      reuseExistingServer: !process.env.CI,
-      timeout: 120 * 1000,
-    },
     {
       command: "pnpm e2e:server:completeV2",
       url: "http://localhost:3334",

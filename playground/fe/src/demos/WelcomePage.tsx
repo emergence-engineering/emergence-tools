@@ -68,6 +68,13 @@ const packages = [
     demoKey: "slashMenuReact",
   },
   {
+    name: "prosemirror-block-runner",
+    scoped: true,
+    description:
+      "Generic task queue processor for ProseMirror — process document blocks through parallel workers with state management, retry logic, and decorations.",
+    demoKey: "blockRunner",
+  },
+  {
     name: "prosemirror-suggestcat-plugin",
     scoped: false,
     description:

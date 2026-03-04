@@ -1,6 +1,9 @@
 import { EditorView } from "prosemirror-view";
 import { getDiff, isIdentity } from "@emergence-engineering/fast-diff-merge";
-import { ProcessingUnit, UnitProcessorResult } from "../blockRunner/types";
+import {
+  ProcessingUnit,
+  UnitProcessorResult,
+} from "@emergence-engineering/prosemirror-block-runner";
 import { grammarRequest } from "../api";
 import {
   GrammarFixResult,

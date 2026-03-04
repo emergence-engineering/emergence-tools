@@ -14,6 +14,7 @@ import { SuggestcatDemo } from "./demos/SuggestcatDemo";
 import { SuggestcatGrammarDemo } from "./demos/SuggestcatGrammarDemo";
 import { SuggestcatAutoCompleteDemo } from "./demos/SuggestcatAutoCompleteDemo";
 import { SuggestcatFixDemo } from "./demos/SuggestcatFixDemo";
+import { BlockRunnerDemo } from "./demos/BlockRunnerDemo";
 
 interface DemoEntry {
   label: string;
@@ -30,6 +31,7 @@ const demos: Record<string, DemoEntry> = {
   linkPlugin: { label: "AutoLink Plugin", component: LinkPluginDemo },
   slashMenuVanilla: { label: "Slash Menu (Vanilla)", component: SlashMenuVanillaDemo },
   slashMenuReact: { label: "Slash Menu (React)", component: SlashMenuReactDemo },
+  blockRunner: { label: "Block Runner", component: BlockRunnerDemo },
   codeMirrorBlock: { label: "CodeMirror Block", component: CodeMirrorBlockDemo },
   suggestcat: { label: "Full Demo", component: SuggestcatDemo, group: "Suggestcat (AI)" },
   suggestcatGrammar: { label: "Grammar", component: SuggestcatGrammarDemo, group: "Suggestcat (AI)" },

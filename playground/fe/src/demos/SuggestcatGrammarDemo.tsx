@@ -6,10 +6,12 @@ import { exampleSetup } from "prosemirror-example-setup";
 import {
   grammarSuggestPluginV2,
   grammarSuggestV2Key,
+} from "prosemirror-suggestcat-plugin";
+import {
   ActionType,
   pauseRunner,
   resumeRunner,
-} from "prosemirror-suggestcat-plugin";
+} from "@emergence-engineering/prosemirror-block-runner";
 import {
   ProsemirrorSuggestcatPluginReact,
   GrammarPopup,
