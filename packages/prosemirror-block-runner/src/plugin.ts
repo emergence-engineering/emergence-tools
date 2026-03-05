@@ -27,7 +27,7 @@ export interface BlockRunnerPluginConfig<
 
   // Core processing
   unitProcessor: UnitProcessor<ResponseType, UnitMetadata>;
-  decorationFactory: DecorationFactory<ResponseType, UnitMetadata>;
+  decorationFactory: DecorationFactory<ResponseType, UnitMetadata, ContextState>;
 
   // Optional transformers
   decorationTransformer?: DecorationTransformer<
@@ -143,7 +143,7 @@ export function blockRunnerPlugin<ResponseType, ContextState, UnitMetadata>(
 
         // Transform decorations (e.g., highlight selected)
         if (decorationTransformer) {
-          decorations = decorationTransformer(decorations, state);
+          decorations = decorationTransformer(decorations, state, editorState);
         }
 
         // Add loading widgets for processing units (including DIRTY when paused)

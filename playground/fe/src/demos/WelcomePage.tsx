@@ -95,6 +95,13 @@ const packages = [
       "Track text authorship in collaborative ProseMirror editors using Yjs — highlights which user wrote which text with colored inline decorations.",
     demoKey: "whoWroteWhat",
   },
+  {
+    name: "prosemirror-multi-editor-diff",
+    scoped: true,
+    description:
+      "Multi-editor diff visualization — compare two ProseMirror editors side-by-side with inline diff decorations, spacer synchronization, and automatic node pairing.",
+    demoKey: "multiEditorDiff",
+  },
 ];
 
 export function WelcomePage() {

@@ -16,6 +16,7 @@ import { SuggestcatAutoCompleteDemo } from "./demos/SuggestcatAutoCompleteDemo";
 import { SuggestcatFixDemo } from "./demos/SuggestcatFixDemo";
 import { BlockRunnerDemo } from "./demos/BlockRunnerDemo";
 import { WhoWroteWhatDemo } from "./demos/WhoWroteWhatDemo";
+import { MultiEditorDiffDemo } from "./demos/MultiEditorDiffDemo";
 
 interface DemoEntry {
   label: string;
@@ -35,6 +36,7 @@ const demos: Record<string, DemoEntry> = {
   blockRunner: { label: "Block Runner", component: BlockRunnerDemo },
   codeMirrorBlock: { label: "CodeMirror Block", component: CodeMirrorBlockDemo },
   whoWroteWhat: { label: "Who Wrote What", component: WhoWroteWhatDemo },
+  multiEditorDiff: { label: "Multi-Editor Diff", component: MultiEditorDiffDemo },
   suggestcat: { label: "Full Demo", component: SuggestcatDemo, group: "Suggestcat (AI)" },
   suggestcatGrammar: { label: "Grammar", component: SuggestcatGrammarDemo, group: "Suggestcat (AI)" },
   suggestcatAutoComplete: { label: "Autocomplete", component: SuggestcatAutoCompleteDemo, group: "Suggestcat (AI)" },

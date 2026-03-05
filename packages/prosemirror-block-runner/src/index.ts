@@ -20,6 +20,7 @@ export type {
   UnitSuccessAction,
   UnitErrorAction,
   UpdateContextAction,
+  MapUnitMetadataAction,
   RemoveDecorationAction,
   SelectDecorationAction,
   DeselectDecorationAction,

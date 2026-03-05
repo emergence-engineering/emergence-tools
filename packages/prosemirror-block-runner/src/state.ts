@@ -5,6 +5,7 @@ import {
   ActionType,
   DecorationFactory,
   InitAction,
+  MapUnitMetadataAction,
   ProcessingUnit,
   RunnerOptions,
   RunnerState,
@@ -15,6 +16,13 @@ import {
   UnitSuccessAction,
 } from "./types";
 import { calculateBackoff, createUnitsFromDocument, updateUnit } from "./utils";
+
+// Trigger a non-blocking framework re-render after plugin state changes
+function nonBlockingForceRerender<ResponseType, ContextState, UnitMetadata>(
+  state: RunnerState<ResponseType, ContextState, UnitMetadata>
+) {
+  setTimeout(state.options.forceRerender, 0);
+}
 
 // Initialize units from document
 function initializeUnits<ResponseType, ContextState, UnitMetadata>(
@@ -55,7 +63,7 @@ function initializeUnits<ResponseType, ContextState, UnitMetadata>(
     return {} as UnitMetadata;
   };
 
-  const units = createUnitsFromDocument(doc, from, to, metadataFactory);
+  const units = createUnitsFromDocument(doc, from, to, metadataFactory, state.options.nodeTypes);
 
   // Apply priority filter to set initial status
   const unitsWithStatus = units.map((unit) => ({
@@ -76,7 +84,7 @@ function initializeUnits<ResponseType, ContextState, UnitMetadata>(
 function handleUnitSuccess<ResponseType, ContextState, UnitMetadata>(
   state: RunnerStateActive<ResponseType, ContextState, UnitMetadata>,
   action: UnitSuccessAction<ResponseType>,
-  decorationFactory: DecorationFactory<ResponseType, UnitMetadata>
+  decorationFactory: DecorationFactory<ResponseType, UnitMetadata, ContextState>
 ): RunnerStateActive<ResponseType, ContextState, UnitMetadata> {
   const unit = state.unitsInProgress.find((u) => u.id === action.unitId);
   if (!unit) return state;
@@ -96,7 +104,7 @@ function handleUnitSuccess<ResponseType, ContextState, UnitMetadata>(
   }
 
   // Create decorations from response
-  const newDecorations = decorationFactory(action.response, unit);
+  const newDecorations = decorationFactory(action.response, unit, state.contextState);
 
   // Update unit status to DONE
   const updatedState = updateUnit(state, action.unitId, {
@@ -167,13 +175,41 @@ function handleUnitStarted<ResponseType, ContextState, UnitMetadata>(
   });
 }
 
+// Handle map unit metadata
+function handleMapUnitMetadata<ResponseType, ContextState, UnitMetadata>(
+  state: RunnerState<ResponseType, ContextState, UnitMetadata>,
+  action: MapUnitMetadataAction<UnitMetadata>
+): RunnerState<ResponseType, ContextState, UnitMetadata> {
+  if (!state.unitsInProgress) return state;
+
+  let changed = false;
+  const newUnits = state.unitsInProgress.map((unit) => {
+    const result = action.mapFunction(unit.metadata);
+    if (result === false) return unit;
+    changed = true;
+    return {
+      ...unit,
+      metadata: result,
+      status: UnitStatus.DIRTY,
+    };
+  });
+
+  if (!changed) return state;
+
+  return {
+    ...state,
+    unitsInProgress: newUnits,
+  };
+}
+
 // Main action handler - pure function that returns new state
 export function handleAction<ResponseType, ContextState, UnitMetadata>(
   state: RunnerState<ResponseType, ContextState, UnitMetadata>,
   action: Action<ResponseType, ContextState, UnitMetadata>,
-  decorationFactory: DecorationFactory<ResponseType, UnitMetadata>,
+  decorationFactory: DecorationFactory<ResponseType, UnitMetadata, ContextState>,
   editorState: EditorState
 ): RunnerState<ResponseType, ContextState, UnitMetadata> {
+  nonBlockingForceRerender(state);
   switch (action.type) {
     case ActionType.INIT:
       return initializeUnits(
@@ -229,6 +265,9 @@ export function handleAction<ResponseType, ContextState, UnitMetadata>(
         ...state,
         contextState: action.contextState,
       };
+
+    case ActionType.MAP_UNIT_METADATA:
+      return handleMapUnitMetadata(state, action);
 
     case ActionType.REMOVE_DECORATION:
       return {

@@ -1,4 +1,5 @@
 /* eslint-disable no-use-before-define */
+import { EditorState } from "prosemirror-state";
 import { Decoration, EditorView } from "prosemirror-view";
 
 // Runner status - whether the runner is actively processing
@@ -28,6 +29,7 @@ export enum ActionType {
   UNIT_SUCCESS = "UNIT_SUCCESS",
   UNIT_ERROR = "UNIT_ERROR",
   UPDATE_CONTEXT = "UPDATE_CONTEXT",
+  MAP_UNIT_METADATA = "MAP_UNIT_METADATA",
   REMOVE_DECORATION = "REMOVE_DECORATION",
   SELECT_DECORATION = "SELECT_DECORATION",
   DESELECT_DECORATION = "DESELECT_DECORATION",
@@ -203,6 +205,11 @@ export interface UpdateContextAction<ContextState = unknown> {
   contextState: ContextState;
 }
 
+export interface MapUnitMetadataAction<UnitMetadata = unknown> {
+  type: ActionType.MAP_UNIT_METADATA;
+  mapFunction: (metadata: UnitMetadata) => UnitMetadata | false;
+}
+
 export interface RemoveDecorationAction {
   type: ActionType.REMOVE_DECORATION;
   id: object;
@@ -235,6 +242,7 @@ export type Action<
   | UnitSuccessAction<ResponseType>
   | UnitErrorAction
   | UpdateContextAction<ContextState>
+  | MapUnitMetadataAction<UnitMetadata>
   | RemoveDecorationAction
   | SelectDecorationAction
   | DeselectDecorationAction;
@@ -253,10 +261,12 @@ export type UnitProcessor<ResponseType = unknown, UnitMetadata = unknown> = (
 // Decoration factory - converts response to decorations
 export type DecorationFactory<
   ResponseType = unknown,
-  UnitMetadata = unknown
+  UnitMetadata = unknown,
+  ContextState = unknown
 > = (
   response: ResponseType,
-  unit: ProcessingUnit<UnitMetadata>
+  unit: ProcessingUnit<UnitMetadata>,
+  contextState: ContextState
 ) => ResultDecoration<ResponseType>[];
 
 // Decoration transformer - transforms decorations (e.g., highlight selected)
@@ -266,7 +276,8 @@ export type DecorationTransformer<
   UnitMetadata = unknown
 > = (
   decorations: ResultDecoration<ResponseType>[],
-  state: RunnerState<ResponseType, ContextState, UnitMetadata>
+  state: RunnerState<ResponseType, ContextState, UnitMetadata>,
+  editorState: EditorState
 ) => ResultDecoration<ResponseType>[];
 
 // Widget factory - creates loading/error widgets for units
