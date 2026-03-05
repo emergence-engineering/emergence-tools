@@ -1,0 +1,71 @@
+{
+  "name": "@emergence-engineering/prosemirror-who-wrote-what",
+  "version": "0.0.1",
+  "description": "Track text authorship in collaborative ProseMirror editors using Yjs — highlights which user wrote which text with colored inline decorations",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "rollup -c --bundleConfigAsCjs",
+    "dev": "rollup -c -w --bundleConfigAsCjs",
+    "format": "eslint src --ext .ts --fix",
+    "lint": "tsc --noEmit",
+    "test": "echo \"no test specified\" && exit 0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emergence-engineering/emergence-tools.git",
+    "directory": "packages/prosemirror-who-wrote-what"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "author": "Emergence Engineering",
+  "keywords": [
+    "ProseMirror",
+    "Yjs",
+    "collaboration",
+    "authorship",
+    "decorations"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emergence-engineering/emergence-tools/issues"
+  },
+  "homepage": "https://github.com/emergence-engineering/emergence-tools/tree/main/packages/prosemirror-who-wrote-what#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "prosemirror-state": "^1.3.3",
+    "prosemirror-view": "^1.20.0",
+    "y-prosemirror": "^1.2.1",
+    "yjs": "^13.6.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "eslint": "^8.49.0",
+    "eslint-config-airbnb-typescript": "^17.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "^2.8.1",
+    "prosemirror-state": "^1.3.3",
+    "prosemirror-view": "^1.20.0",
+    "y-prosemirror": "^1.2.1",
+    "y-protocols": "^1.0.6",
+    "yjs": "^13.6.1",
+    "rimraf": "^5.0.0",
+    "rollup": "^3.29.2",
+    "rollup-plugin-minification": "^0.2.0",
+    "rollup-plugin-typescript2": "^0.35.0",
+    "typescript": "^5.2.2"
+  }
+}

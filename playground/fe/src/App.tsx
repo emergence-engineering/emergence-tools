@@ -15,6 +15,7 @@ import { SuggestcatGrammarDemo } from "./demos/SuggestcatGrammarDemo";
 import { SuggestcatAutoCompleteDemo } from "./demos/SuggestcatAutoCompleteDemo";
 import { SuggestcatFixDemo } from "./demos/SuggestcatFixDemo";
 import { BlockRunnerDemo } from "./demos/BlockRunnerDemo";
+import { WhoWroteWhatDemo } from "./demos/WhoWroteWhatDemo";
 
 interface DemoEntry {
   label: string;
@@ -33,6 +34,7 @@ const demos: Record<string, DemoEntry> = {
   slashMenuReact: { label: "Slash Menu (React)", component: SlashMenuReactDemo },
   blockRunner: { label: "Block Runner", component: BlockRunnerDemo },
   codeMirrorBlock: { label: "CodeMirror Block", component: CodeMirrorBlockDemo },
+  whoWroteWhat: { label: "Who Wrote What", component: WhoWroteWhatDemo },
   suggestcat: { label: "Full Demo", component: SuggestcatDemo, group: "Suggestcat (AI)" },
   suggestcatGrammar: { label: "Grammar", component: SuggestcatGrammarDemo, group: "Suggestcat (AI)" },
   suggestcatAutoComplete: { label: "Autocomplete", component: SuggestcatAutoCompleteDemo, group: "Suggestcat (AI)" },

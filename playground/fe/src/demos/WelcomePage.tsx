@@ -88,6 +88,13 @@ const packages = [
       "React UI components for prosemirror-suggestcat-plugin — grammar popups, suggestion overlays, and slash menu integration.",
     demoKey: "suggestcatFix",
   },
+  {
+    name: "prosemirror-who-wrote-what",
+    scoped: true,
+    description:
+      "Track text authorship in collaborative ProseMirror editors using Yjs — highlights which user wrote which text with colored inline decorations.",
+    demoKey: "whoWroteWhat",
+  },
 ];
 
 export function WelcomePage() {
