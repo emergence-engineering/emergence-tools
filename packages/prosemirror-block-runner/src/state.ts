@@ -12,6 +12,7 @@ import {
   RunnerStateActive,
   RunnerStatus,
   UnitErrorAction,
+  UnitRange,
   UnitStatus,
   UnitSuccessAction,
 } from "./types";
@@ -36,7 +37,7 @@ function initializeUnits<ResponseType, ContextState, UnitMetadata>(
 
   // Determine metadata factory
   const metadataFactory = (
-    _unit: { from: number; to: number; text: string },
+    _unit: UnitRange,
     index: number
   ): UnitMetadata => {
     if (action.metadata.single !== undefined) {
@@ -52,8 +53,9 @@ function initializeUnits<ResponseType, ContextState, UnitMetadata>(
         status: UnitStatus.QUEUED,
         from: _unit.from,
         to: _unit.to,
+        node: _unit.node,
         text: _unit.text,
-        mapping: [],
+        mapping: _unit.mapping,
         metadata: {} as UnitMetadata,
         retryCount: 0,
         waitUntil: 0,
@@ -63,7 +65,7 @@ function initializeUnits<ResponseType, ContextState, UnitMetadata>(
     return {} as UnitMetadata;
   };
 
-  const units = createUnitsFromDocument(doc, from, to, metadataFactory, state.options.nodeTypes);
+  const units = createUnitsFromDocument(doc, from, to, metadataFactory, state.options.nodeTypes, state.options.textExtractionOptions);
 
   // Apply priority filter to set initial status
   const unitsWithStatus = units.map((unit) => ({

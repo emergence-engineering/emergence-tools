@@ -12,7 +12,6 @@ import {
   allUnitsFinished,
   calculateBackoff,
   getProgress,
-  textToDocPos,
   updateUnit,
 } from "./utils";
 
@@ -39,52 +38,6 @@ describe("calculateBackoff", () => {
   it("calculates exponential backoff for retryCount 3 with base 2000", () => {
     // Math.pow(2000/1000, 3) * 1000 = 8 * 1000 = 8000
     expect(calculateBackoff(3, 2000)).toBe(8000);
-  });
-});
-
-describe("textToDocPos", () => {
-  it("returns docPos for first segment", () => {
-    const mapping = [
-      { from: 0, docPos: 10 },
-      { from: 5, docPos: 20 },
-      { from: 10, docPos: 30 },
-    ];
-    expect(textToDocPos(2, mapping)).toBe(12); // 10 + (2 - 0) = 12
-  });
-
-  it("returns docPos for middle segment", () => {
-    const mapping = [
-      { from: 0, docPos: 10 },
-      { from: 5, docPos: 20 },
-      { from: 10, docPos: 30 },
-    ];
-    expect(textToDocPos(7, mapping)).toBe(22); // 20 + (7 - 5) = 22
-  });
-
-  it("returns docPos for last segment", () => {
-    const mapping = [
-      { from: 0, docPos: 10 },
-      { from: 5, docPos: 20 },
-      { from: 10, docPos: 30 },
-    ];
-    expect(textToDocPos(12, mapping)).toBe(32); // 30 + (12 - 10) = 32
-  });
-
-  it("returns first docPos for empty mapping array", () => {
-    expect(textToDocPos(5, [])).toBe(0);
-  });
-
-  it("handles single entry mapping", () => {
-    const mapping = [{ from: 0, docPos: 5 }];
-    expect(textToDocPos(3, mapping)).toBe(8); // 5 + (3 - 0) = 8
-  });
-
-  it("handles exact boundary position", () => {
-    const mapping = [
-      { from: 0, docPos: 10 },
-      { from: 5, docPos: 20 },
-    ];
-    expect(textToDocPos(5, mapping)).toBe(20); // 20 + (5 - 5) = 20
   });
 });
 

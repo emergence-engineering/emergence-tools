@@ -4,7 +4,7 @@ import {
   ProcessingUnit,
   ResultDecoration,
 } from "../../types";
-import { textToDocPos } from "../../utils";
+import { textPosToDocPos } from "../../utils";
 import { LinkDetectorMetadata, LinkDetectorResponse } from "./types";
 
 // Decoration factory for link detection
@@ -16,8 +16,8 @@ export const linkDetectorDecorationFactory: DecorationFactory<
   unit: ProcessingUnit<LinkDetectorMetadata>
 ): ResultDecoration<LinkDetectorResponse>[] => {
   return response.map((link) => {
-    const docFrom = textToDocPos(link.from, unit.mapping);
-    const docTo = textToDocPos(link.to, unit.mapping);
+    const docFrom = unit.from + 1 + textPosToDocPos(link.from, unit.mapping);
+    const docTo = unit.from + 1 + textPosToDocPos(link.to, unit.mapping);
 
     return Decoration.inline(
       docFrom,

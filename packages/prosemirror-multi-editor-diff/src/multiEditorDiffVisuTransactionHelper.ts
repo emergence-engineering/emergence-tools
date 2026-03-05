@@ -5,6 +5,7 @@ import {
   RunnerState,
   RunnerStatus,
   UpdateContextAction,
+  getUnitsInRange,
 } from "@emergence-engineering/prosemirror-block-runner";
 import { Plugin, PluginKey } from "prosemirror-state";
 import { DecorationSet, EditorView } from "prosemirror-view";
@@ -17,16 +18,15 @@ import {
   multiEditorDiffVisuPluginKey,
   MultiEditorDiffVisuResponse,
   MultiEditorDiffVisuState,
+  NodeListEntry,
   setOtherNode,
   setThisNode,
   startingState,
 } from "./multiEditorDiffVisu";
 import {
   DEFAULT_DIFFABLE_NODE_TYPES,
-  DEFAULT_NON_DIFFABLE_NODE_TYPES,
   MultiEditorDiffConfig,
 } from "./types";
-import { getNodeListBetweenRange } from "./utils/getNodeListBetweenRange";
 import { getParentTypeList } from "./utils/parentTypeList";
 import { nonEmpty } from "./utils/typeHelpers";
 
@@ -56,8 +56,8 @@ export const multiEditorDiffVisuHelperPlugin = (
 ) => {
   const diffableNodeTypes =
     config?.diffableNodeTypes ?? DEFAULT_DIFFABLE_NODE_TYPES;
-  const nonDiffableNodeTypes =
-    config?.nonDiffableNodeTypes ?? DEFAULT_NON_DIFFABLE_NODE_TYPES;
+  const textExtractionOptions = config?.textExtractionOptions;
+  const nodeTypes = Array.from(diffableNodeTypes);
 
   return new Plugin<MultiEditorDiffPluginState>({
     key: MultiEditorDiffVisuHelperPluginKey,
@@ -89,24 +89,21 @@ export const multiEditorDiffVisuHelperPlugin = (
       }
 
       // find the changed nodes
-      const oldStateNodes = getNodeListBetweenRange(
-        0,
-        oldState.doc.nodeSize,
-        oldState.doc,
-        diffableNodeTypes,
-        nonDiffableNodeTypes,
-        true,
-        true,
+      const oldUnitRanges = getUnitsInRange(
+        oldState.doc, 0, oldState.doc.content.size,
+        nodeTypes, textExtractionOptions,
       );
-      const newStateNodes = getNodeListBetweenRange(
-        0,
-        newState.doc.nodeSize,
-        newState.doc,
-        diffableNodeTypes,
-        nonDiffableNodeTypes,
-        true,
-        true,
+      const oldStateNodes: NodeListEntry[] = oldUnitRanges.map(u => ({
+        node: u.node, from: u.from + 1, text: u.text,
+      }));
+
+      const newUnitRanges = getUnitsInRange(
+        newState.doc, 0, newState.doc.content.size,
+        nodeTypes, textExtractionOptions,
       );
+      const newStateNodes: NodeListEntry[] = newUnitRanges.map(u => ({
+        node: u.node, from: u.from + 1, text: u.text,
+      }));
 
       const otherPluginState = multiEditorDiffVisuPluginKey.getState(
         props.otherEditorView.state,

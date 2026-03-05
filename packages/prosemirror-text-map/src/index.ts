@@ -1,2 +1,2 @@
-export type { TextMappingItem } from "./mapping";
+export type { TextMappingItem, MappingOptions, TextWithMapping } from "./mapping";
 export { docToTextWithMapping, textPosToDocPos } from "./mapping";

@@ -20,6 +20,7 @@ export type {
   MultiEditorDiffVisuResponse,
   MultiEditorDiffVisuState,
   MultiEditorDiffVisuAdditionalNodeData,
+  NodeListEntry,
 } from "./multiEditorDiffVisu";
 
 // Transaction helper plugin
@@ -40,7 +41,6 @@ export type { UuidWithVersion, MultiEditorDiffConfig } from "./types";
 export {
   isSameVersion,
   DEFAULT_DIFFABLE_NODE_TYPES,
-  DEFAULT_NON_DIFFABLE_NODE_TYPES,
 } from "./types";
 
 // Re-exported block-runner types for consumers
@@ -57,6 +57,4 @@ export {
 } from "@emergence-engineering/prosemirror-block-runner";
 
 // Utilities (re-exported for consumers who need them)
-export type { NodeHelperObj } from "./utils/getNodeListBetweenRange";
-export { getNodeListBetweenRange } from "./utils/getNodeListBetweenRange";
 export { getParentTypeList } from "./utils/parentTypeList";

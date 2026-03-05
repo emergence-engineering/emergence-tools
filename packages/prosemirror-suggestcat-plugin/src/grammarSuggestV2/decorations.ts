@@ -7,7 +7,7 @@ import {
   RunnerState,
   UnitStatus,
   WidgetFactory,
-  textToDocPos,
+  textPosToDocPos,
 } from "@emergence-engineering/prosemirror-block-runner";
 import {
   GrammarContextState,
@@ -29,8 +29,8 @@ export const grammarDecorationFactory: DecorationFactory<
   }
 
   return response.suggestions.map((suggestion) => {
-    const docFrom = textToDocPos(suggestion.from, unit.mapping);
-    const docTo = textToDocPos(suggestion.to, unit.mapping);
+    const docFrom = unit.from + 1 + textPosToDocPos(suggestion.from, unit.mapping);
+    const docTo = unit.from + 1 + textPosToDocPos(suggestion.to, unit.mapping);
 
     const isRemoval = suggestion.replacement === "";
     const spec: GrammarDecorationSpec = {

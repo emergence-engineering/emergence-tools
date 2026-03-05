@@ -6,7 +6,6 @@ import {
   docToTextWithMapping,
   textPosToDocPos,
 } from "@emergence-engineering/prosemirror-text-map";
-import { getNodeListBetweenRange } from "../utils/getNodeListBetweenRange";
 
 const schema = new Schema({
   nodes: {
@@ -24,9 +23,6 @@ const schema = new Schema({
   marks: {},
 });
 
-const DIFFABLE = new Set(["heading", "paragraph"]);
-const NON_DIFFABLE = new Set(["code_block"]);
-
 function makeDoc(...children: Node[]): Node {
   return schema.nodes.doc.create(null, children);
 }
@@ -41,70 +37,51 @@ function h(level: number, text: string): Node {
   return schema.nodes.heading.create({ level }, [schema.text(text)]);
 }
 
-describe("Position convention alignment", () => {
+describe("getUnitsInRange basics", () => {
   const doc = makeDoc(h(2, "Title"), p("Hello world"), p("Second paragraph"));
 
-  test("getNodeListBetweenRange from = unit.from + 1, to = unit.to", () => {
-    const nodeList = getNodeListBetweenRange(
-      0, doc.nodeSize, doc, DIFFABLE, NON_DIFFABLE, true, false,
-    );
+  test("returns correct units with node references", () => {
     const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
 
-    expect(nodeList.length).toBe(units.length);
+    expect(units.length).toBe(3);
 
-    for (let i = 0; i < nodeList.length; i++) {
-      // nodeList.from = pos + 1 (content start), unit.from = pos (node boundary)
-      expect(nodeList[i].from).toBe(units[i].from + 1);
-      // nodeList.to = (pos+1) + nodeSize - 1 = pos + nodeSize = unit.to
-      expect(nodeList[i].to).toBe(units[i].to);
+    for (const unit of units) {
+      // unit.from is at node boundary
+      const nodeAtFrom = doc.nodeAt(unit.from);
+      expect(nodeAtFrom).not.toBeNull();
+      expect(["heading", "paragraph"]).toContain(nodeAtFrom!.type.name);
+
+      // unit.node should be the same as doc.nodeAt(unit.from)
+      expect(unit.node).toBe(nodeAtFrom);
     }
   });
 
-  test("text content matches between the two extraction methods", () => {
-    const nodeList = getNodeListBetweenRange(
-      0, doc.nodeSize, doc, DIFFABLE, NON_DIFFABLE, true, false,
-    );
+  test("text content matches docToTextWithMapping on resolved node", () => {
     const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
 
-    for (let i = 0; i < nodeList.length; i++) {
-      expect(nodeList[i].text).toBe(units[i].text);
+    for (const unit of units) {
+      const textMapResult = docToTextWithMapping(unit.node);
+      expect(textMapResult.text).toBe(unit.text);
     }
   });
 });
 
-describe("Metadata array alignment", () => {
-  test("with empty paragraphs - skipEmpty=false causes misalignment", () => {
+describe("Empty paragraph handling", () => {
+  test("getUnitsInRange always skips empty paragraphs", () => {
     const doc = makeDoc(p("First"), p(""), p("Third"));
 
-    const nodeListIncludingEmpty = getNodeListBetweenRange(
-      0, doc.nodeSize, doc, DIFFABLE, NON_DIFFABLE, false, false,
-    );
-    const nodeListSkippingEmpty = getNodeListBetweenRange(
-      0, doc.nodeSize, doc, DIFFABLE, NON_DIFFABLE, true, false,
-    );
     const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
 
     // Block-runner always skips empty nodes
     expect(units.length).toBe(2); // "First", "Third"
-    expect(nodeListIncludingEmpty.length).toBe(3); // "First", "", "Third" - MISMATCH
-    expect(nodeListSkippingEmpty.length).toBe(2); // "First", "Third" - MATCHES
-
-    // With skipEmpty=true, indices align correctly
-    for (let i = 0; i < units.length; i++) {
-      expect(nodeListSkippingEmpty[i].text).toBe(units[i].text);
-    }
   });
 
-  test("without empty paragraphs - both skipEmpty values work", () => {
+  test("without empty paragraphs - all nodes returned", () => {
     const doc = makeDoc(p("First"), p("Second"), p("Third"));
 
-    const nodeList = getNodeListBetweenRange(
-      0, doc.nodeSize, doc, DIFFABLE, NON_DIFFABLE, false, false,
-    );
     const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
 
-    expect(nodeList.length).toBe(units.length);
-    expect(nodeList.length).toBe(3);
+    expect(units.length).toBe(3);
   });
 });
 
@@ -187,34 +164,24 @@ describe("Full metadata + diff flow simulation", () => {
     p("It provides comprehensive tools for building editors."),
   );
 
-  test("node identity is preserved across multiple getNodeListBetweenRange calls", () => {
-    // Simulates what calcPairings does
-    const leftNodeList1 = getNodeListBetweenRange(
-      0, leftDoc.nodeSize, leftDoc, DIFFABLE, NON_DIFFABLE, true, true,
-    );
-    // Simulates what sendPluginInitTransaction does (second call on same doc)
-    const leftNodeList2 = getNodeListBetweenRange(
-      0, leftDoc.nodeSize, leftDoc, DIFFABLE, NON_DIFFABLE, true, true,
-    );
+  test("node identity is preserved across multiple getUnitsInRange calls", () => {
+    const units1 = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
+    const units2 = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
 
-    expect(leftNodeList1.length).toBe(leftNodeList2.length);
-    for (let i = 0; i < leftNodeList1.length; i++) {
+    expect(units1.length).toBe(units2.length);
+    for (let i = 0; i < units1.length; i++) {
       // Node objects must be identical (same reference) across calls
-      expect(leftNodeList1[i].node).toBe(leftNodeList2[i].node);
+      expect(units1[i].node).toBe(units2[i].node);
     }
   });
 
   test("stringNodePairing stores original node references", () => {
     const { stringNodePairing, defaultStringSimilarity } = require("../stringNodePairing");
 
-    const leftNodeList = getNodeListBetweenRange(
-      0, leftDoc.nodeSize, leftDoc, DIFFABLE, NON_DIFFABLE, true, true,
-    );
-    const rightNodeList = getNodeListBetweenRange(
-      0, rightDoc.nodeSize, rightDoc, DIFFABLE, NON_DIFFABLE, true, true,
-    );
-    const leftNodes = leftNodeList.map((n: any) => n.node);
-    const rightNodes = rightNodeList.map((n: any) => n.node);
+    const leftUnits = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
+    const rightUnits = getUnitsInRange(rightDoc, 0, rightDoc.content.size, ["heading", "paragraph"]);
+    const leftNodes = leftUnits.map(u => u.node);
+    const rightNodes = rightUnits.map(u => u.node);
 
     const pairings = stringNodePairing({
       bodyExtractor: (node: Node) => node.textContent,
@@ -238,33 +205,24 @@ describe("Full metadata + diff flow simulation", () => {
     }
   });
 
-  test("metadata factory finds all nodes in pairings (simulates nodeAdditionalDataSideHelper)", () => {
+  test("metadata factory finds all nodes in pairings", () => {
     const { stringNodePairing, defaultStringSimilarity } = require("../stringNodePairing");
 
     // Step 1: calcPairings
-    const leftNodeList = getNodeListBetweenRange(
-      0, leftDoc.nodeSize, leftDoc, DIFFABLE, NON_DIFFABLE, true, true,
-    );
-    const rightNodeList = getNodeListBetweenRange(
-      0, rightDoc.nodeSize, rightDoc, DIFFABLE, NON_DIFFABLE, true, true,
-    );
+    const leftUnits = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
+    const rightUnits = getUnitsInRange(rightDoc, 0, rightDoc.content.size, ["heading", "paragraph"]);
     const pairings = stringNodePairing({
       bodyExtractor: (node: Node) => node.textContent,
-      leftSideNodes: leftNodeList.map((n: any) => n.node),
-      rightSideNodes: rightNodeList.map((n: any) => n.node),
+      leftSideNodes: leftUnits.map(u => u.node),
+      rightSideNodes: rightUnits.map(u => u.node),
       similarity: { fromString: defaultStringSimilarity },
       insertDeleteWeight: 0,
     });
 
-    // Step 2: sendPluginInitTransaction - new nodeList call
-    const leftNodeListForInit = getNodeListBetweenRange(
-      0, leftDoc.nodeSize, leftDoc, DIFFABLE, NON_DIFFABLE, true, true,
-    );
-
-    // Step 3: Simulate nodeAdditionalDataSideHelper for left side
+    // Step 2: Simulate nodeAdditionalDataSideHelper for left side
     const sideNode = (pair: any) => pair.leftNode?.node;
-    const metadataArray = leftNodeListForInit.map((nodeHelperObj: any) => {
-      const { node } = nodeHelperObj;
+    const metadataArray = leftUnits.map((unit) => {
+      const { node } = unit;
       const firstIdx = pairings.findIndex(
         (pair: any) => sideNode(pair) === node,
       );
@@ -288,25 +246,21 @@ describe("Full metadata + diff flow simulation", () => {
     const Diff = require("diff");
     const { stringNodePairing, defaultStringSimilarity } = require("../stringNodePairing");
 
-    const leftNodeList = getNodeListBetweenRange(
-      0, leftDoc.nodeSize, leftDoc, DIFFABLE, NON_DIFFABLE, true, true,
-    );
-    const rightNodeList = getNodeListBetweenRange(
-      0, rightDoc.nodeSize, rightDoc, DIFFABLE, NON_DIFFABLE, true, true,
-    );
+    const leftUnits = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
+    const rightUnits = getUnitsInRange(rightDoc, 0, rightDoc.content.size, ["heading", "paragraph"]);
     const pairings = stringNodePairing({
       bodyExtractor: (node: Node) => node.textContent,
-      leftSideNodes: leftNodeList.map((n: any) => n.node),
-      rightSideNodes: rightNodeList.map((n: any) => n.node),
+      leftSideNodes: leftUnits.map(u => u.node),
+      rightSideNodes: rightUnits.map(u => u.node),
       similarity: { fromString: defaultStringSimilarity },
       insertDeleteWeight: 0,
     });
 
     // For each left node, find its pair and compute the diff
-    for (const leftNodeHelper of leftNodeList) {
+    for (const leftUnit of leftUnits) {
       const sideNode = (pair: any) => pair.leftNode?.node;
       const firstIdx = pairings.findIndex(
-        (pair: any) => sideNode(pair) === leftNodeHelper.node,
+        (pair: any) => sideNode(pair) === leftUnit.node,
       );
       expect(firstIdx).not.toBe(-1);
 
@@ -315,7 +269,7 @@ describe("Full metadata + diff flow simulation", () => {
 
       if (rightNode) {
         const prevText = docToTextWithMapping(rightNode);
-        const nextText = docToTextWithMapping(leftNodeHelper.node);
+        const nextText = docToTextWithMapping(leftUnit.node);
         const diff = Diff.diffWordsWithSpace(prevText.text, nextText.text);
 
         // For similar text, there should be some unchanged parts
@@ -349,14 +303,16 @@ describe("Multi-paragraph scenario end-to-end", () => {
       expect(nodeAtFrom).not.toBeNull();
       expect(["heading", "paragraph"]).toContain(nodeAtFrom!.type.name);
 
-      // docToTextWithMapping on resolved node should give same text
-      const resolvedNode = doc.nodeAt(unit.from)!;
-      const textMapResult = docToTextWithMapping(resolvedNode);
+      // unit.node should be the resolved node
+      expect(unit.node).toBe(nodeAtFrom);
+
+      // docToTextWithMapping on unit.node should give same text
+      const textMapResult = docToTextWithMapping(unit.node);
       expect(textMapResult.text).toBe(unit.text);
     }
   });
 
-  test("metadata array from getNodeListBetweenRange(skipEmpty=true) aligns with units", () => {
+  test("empty paragraphs are skipped, remaining nodes align", () => {
     const doc = makeDoc(
       h(2, "Title"),
       p(""),
@@ -365,19 +321,13 @@ describe("Multi-paragraph scenario end-to-end", () => {
       p("Paragraph two"),
     );
 
-    const nodeList = getNodeListBetweenRange(
-      0, doc.nodeSize, doc, DIFFABLE, NON_DIFFABLE,
-      true, // skipEmpty - must be true to align with block-runner
-      false,
-    );
     const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
 
-    expect(nodeList.length).toBe(units.length);
     expect(units.length).toBe(3); // "Title", "Paragraph one", "Paragraph two"
 
-    for (let i = 0; i < nodeList.length; i++) {
-      expect(nodeList[i].text).toBe(units[i].text);
-      expect(nodeList[i].from).toBe(units[i].from + 1);
+    for (const unit of units) {
+      expect(unit.text.trim().length).toBeGreaterThan(0);
+      expect(unit.node).toBe(doc.nodeAt(unit.from));
     }
   });
 });

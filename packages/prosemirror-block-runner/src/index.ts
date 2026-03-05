@@ -1,7 +1,8 @@
 // Types (using export type for isolatedModules compatibility)
 export type {
   // Core types
-  BlockRunnerTextMapping,
+  TextMappingItem,
+  MappingOptions,
   ProcessingUnit,
   ResultDecorationSpec,
   ResultDecoration,
@@ -46,8 +47,7 @@ export { defaultRunnerOptions, mergeOptions } from "./defaults";
 
 // Utils
 export {
-  extractTextWithMapping,
-  textToDocPos,
+  textPosToDocPos,
   getUnitsInRange,
   remapPositions,
   calculateBackoff,

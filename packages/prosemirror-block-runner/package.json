@@ -44,6 +44,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "@emergence-engineering/prosemirror-text-map": "workspace:*"
+  },
   "peerDependencies": {
     "prosemirror-model": "^1.19.3",
     "prosemirror-state": "^1.4.3",

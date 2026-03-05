@@ -2,6 +2,7 @@ import {
   docToTextWithMapping,
   TextMappingItem,
   textPosToDocPos,
+  type MappingOptions,
 } from "@emergence-engineering/prosemirror-text-map";
 import {
   ActionType,
@@ -15,8 +16,9 @@ import {
   UnitProcessor,
   UnitProcessorResult,
   UnitStatus,
+  UnitRange,
 } from "@emergence-engineering/prosemirror-block-runner";
-import { Node, Schema } from "prosemirror-model";
+import { Node } from "prosemirror-model";
 import { Plugin, PluginKey } from "prosemirror-state";
 import { Decoration, EditorView } from "prosemirror-view";
 import * as Diff from "diff";
@@ -24,11 +26,14 @@ import * as Diff from "diff";
 import { MultiEditorStateHolderIdType } from "./multiEditorDiffService";
 import { NodeHelper, NodePairing } from "./stringNodePairing";
 import { mergeUpNodesWithParents } from "./utils/htmlDom";
-import {
-  imageNodeToTextMapping,
-  NodeHelperObj,
-} from "./utils/getNodeListBetweenRange";
 import { getParentTypeList } from "./utils/parentTypeList";
+import { DEFAULT_DIFFABLE_NODE_TYPES, MultiEditorDiffConfig } from "./types";
+
+export interface NodeListEntry {
+  node: Node;
+  from: number;
+  text: string;
+}
 
 export interface MultiEditorDiffVisuResponse {
   diff: Diff.Change[];
@@ -39,9 +44,10 @@ export interface MultiEditorDiffVisuResponse {
 
 export interface MultiEditorDiffVisuState {
   id: MultiEditorStateHolderIdType;
-  nodeListFromOtherEditor?: NodeHelperObj[];
+  nodeListFromOtherEditor?: NodeListEntry[];
   nodePairings: NodePairing<Node>[];
   otherEditorView?: EditorView;
+  textExtractionOptions?: Partial<MappingOptions>;
 }
 
 export interface MultiEditorDiffVisuAdditionalNodeData {
@@ -252,7 +258,7 @@ const renderInlineDecorators = (
 const renderNodeTypeMismatchWidgets = (
   unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>,
   otherEditorView: EditorView,
-  nodeListFromOtherEditor: NodeHelperObj[],
+  nodeListFromOtherEditor: NodeListEntry[],
 ) => {
   const decorations: ResultDecoration<MultiEditorDiffVisuResponse>[] = [];
   // block-runner uses from = pos (at node boundary), content starts at from + 1
@@ -304,7 +310,7 @@ const renderNodeTypeMismatchWidgets = (
         } else if (otherNode.node.type.name === "paragraph") {
           const otherNodeParentTypeList = getParentTypeList(
             otherEditorView.state.doc,
-            nodeListFromOtherEditor[otherNode.index].from + 1,
+            nodeListFromOtherEditor[otherNode.index].from,
           );
           if (
             unit.metadata.parentTypeList.length !==
@@ -385,15 +391,6 @@ const multiEditorDiffVisuDecorationCreator: DecorationFactory<
   return decorations;
 };
 
-const minimalSchema = new Schema({
-  nodes: {
-    doc: { content: "block+" },
-    paragraph: { content: "text*", group: "block" },
-    text: {},
-  },
-  marks: {},
-});
-
 const multiEditorDiffVisuUnitProcessor: UnitProcessor<
   MultiEditorDiffVisuResponse,
   MultiEditorDiffVisuAdditionalNodeData
@@ -401,29 +398,23 @@ const multiEditorDiffVisuUnitProcessor: UnitProcessor<
   view: EditorView,
   unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>,
 ): Promise<UnitProcessorResult<MultiEditorDiffVisuResponse>> => {
+  // Get textExtractionOptions from contextState
+  const pluginState = multiEditorDiffVisuPluginKey.getState(view.state);
+  const textExtractionOptions = pluginState?.contextState?.textExtractionOptions;
+
   return new Promise((resolve) => {
     setTimeout(() => {
-      const emptyNode = Node.fromJSON(minimalSchema, {
-        type: "paragraph",
-        content: [],
-      });
       const firstPair = unit.metadata.pairs?.[0];
-      const prevText = docToTextWithMapping(
-        (unit.metadata.editorId === "left"
-          ? firstPair?.rightNode
-          : firstPair?.leftNode
-        )?.node ?? emptyNode,
-        { nodeToTextMappingOverride: { image: imageNodeToTextMapping } },
-      );
+      const otherNode = (unit.metadata.editorId === "left"
+        ? firstPair?.rightNode
+        : firstPair?.leftNode
+      )?.node;
+      const prevText = otherNode
+        ? docToTextWithMapping(otherNode, textExtractionOptions ?? {})
+        : { text: "", mapping: [] as TextMappingItem[] };
 
-      // Re-extract text using prosemirror-text-map for consistent mapping types
-      // block-runner's unit.from is at node boundary, the actual node is at unit.from
-      const resolvedNode = view.state.doc.nodeAt(unit.from);
-      const newText = resolvedNode
-        ? docToTextWithMapping(resolvedNode, {
-            nodeToTextMappingOverride: { image: imageNodeToTextMapping },
-          })
-        : { text: unit.text, mapping: [] as TextMappingItem[] };
+      // Use the text/mapping already extracted by block-runner
+      const newText = { text: unit.text, mapping: unit.mapping };
 
       const diff: Diff.Change[] = Diff.diffWordsWithSpace(
         prevText.text,
@@ -595,7 +586,7 @@ export const startingState: MultiEditorDiffVisuState = {
   otherEditorView: undefined,
 };
 
-export const createMultiEditorDiffVisuPlugin = (): Plugin => {
+export const createMultiEditorDiffVisuPlugin = (config?: MultiEditorDiffConfig): Plugin => {
   return blockRunnerPlugin<
     MultiEditorDiffVisuResponse,
     MultiEditorDiffVisuState,
@@ -607,7 +598,8 @@ export const createMultiEditorDiffVisuPlugin = (): Plugin => {
     widgetFactory: loadingWidgetFactory,
     initialContextState: startingState,
     options: {
-      nodeTypes: ["heading", "paragraph"],
+      nodeTypes: Array.from(config?.diffableNodeTypes ?? DEFAULT_DIFFABLE_NODE_TYPES),
+      textExtractionOptions: config?.textExtractionOptions,
       dirtyHandling: {
         shouldRecalculate: true,
         debounceDelay: 100,

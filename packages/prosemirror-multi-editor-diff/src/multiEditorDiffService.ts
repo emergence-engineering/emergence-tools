@@ -6,6 +6,7 @@ import {
   InitAction,
   UpdateContextAction,
   ProcessingUnit,
+  getUnitsInRange,
 } from "@emergence-engineering/prosemirror-block-runner";
 import { Node } from "prosemirror-model";
 import { EditorView } from "prosemirror-view";
@@ -16,6 +17,7 @@ import {
   multiEditorDiffVisuPluginKey,
   MultiEditorDiffVisuResponse,
   MultiEditorDiffVisuState,
+  NodeListEntry,
 } from "./multiEditorDiffVisu";
 import {
   multiEditorDiffVisuHelperPlugin,
@@ -28,15 +30,10 @@ import {
 } from "./stringNodePairing";
 import {
   DEFAULT_DIFFABLE_NODE_TYPES,
-  DEFAULT_NON_DIFFABLE_NODE_TYPES,
   isSameVersion,
   MultiEditorDiffConfig,
   UuidWithVersion,
 } from "./types";
-import {
-  getNodeListBetweenRange,
-  NodeHelperObj,
-} from "./utils/getNodeListBetweenRange";
 import { getParentTypeList } from "./utils/parentTypeList";
 
 export type MultiEditorStateHolderIdType = "left" | "right";
@@ -44,7 +41,7 @@ export type MultiEditorStateHolderIdType = "left" | "right";
 type NodeAdditionalDataSideHelperFn = (
   side: MultiEditorStateHolderIdType,
   sideNode: (pair: NodePairing<Node>) => Node | undefined,
-) => (node: NodeHelperObj) => MultiEditorDiffVisuAdditionalNodeData;
+) => (node: NodeListEntry) => MultiEditorDiffVisuAdditionalNodeData;
 
 type EditorWithIds = {
   view: EditorView;
@@ -55,8 +52,8 @@ type EditorWithIds = {
 export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
   const diffableNodeTypes =
     config?.diffableNodeTypes ?? DEFAULT_DIFFABLE_NODE_TYPES;
-  const nonDiffableNodeTypes =
-    config?.nonDiffableNodeTypes ?? DEFAULT_NON_DIFFABLE_NODE_TYPES;
+  const textExtractionOptions = config?.textExtractionOptions;
+  const nodeTypes = Array.from(diffableNodeTypes);
 
   let editors: EditorWithIds[] = [];
   let leftEditor: undefined | EditorWithIds = undefined;
@@ -142,33 +139,31 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
 
   const calcPairings = ():
     | {
-        leftSideNodes: NodeHelperObj[];
+        leftSideNodes: NodeListEntry[];
         nodeAdditionalDataSideHelper: NodeAdditionalDataSideHelperFn;
         pairings: NodePairing<Node>[];
-        rightSideNodes: NodeHelperObj[];
+        rightSideNodes: NodeListEntry[];
       }
     | undefined => {
     if (leftEditor && rightEditor) {
-      const leftSideNodeList = getNodeListBetweenRange(
-        0,
-        leftEditor.view.state.doc.nodeSize,
-        leftEditor.view.state.doc,
-        diffableNodeTypes,
-        nonDiffableNodeTypes,
-        true,
-        true,
+      const leftUnitRanges = getUnitsInRange(
+        leftEditor.view.state.doc, 0, leftEditor.view.state.doc.content.size,
+        nodeTypes, textExtractionOptions,
       );
-      const leftSideNodes = leftSideNodeList.map((node) => node.node);
-      const rightSideNodeList = getNodeListBetweenRange(
-        0,
-        rightEditor.view.state.doc.nodeSize,
-        rightEditor.view.state.doc,
-        diffableNodeTypes,
-        nonDiffableNodeTypes,
-        true,
-        true,
+      const leftSideNodes = leftUnitRanges.map(u => u.node);
+      const leftSideNodeList: NodeListEntry[] = leftUnitRanges.map(u => ({
+        node: u.node, from: u.from + 1, text: u.text,
+      }));
+
+      const rightUnitRanges = getUnitsInRange(
+        rightEditor.view.state.doc, 0, rightEditor.view.state.doc.content.size,
+        nodeTypes, textExtractionOptions,
       );
-      const rightSideNodes = rightSideNodeList.map((node) => node.node);
+      const rightSideNodes = rightUnitRanges.map(u => u.node);
+      const rightSideNodeList: NodeListEntry[] = rightUnitRanges.map(u => ({
+        node: u.node, from: u.from + 1, text: u.text,
+      }));
+
       const pairings = stringNodePairing({
         bodyExtractor: (node: Node) => node.textContent,
         leftSideNodes,
@@ -182,9 +177,9 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
           sideNode: (pair: NodePairing<Node>) => Node | undefined,
         ) =>
         (
-          nodeHelperObj: NodeHelperObj,
+          nodeListEntry: NodeListEntry,
         ): MultiEditorDiffVisuAdditionalNodeData => {
-          const { from, node } = nodeHelperObj;
+          const { from, node } = nodeListEntry;
           const firstIdx = pairings.findIndex(
             (pair) => sideNode(pair) === node,
           );
@@ -225,8 +220,8 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
   const sendStateUpdateTransaction = (
     editorId: MultiEditorStateHolderIdType,
     pairings: NodePairing<Node>[],
-    leftSideNodes: NodeHelperObj[] | undefined,
-    rightSideNodes: NodeHelperObj[] | undefined,
+    leftSideNodes: NodeListEntry[] | undefined,
+    rightSideNodes: NodeListEntry[] | undefined,
   ) => {
     const view =
       editorId === "left" ? leftEditor?.view : rightEditor?.view;
@@ -239,6 +234,7 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
           editorId === "left" ? rightEditor?.view : leftEditor?.view,
         nodeListFromOtherEditor:
           editorId === "left" ? rightSideNodes : leftSideNodes,
+        textExtractionOptions,
       },
       type: ActionType.UPDATE_CONTEXT,
     };
@@ -257,18 +253,14 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
       editorId === "left" ? leftEditor?.view : rightEditor?.view;
     if (!view) return;
 
-    // Get node list for this side to compute metadata array
-    // skipEmpty must be true to align with block-runner's getUnitsInRange
-    // which always skips empty nodes (text.trim().length > 0)
-    const nodeList = getNodeListBetweenRange(
-      0,
-      view.state.doc.nodeSize,
-      view.state.doc,
-      diffableNodeTypes,
-      nonDiffableNodeTypes,
-      true,
-      true,
+    // Get unit ranges for this side to compute metadata array
+    const unitRanges = getUnitsInRange(
+      view.state.doc, 0, view.state.doc.content.size,
+      nodeTypes, textExtractionOptions,
     );
+    const nodeList: NodeListEntry[] = unitRanges.map(u => ({
+      node: u.node, from: u.from + 1, text: u.text,
+    }));
 
     const metadataFactory = nodeAdditionalDataSideHelper(editorId, (pair) =>
       editorId === "left" ? pair.leftNode?.node : pair.rightNode?.node,

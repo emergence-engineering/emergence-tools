@@ -3,10 +3,13 @@ import { EditorState, PluginKey, Transaction } from "prosemirror-state";
 import { Decoration, EditorView } from "prosemirror-view";
 import { Mapping, StepMap } from "prosemirror-transform";
 import {
+  docToTextWithMapping,
+  type MappingOptions,
+} from "@emergence-engineering/prosemirror-text-map";
+export { textPosToDocPos } from "@emergence-engineering/prosemirror-text-map";
+import {
   Action,
   ActionType,
-  BlockRunnerTextMapping,
-  ExtractedText,
   ProcessingUnit,
   ProgressInfo,
   RunnerOptions,
@@ -17,55 +20,13 @@ import {
   UnitStatus,
 } from "./types";
 
-// Extract text with position mapping from document
-export function extractTextWithMapping(
-  doc: Node,
-  from: number,
-  to: number
-): ExtractedText {
-  const mapping: BlockRunnerTextMapping[] = [];
-  let text = "";
-  let textPos = 0;
-
-  doc.nodesBetween(from, to, (node, pos) => {
-    if (node.isText && node.text) {
-      const start = Math.max(from, pos);
-      const end = Math.min(to, pos + node.nodeSize);
-      const content = node.text.slice(start - pos, end - pos);
-
-      mapping.push({ from: textPos, docPos: start });
-      text += content;
-      textPos += content.length;
-    } else if (node.isBlock && text.length > 0) {
-      // Add newline for block boundaries
-      mapping.push({ from: textPos, docPos: pos });
-      text += "\n";
-      textPos += 1;
-    }
-  });
-
-  return { text, mapping };
-}
-
-// Convert text position back to document position
-export function textToDocPos(
-  textPos: number,
-  mapping: BlockRunnerTextMapping[]
-): number {
-  for (let i = mapping.length - 1; i >= 0; i--) {
-    if (mapping[i].from <= textPos) {
-      return mapping[i].docPos + (textPos - mapping[i].from);
-    }
-  }
-  return mapping[0]?.docPos ?? 0;
-}
-
 // Get all units (paragraphs/headers/etc) in a range
 export function getUnitsInRange(
   doc: Node,
   from: number,
   to: number,
-  nodeTypes: string | string[] = "paragraph"
+  nodeTypes: string | string[] = "paragraph",
+  textExtractionOptions?: Partial<MappingOptions>,
 ): UnitRange[] {
   const types = Array.isArray(nodeTypes) ? nodeTypes : [nodeTypes];
   const units: UnitRange[] = [];
@@ -73,11 +34,12 @@ export function getUnitsInRange(
   doc.nodesBetween(from, to, (node, pos) => {
     if (types.includes(node.type.name)) {
       const nodeEnd = pos + node.nodeSize;
-      const extracted = extractTextWithMapping(doc, pos, nodeEnd);
+      const extracted = docToTextWithMapping(node, textExtractionOptions ?? {});
       if (extracted.text.trim().length > 0) {
         units.push({
           from: pos,
           to: nodeEnd,
+          node,
           ...extracted,
         });
       }
@@ -163,7 +125,7 @@ export function remapPositions<ResponseType, ContextState, UnitMetadata>(
     const newNodes: ProcessingUnit<UnitMetadata>[] = [];
     const nodesFrom = pmMapping.map(nodes[0].from);
     const nodesTo = pmMapping.map(nodes[nodes.length - 1].to);
-    const helperNodes = getUnitsInRange(tr.doc, nodesFrom, nodesTo, nodeTypes);
+    const helperNodes = getUnitsInRange(tr.doc, nodesFrom, nodesTo, nodeTypes, options.textExtractionOptions);
     for (const idx in nodes) {
       const node = nodes[idx];
       const refNode = helperNodes[idx];
@@ -288,15 +250,17 @@ export function createUnitsFromDocument<UnitMetadata>(
   from: number,
   to: number,
   metadataFactory: (unit: UnitRange, index: number) => UnitMetadata,
-  nodeTypes: string | string[] = "paragraph"
+  nodeTypes: string | string[] = "paragraph",
+  textExtractionOptions?: Partial<MappingOptions>,
 ): ProcessingUnit<UnitMetadata>[] {
-  const ranges = getUnitsInRange(doc, from, to, nodeTypes);
+  const ranges = getUnitsInRange(doc, from, to, nodeTypes, textExtractionOptions);
 
   return ranges.map((range, index) => ({
     id: {},
     status: UnitStatus.QUEUED,
     from: range.from,
     to: range.to,
+    node: range.node,
     text: range.text,
     mapping: range.mapping,
     metadata: metadataFactory(range, index),

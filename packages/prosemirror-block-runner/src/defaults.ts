@@ -5,6 +5,9 @@ export const defaultRunnerOptions: RunnerOptions = {
   // Default: process paragraphs
   nodeTypes: "paragraph",
 
+  // Default: no custom text extraction options
+  textExtractionOptions: undefined,
+
   // Default: all units are priority
   priorityFilter: () => true,
 

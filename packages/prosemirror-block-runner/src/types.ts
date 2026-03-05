@@ -1,6 +1,11 @@
 /* eslint-disable no-use-before-define */
+import { Node } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import { Decoration, EditorView } from "prosemirror-view";
+import type { TextMappingItem, MappingOptions } from "@emergence-engineering/prosemirror-text-map";
+
+// Re-export TextMappingItem for consumers
+export type { TextMappingItem, MappingOptions };
 
 // Runner status - whether the runner is actively processing
 export enum RunnerStatus {
@@ -35,21 +40,16 @@ export enum ActionType {
   DESELECT_DECORATION = "DESELECT_DECORATION",
 }
 
-// Text mapping for position translation (block runner specific)
-export interface BlockRunnerTextMapping {
-  from: number; // Position in text
-  docPos: number; // Position in document
-}
-
 // Processing unit - a block of text to be processed
 export interface ProcessingUnit<UnitMetadata = unknown> {
   id: object; // Unique identifier (use {} for uniqueness)
   status: UnitStatus;
   from: number; // Start position in document
   to: number; // End position in document
+  node: Node; // The ProseMirror node
   text: string; // Text content to process
   requestText?: string; // Text sent to API (set when PROCESSING starts)
-  mapping: BlockRunnerTextMapping[]; // Maps text positions to doc positions
+  mapping: TextMappingItem[]; // Maps text positions to doc positions
   metadata: UnitMetadata; // Custom data per implementation
   retryCount: number; // Failed attempts
   waitUntil: number; // Backoff deadline (ms timestamp)
@@ -78,6 +78,9 @@ export interface RunnerOptions<
 > {
   // Node selection - which node types to process
   nodeTypes: string | string[]; // Node types to process (default: "paragraph")
+
+  // Text extraction options (passed to docToTextWithMapping)
+  textExtractionOptions?: Partial<MappingOptions>;
 
   // Filtering & Prioritization
   priorityFilter: (
@@ -288,13 +291,14 @@ export type WidgetFactory<UnitMetadata = unknown> = (
 // Extracted text with mapping
 export interface ExtractedText {
   text: string;
-  mapping: BlockRunnerTextMapping[];
+  mapping: TextMappingItem[];
 }
 
 // Unit range info
 export interface UnitRange extends ExtractedText {
   from: number;
   to: number;
+  node: Node;
 }
 
 // Progress info
