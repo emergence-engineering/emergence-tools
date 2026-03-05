@@ -54,7 +54,7 @@ export const createWhoWroteWhatPlugin = ({
   userId,
   options = {},
 }: WhoWroteWhatPluginConfig) => {
-  const { userMapKey = "userMap", startVisible = true } = options;
+  const { userMapKey = "userMap", startVisible = true, debounceFactor = 1.5 } = options;
 
   return new Plugin<WhoWroteWhatState>({
     key: whoWroteWhatPluginKey,
@@ -69,7 +69,18 @@ export const createWhoWroteWhatPlugin = ({
         const meta = tr.getMeta(whoWroteWhatPluginKey) as
           | WhoWroteWhatMeta
           | undefined;
-        if (!meta) return prev;
+        if (!meta) {
+          // No plugin meta — remap existing decorations through the
+          // transaction mapping so they stay aligned while the debounced
+          // full recompute is pending.
+          if (tr.docChanged) {
+            return {
+              decorations: prev.decorations.map(tr.mapping, tr.doc),
+              visible: prev.visible,
+            };
+          }
+          return prev;
+        }
         if (meta.type === WhoWroteWhatMetaType.SetVisibility)
           return {
             decorations: meta.visible ? prev.decorations : DecorationSet.empty,
@@ -119,11 +130,26 @@ export const createWhoWroteWhatPlugin = ({
         );
       };
 
+      // Adaptive debounce: delay scales with computation time
+      let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+      let lastComputeMs = 0;
+
+      const scheduleCompute = () => {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        const delay = Math.round(lastComputeMs * debounceFactor);
+        debounceTimer = setTimeout(() => {
+          debounceTimer = null;
+          const start = performance.now();
+          computeDecorations();
+          lastComputeMs = performance.now() - start;
+        }, delay);
+      };
+
       // Delay initial observation to let ySyncPlugin initialize
       const initTimeout = setTimeout(() => {
         computeDecorations();
-        xmlFragment.observeDeep(computeDecorations);
-        userMap.observe(computeDecorations);
+        xmlFragment.observeDeep(scheduleCompute);
+        userMap.observe(scheduleCompute);
       }, 100);
 
       let prevVisible = startVisible;
@@ -142,8 +168,9 @@ export const createWhoWroteWhatPlugin = ({
         },
         destroy() {
           clearTimeout(initTimeout);
-          xmlFragment.unobserveDeep(computeDecorations);
-          userMap.unobserve(computeDecorations);
+          if (debounceTimer) clearTimeout(debounceTimer);
+          xmlFragment.unobserveDeep(scheduleCompute);
+          userMap.unobserve(scheduleCompute);
         },
       };
     },

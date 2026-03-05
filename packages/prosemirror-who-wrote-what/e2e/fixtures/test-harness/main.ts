@@ -103,6 +103,7 @@ async function insertLargeDocMultiUser(
   const clientIds = Array.from({ length: userCount }, (_, u) => baseClientId + u);
 
   const secondaryDoc = new Y.Doc();
+  Y.applyUpdate(secondaryDoc, Y.encodeStateAsUpdate(ydoc));
   const frag = secondaryDoc.getXmlFragment("prosemirror");
 
   for (let i = 0; i < paragraphCount; i++) {
@@ -162,6 +163,7 @@ interface TestBridge {
   insertAsUser(userId: string, text: string): void;
 
   insertLargeDoc(paragraphCount: number, userCount?: number): Promise<void>;
+  clearDoc(): void;
   measureDecorationTime(): number;
 }
 
@@ -241,6 +243,14 @@ const bridge: TestBridge = {
     }
   },
 
+  clearDoc() {
+    ydoc.transact(() => {
+      while (xmlFragment.length > 0) {
+        xmlFragment.delete(0, 1);
+      }
+    });
+  },
+
   measureDecorationTime() {
     const ySyncState = ySyncPluginKey.getState(view.state);
     if (!ySyncState?.binding) return -1;
@@ -299,6 +309,11 @@ $("btn-bulk-insert").addEventListener("click", async () => {
   await bridge.insertLargeDoc(count, users);
   const elapsed = performance.now() - start;
   statTiming.textContent = `insert: ${elapsed.toFixed(1)}ms`;
+});
+
+// Clear doc
+$("btn-clear").addEventListener("click", () => {
+  bridge.clearDoc();
 });
 
 // Measure decoration time

@@ -79,6 +79,11 @@ export async function insertLargeDoc(
   );
 }
 
+/** Clear all content from the Yjs document. */
+export async function clearDoc(page: Page): Promise<void> {
+  await page.evaluate(() => (window as any).__WWW_TEST__.clearDoc());
+}
+
 /** Measure decoration computation time in ms. */
 export async function measureDecorationTime(page: Page): Promise<number> {
   return page.evaluate(() =>

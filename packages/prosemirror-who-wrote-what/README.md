@@ -50,6 +50,7 @@ setWhoWroteWhatVisibility(view, true);
 | `colors` | `string[]` | 16 built-in colors | Color palette for author highlights. Cycles through sequentially. |
 | `userMapKey` | `string` | `"userMap"` | Key for the shared YMap storing clientID-to-userId mappings. |
 | `startVisible` | `boolean` | `true` | Whether decorations are visible when the plugin initializes. |
+| `debounceFactor` | `number` | `1.5` | Multiplier for adaptive debounce. Debounce delay = lastComputeMs * debounceFactor. Set to `0` to disable. |
 | `createDecoration` | `(from, to, color, userId) => Decoration` | inline with `background-color` | Custom decoration factory. |
 
 ## How it works

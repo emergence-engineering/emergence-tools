@@ -26,6 +26,8 @@ export interface WhoWroteWhatOptions {
   userMapKey?: string;
   /** Whether decorations are visible when the plugin initializes. Default: true */
   startVisible?: boolean;
+  /** Multiplier for adaptive debounce. Debounce delay = lastComputeMs * debounceFactor. Default: 1.5 */
+  debounceFactor?: number;
   /**
    * Custom decoration factory. If not provided, creates inline decorations
    * with `background-color` style.
