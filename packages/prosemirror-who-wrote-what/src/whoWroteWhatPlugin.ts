@@ -54,7 +54,7 @@ export const createWhoWroteWhatPlugin = ({
   userId,
   options = {},
 }: WhoWroteWhatPluginConfig) => {
-  const { userMapKey = "userMap" } = options;
+  const { userMapKey = "userMap", startVisible = true } = options;
 
   return new Plugin<WhoWroteWhatState>({
     key: whoWroteWhatPluginKey,
@@ -62,7 +62,7 @@ export const createWhoWroteWhatPlugin = ({
       init() {
         return {
           decorations: DecorationSet.empty,
-          visible: true,
+          visible: startVisible,
         };
       },
       apply(tr, prev) {
@@ -126,7 +126,7 @@ export const createWhoWroteWhatPlugin = ({
         userMap.observe(computeDecorations);
       }, 100);
 
-      let prevVisible = true;
+      let prevVisible = startVisible;
 
       return {
         update(view) {

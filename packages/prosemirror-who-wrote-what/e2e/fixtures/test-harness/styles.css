@@ -1,0 +1,95 @@
+#app {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+}
+
+h1 {
+  font-size: 1.2rem;
+  margin: 12px 0;
+}
+
+/* --- Controls --- */
+
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+#controls fieldset {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#controls legend {
+  font-size: 0.75rem;
+  color: #666;
+  padding: 0 4px;
+}
+
+#controls button {
+  padding: 4px 10px;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+#controls button:hover {
+  background: #e8e8e8;
+}
+
+#controls input[type="text"],
+#controls input[type="number"] {
+  padding: 3px 6px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  width: 100px;
+}
+
+#controls label {
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* --- Status bar --- */
+
+#status-bar {
+  display: flex;
+  gap: 16px;
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-family: monospace;
+  margin-bottom: 8px;
+}
+
+/* --- Editor --- */
+
+#editor {
+  border: 1px solid #ccc;
+  padding: 8px;
+  min-height: 200px;
+  font-family: serif;
+}
+
+.ProseMirror {
+  outline: none;
+  min-height: 180px;
+}
+
+.ProseMirror p {
+  margin: 0 0 4px 0;
+}

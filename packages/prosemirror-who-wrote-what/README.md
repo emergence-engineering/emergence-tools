@@ -49,6 +49,7 @@ setWhoWroteWhatVisibility(view, true);
 |--------|------|---------|-------------|
 | `colors` | `string[]` | 16 built-in colors | Color palette for author highlights. Cycles through sequentially. |
 | `userMapKey` | `string` | `"userMap"` | Key for the shared YMap storing clientID-to-userId mappings. |
+| `startVisible` | `boolean` | `true` | Whether decorations are visible when the plugin initializes. |
 | `createDecoration` | `(from, to, color, userId) => Decoration` | inline with `background-color` | Custom decoration factory. |
 
 ## How it works

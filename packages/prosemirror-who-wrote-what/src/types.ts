@@ -24,6 +24,8 @@ export interface WhoWroteWhatOptions {
   colors?: string[];
   /** Key used for the shared YMap storing clientID→userId mappings. Default: "userMap" */
   userMapKey?: string;
+  /** Whether decorations are visible when the plugin initializes. Default: true */
+  startVisible?: boolean;
   /**
    * Custom decoration factory. If not provided, creates inline decorations
    * with `background-color` style.

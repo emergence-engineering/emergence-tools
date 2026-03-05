@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Who Wrote What E2E Test Harness</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <h1>Who Wrote What E2E Test Harness</h1>
+
+      <div id="controls">
+        <fieldset>
+          <legend>Visibility</legend>
+          <button id="btn-show">Show decorations</button>
+          <button id="btn-hide">Hide decorations</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>Insert as user</legend>
+          <input id="input-user-id" type="text" placeholder="userId" value="alice" />
+          <input id="input-user-text" type="text" placeholder="text" value="Hello from alice" />
+          <button id="btn-insert-as-user">Insert</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>Bulk insert (perf)</legend>
+          <label>Paragraphs <input id="input-para-count" type="number" value="500" min="1" /></label>
+          <label>Users <input id="input-user-count" type="number" value="5" min="1" /></label>
+          <button id="btn-bulk-insert">Insert</button>
+          <button id="btn-measure">Measure decoration time</button>
+        </fieldset>
+      </div>
+
+      <div id="status-bar">
+        <span id="stat-visible">visible: —</span>
+        <span id="stat-decos">decorations: —</span>
+        <span id="stat-doc-size">doc size: —</span>
+        <span id="stat-timing"></span>
+      </div>
+
+      <div id="editor"></div>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
