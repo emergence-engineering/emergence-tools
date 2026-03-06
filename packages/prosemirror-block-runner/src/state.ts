@@ -36,10 +36,7 @@ function initializeUnits<ResponseType, ContextState, UnitMetadata>(
   const to = action.onlySelection ? selection.to : doc.content.size;
 
   // Determine metadata factory
-  const metadataFactory = (
-    _unit: UnitRange,
-    index: number
-  ): UnitMetadata => {
+  const metadataFactory = (_unit: UnitRange, index: number): UnitMetadata => {
     if (action.metadata.single !== undefined) {
       return action.metadata.single;
     }
@@ -65,7 +62,14 @@ function initializeUnits<ResponseType, ContextState, UnitMetadata>(
     return {} as UnitMetadata;
   };
 
-  const units = createUnitsFromDocument(doc, from, to, metadataFactory, state.options.nodeTypes, state.options.textExtractionOptions);
+  const units = createUnitsFromDocument(
+    doc,
+    from,
+    to,
+    metadataFactory,
+    state.options.nodeTypes,
+    state.options.textExtractionOptions
+  );
 
   // Apply priority filter to set initial status
   const unitsWithStatus = units.map((unit) => ({
@@ -106,7 +110,11 @@ function handleUnitSuccess<ResponseType, ContextState, UnitMetadata>(
   }
 
   // Create decorations from response
-  const newDecorations = decorationFactory(action.response, unit, state.contextState);
+  const newDecorations = decorationFactory(
+    action.response,
+    unit,
+    state.contextState
+  );
 
   // Update unit status to DONE
   const updatedState = updateUnit(state, action.unitId, {
@@ -208,7 +216,11 @@ function handleMapUnitMetadata<ResponseType, ContextState, UnitMetadata>(
 export function handleAction<ResponseType, ContextState, UnitMetadata>(
   state: RunnerState<ResponseType, ContextState, UnitMetadata>,
   action: Action<ResponseType, ContextState, UnitMetadata>,
-  decorationFactory: DecorationFactory<ResponseType, UnitMetadata, ContextState>,
+  decorationFactory: DecorationFactory<
+    ResponseType,
+    UnitMetadata,
+    ContextState
+  >,
   editorState: EditorState
 ): RunnerState<ResponseType, ContextState, UnitMetadata> {
   nonBlockingForceRerender(state);

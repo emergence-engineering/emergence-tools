@@ -27,7 +27,11 @@ export interface BlockRunnerPluginConfig<
 
   // Core processing
   unitProcessor: UnitProcessor<ResponseType, UnitMetadata>;
-  decorationFactory: DecorationFactory<ResponseType, UnitMetadata, ContextState>;
+  decorationFactory: DecorationFactory<
+    ResponseType,
+    UnitMetadata,
+    ContextState
+  >;
 
   // Optional transformers
   decorationTransformer?: DecorationTransformer<

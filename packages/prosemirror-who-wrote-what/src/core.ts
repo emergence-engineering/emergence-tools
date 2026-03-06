@@ -4,7 +4,14 @@ import {
   ProsemirrorBinding,
   relativePositionToAbsolutePosition,
 } from "y-prosemirror";
-import { AbstractType, ContentString, ContentType, Doc, Item, Map as YMap } from "yjs";
+import {
+  AbstractType,
+  ContentString,
+  ContentType,
+  Doc,
+  Item,
+  Map as YMap,
+} from "yjs";
 
 import { createRelativePosition } from "./RelativePosition";
 import { DEFAULT_COLORS, UserMapEntry, WhoWroteWhatOptions } from "./types";
@@ -35,7 +42,7 @@ export const createColorAssigner = (colors: string[] = DEFAULT_COLORS) => {
  * These are not part of Yjs's public API and may break on major updates.
  */
 export function getContentStringsFromYJSElement(
-  element: AbstractType<any>,
+  element: AbstractType<any>
 ): Item[] {
   const itemResults: Item[] = [];
   let item = element._first;
@@ -60,12 +67,9 @@ export const getDecorationSet = (
   binding: ProsemirrorBinding,
   state: EditorState,
   userMap: YMap<UserMapEntry>,
-  options: WhoWroteWhatOptions = {},
+  options: WhoWroteWhatOptions = {}
 ) => {
-  const {
-    colors,
-    createDecoration: customCreateDecoration,
-  } = options;
+  const { colors, createDecoration: customCreateDecoration } = options;
 
   const getColor = createColorAssigner(colors);
   const rootFragment = binding.type;
@@ -78,7 +82,7 @@ export const getDecorationSet = (
       ydoc,
       rootFragment,
       relPos,
-      binding.mapping,
+      binding.mapping
     );
     if (absPos == null) return null;
 
@@ -89,7 +93,12 @@ export const getDecorationSet = (
     const color = getColor(userId);
 
     if (customCreateDecoration) {
-      return customCreateDecoration(absPos, absPos + item.length, color, userId);
+      return customCreateDecoration(
+        absPos,
+        absPos + item.length,
+        color,
+        userId
+      );
     }
 
     return Decoration.inline(absPos, absPos + item.length, {
@@ -99,7 +108,7 @@ export const getDecorationSet = (
 
   return DecorationSet.create(
     state.doc,
-    decorations.filter((x): x is Decoration => x != null),
+    decorations.filter((x): x is Decoration => x != null)
   );
 };
 
@@ -112,7 +121,7 @@ export const getDecorationSet = (
 export const writeClientIdsToYDoc = (
   ydoc: Doc,
   userId: string | number,
-  userMapKey = "userMap",
+  userMapKey = "userMap"
 ) => {
   const userMap = ydoc.getMap<UserMapEntry>(userMapKey);
   const clientKey = ydoc.clientID.toString();

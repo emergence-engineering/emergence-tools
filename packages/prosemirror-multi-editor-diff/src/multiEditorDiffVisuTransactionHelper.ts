@@ -23,10 +23,7 @@ import {
   setThisNode,
   startingState,
 } from "./multiEditorDiffVisu";
-import {
-  DEFAULT_DIFFABLE_NODE_TYPES,
-  MultiEditorDiffConfig,
-} from "./types";
+import { DEFAULT_DIFFABLE_NODE_TYPES, MultiEditorDiffConfig } from "./types";
 import { getParentTypeList } from "./utils/parentTypeList";
 import { nonEmpty } from "./utils/typeHelpers";
 
@@ -90,33 +87,46 @@ export const multiEditorDiffVisuHelperPlugin = (
 
       // find the changed nodes
       const oldUnitRanges = getUnitsInRange(
-        oldState.doc, 0, oldState.doc.content.size,
-        nodeTypes, textExtractionOptions,
+        oldState.doc,
+        0,
+        oldState.doc.content.size,
+        nodeTypes,
+        textExtractionOptions,
       );
-      const oldStateNodes: NodeListEntry[] = oldUnitRanges.map(u => ({
-        node: u.node, from: u.from + 1, text: u.text,
+      const oldStateNodes: NodeListEntry[] = oldUnitRanges.map((u) => ({
+        node: u.node,
+        from: u.from + 1,
+        text: u.text,
       }));
 
       const newUnitRanges = getUnitsInRange(
-        newState.doc, 0, newState.doc.content.size,
-        nodeTypes, textExtractionOptions,
+        newState.doc,
+        0,
+        newState.doc.content.size,
+        nodeTypes,
+        textExtractionOptions,
       );
-      const newStateNodes: NodeListEntry[] = newUnitRanges.map(u => ({
-        node: u.node, from: u.from + 1, text: u.text,
+      const newStateNodes: NodeListEntry[] = newUnitRanges.map((u) => ({
+        node: u.node,
+        from: u.from + 1,
+        text: u.text,
       }));
 
       const otherPluginState = multiEditorDiffVisuPluginKey.getState(
         props.otherEditorView.state,
-      ) as RunnerState<
-        MultiEditorDiffVisuResponse,
-        MultiEditorDiffVisuState,
-        MultiEditorDiffVisuAdditionalNodeData
-      > | undefined;
+      ) as
+        | RunnerState<
+            MultiEditorDiffVisuResponse,
+            MultiEditorDiffVisuState,
+            MultiEditorDiffVisuAdditionalNodeData
+          >
+        | undefined;
 
       const updatedNodeList: UpdateContextAction<MultiEditorDiffVisuState> = {
         type: ActionType.UPDATE_CONTEXT,
         contextState: {
-          ...(otherPluginState?.contextState ?? (startingState as MultiEditorDiffVisuState)),
+          ...(otherPluginState?.contextState ??
+            (startingState as MultiEditorDiffVisuState)),
           nodeListFromOtherEditor: newStateNodes,
         },
       };
@@ -244,10 +254,7 @@ export const multiEditorDiffVisuHelperPlugin = (
             let changedIdx = -1;
             const newPairs = metadata.pairs
               .map((pair) => {
-                const thisNodeIdx = getThisNode(
-                  metadata.editorId,
-                  pair,
-                )?.index;
+                const thisNodeIdx = getThisNode(metadata.editorId, pair)?.index;
                 if (!thisNodeIdx) return pair;
                 const idx = changedNodes.findIndex((changedNode) => {
                   return thisNodeIdx === changedNode.index;

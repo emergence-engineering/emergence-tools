@@ -29,7 +29,8 @@ export const grammarDecorationFactory: DecorationFactory<
   }
 
   return response.suggestions.map((suggestion) => {
-    const docFrom = unit.from + 1 + textPosToDocPos(suggestion.from, unit.mapping);
+    const docFrom =
+      unit.from + 1 + textPosToDocPos(suggestion.from, unit.mapping);
     const docTo = unit.from + 1 + textPosToDocPos(suggestion.to, unit.mapping);
 
     const isRemoval = suggestion.replacement === "";

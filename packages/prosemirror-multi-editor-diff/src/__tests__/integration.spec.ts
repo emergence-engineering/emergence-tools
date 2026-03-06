@@ -1,7 +1,5 @@
 import { Node, Schema } from "prosemirror-model";
-import {
-  getUnitsInRange,
-} from "@emergence-engineering/prosemirror-block-runner";
+import { getUnitsInRange } from "@emergence-engineering/prosemirror-block-runner";
 import {
   docToTextWithMapping,
   textPosToDocPos,
@@ -41,7 +39,10 @@ describe("getUnitsInRange basics", () => {
   const doc = makeDoc(h(2, "Title"), p("Hello world"), p("Second paragraph"));
 
   test("returns correct units with node references", () => {
-    const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     expect(units.length).toBe(3);
 
@@ -57,7 +58,10 @@ describe("getUnitsInRange basics", () => {
   });
 
   test("text content matches docToTextWithMapping on resolved node", () => {
-    const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     for (const unit of units) {
       const textMapResult = docToTextWithMapping(unit.node);
@@ -70,7 +74,10 @@ describe("Empty paragraph handling", () => {
   test("getUnitsInRange always skips empty paragraphs", () => {
     const doc = makeDoc(p("First"), p(""), p("Third"));
 
-    const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     // Block-runner always skips empty nodes
     expect(units.length).toBe(2); // "First", "Third"
@@ -79,7 +86,10 @@ describe("Empty paragraph handling", () => {
   test("without empty paragraphs - all nodes returned", () => {
     const doc = makeDoc(p("First"), p("Second"), p("Third"));
 
-    const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     expect(units.length).toBe(3);
   });
@@ -89,7 +99,10 @@ describe("docToTextWithMapping on resolved nodes", () => {
   const doc = makeDoc(p("Hello world"), p("Test paragraph"));
 
   test("resolvedNode text matches unit text", () => {
-    const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     for (const unit of units) {
       const resolvedNode = doc.nodeAt(unit.from);
@@ -100,7 +113,10 @@ describe("docToTextWithMapping on resolved nodes", () => {
   });
 
   test("textPosToDocPos gives positions relative to node start (0-based)", () => {
-    const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     const firstUnit = units[0]; // "Hello world"
     const resolvedNode = doc.nodeAt(firstUnit.from)!;
@@ -124,7 +140,10 @@ describe("docToTextWithMapping on resolved nodes", () => {
 describe("Decoration position correctness", () => {
   test("inline decoration positions are within node bounds", () => {
     const doc = makeDoc(p("Hello world"), p("Modified world"));
-    const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     // Simulate what renderInlineDecorators does:
     // For unit[0] "Hello world", say diff adds "Hello" (positions 0-5)
@@ -165,8 +184,14 @@ describe("Full metadata + diff flow simulation", () => {
   );
 
   test("node identity is preserved across multiple getUnitsInRange calls", () => {
-    const units1 = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
-    const units2 = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
+    const units1 = getUnitsInRange(leftDoc, 0, leftDoc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
+    const units2 = getUnitsInRange(leftDoc, 0, leftDoc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     expect(units1.length).toBe(units2.length);
     for (let i = 0; i < units1.length; i++) {
@@ -176,12 +201,21 @@ describe("Full metadata + diff flow simulation", () => {
   });
 
   test("stringNodePairing stores original node references", () => {
-    const { stringNodePairing, defaultStringSimilarity } = require("../stringNodePairing");
+    const {
+      stringNodePairing,
+      defaultStringSimilarity,
+    } = require("../stringNodePairing");
 
-    const leftUnits = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
-    const rightUnits = getUnitsInRange(rightDoc, 0, rightDoc.content.size, ["heading", "paragraph"]);
-    const leftNodes = leftUnits.map(u => u.node);
-    const rightNodes = rightUnits.map(u => u.node);
+    const leftUnits = getUnitsInRange(leftDoc, 0, leftDoc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
+    const rightUnits = getUnitsInRange(rightDoc, 0, rightDoc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
+    const leftNodes = leftUnits.map((u) => u.node);
+    const rightNodes = rightUnits.map((u) => u.node);
 
     const pairings = stringNodePairing({
       bodyExtractor: (node: Node) => node.textContent,
@@ -206,15 +240,24 @@ describe("Full metadata + diff flow simulation", () => {
   });
 
   test("metadata factory finds all nodes in pairings", () => {
-    const { stringNodePairing, defaultStringSimilarity } = require("../stringNodePairing");
+    const {
+      stringNodePairing,
+      defaultStringSimilarity,
+    } = require("../stringNodePairing");
 
     // Step 1: calcPairings
-    const leftUnits = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
-    const rightUnits = getUnitsInRange(rightDoc, 0, rightDoc.content.size, ["heading", "paragraph"]);
+    const leftUnits = getUnitsInRange(leftDoc, 0, leftDoc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
+    const rightUnits = getUnitsInRange(rightDoc, 0, rightDoc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
     const pairings = stringNodePairing({
       bodyExtractor: (node: Node) => node.textContent,
-      leftSideNodes: leftUnits.map(u => u.node),
-      rightSideNodes: rightUnits.map(u => u.node),
+      leftSideNodes: leftUnits.map((u) => u.node),
+      rightSideNodes: rightUnits.map((u) => u.node),
       similarity: { fromString: defaultStringSimilarity },
       insertDeleteWeight: 0,
     });
@@ -244,14 +287,23 @@ describe("Full metadata + diff flow simulation", () => {
 
   test("diff computation produces partial (not full) diffs for similar text", () => {
     const Diff = require("diff");
-    const { stringNodePairing, defaultStringSimilarity } = require("../stringNodePairing");
+    const {
+      stringNodePairing,
+      defaultStringSimilarity,
+    } = require("../stringNodePairing");
 
-    const leftUnits = getUnitsInRange(leftDoc, 0, leftDoc.content.size, ["heading", "paragraph"]);
-    const rightUnits = getUnitsInRange(rightDoc, 0, rightDoc.content.size, ["heading", "paragraph"]);
+    const leftUnits = getUnitsInRange(leftDoc, 0, leftDoc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
+    const rightUnits = getUnitsInRange(rightDoc, 0, rightDoc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
     const pairings = stringNodePairing({
       bodyExtractor: (node: Node) => node.textContent,
-      leftSideNodes: leftUnits.map(u => u.node),
-      rightSideNodes: rightUnits.map(u => u.node),
+      leftSideNodes: leftUnits.map((u) => u.node),
+      rightSideNodes: rightUnits.map((u) => u.node),
       similarity: { fromString: defaultStringSimilarity },
       insertDeleteWeight: 0,
     });
@@ -289,7 +341,10 @@ describe("Multi-paragraph scenario end-to-end", () => {
       p("Third paragraph that is unique."),
     );
 
-    const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     expect(units.length).toBe(4);
 
@@ -321,7 +376,10 @@ describe("Multi-paragraph scenario end-to-end", () => {
       p("Paragraph two"),
     );
 
-    const units = getUnitsInRange(doc, 0, doc.content.size, ["heading", "paragraph"]);
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
 
     expect(units.length).toBe(3); // "Title", "Paragraph one", "Paragraph two"
 

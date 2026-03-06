@@ -36,7 +36,7 @@ export interface WhoWroteWhatOptions {
     from: number,
     to: number,
     color: string,
-    userId: string | number,
+    userId: string | number
   ) => Decoration;
 }
 

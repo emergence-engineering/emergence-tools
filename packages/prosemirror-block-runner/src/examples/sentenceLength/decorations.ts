@@ -28,8 +28,10 @@ export const sentenceLengthDecorationFactory: DecorationFactory<
   unit: ProcessingUnit<SentenceLengthMetadata>
 ): ResultDecoration<SentenceLengthResponse>[] => {
   return response.map((longSentence) => {
-    const docFrom = unit.from + 1 + textPosToDocPos(longSentence.from, unit.mapping);
-    const docTo = unit.from + 1 + textPosToDocPos(longSentence.to, unit.mapping);
+    const docFrom =
+      unit.from + 1 + textPosToDocPos(longSentence.from, unit.mapping);
+    const docTo =
+      unit.from + 1 + textPosToDocPos(longSentence.to, unit.mapping);
     const styles = SEVERITY_STYLES[longSentence.severity];
 
     return Decoration.inline(

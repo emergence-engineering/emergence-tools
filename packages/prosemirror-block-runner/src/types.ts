@@ -2,7 +2,10 @@
 import { Node } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import { Decoration, EditorView } from "prosemirror-view";
-import type { TextMappingItem, MappingOptions } from "@emergence-engineering/prosemirror-text-map";
+import type {
+  TextMappingItem,
+  MappingOptions,
+} from "@emergence-engineering/prosemirror-text-map";
 
 // Re-export TextMappingItem for consumers
 export type { TextMappingItem, MappingOptions };

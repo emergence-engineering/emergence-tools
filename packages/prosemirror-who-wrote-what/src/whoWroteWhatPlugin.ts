@@ -7,7 +7,7 @@ import { getDecorationSet, writeClientIdsToYDoc } from "./core";
 import { UserMapEntry, WhoWroteWhatOptions } from "./types";
 
 export const whoWroteWhatPluginKey = new PluginKey<WhoWroteWhatState>(
-  "WhoWroteWhat",
+  "WhoWroteWhat"
 );
 
 export enum WhoWroteWhatMetaType {
@@ -36,7 +36,7 @@ type WhoWroteWhatState = {
 
 export const setWhoWroteWhatVisibility = (
   view: EditorView,
-  visible: boolean,
+  visible: boolean
 ) => {
   const meta: SetWhoWroteWhatVisibilityMeta = {
     type: WhoWroteWhatMetaType.SetVisibility,
@@ -54,7 +54,11 @@ export const createWhoWroteWhatPlugin = ({
   userId,
   options = {},
 }: WhoWroteWhatPluginConfig) => {
-  const { userMapKey = "userMap", startVisible = true, debounceFactor = 1.5 } = options;
+  const {
+    userMapKey = "userMap",
+    startVisible = true,
+    debounceFactor = 1.5,
+  } = options;
 
   return new Plugin<WhoWroteWhatState>({
     key: whoWroteWhatPluginKey,
@@ -98,7 +102,7 @@ export const createWhoWroteWhatPlugin = ({
       const ySyncState = ySyncPluginKey.getState(editorView.state);
       if (!ySyncState) {
         throw new Error(
-          "prosemirror-who-wrote-what requires ySyncPlugin — add ySyncPlugin to your plugins before createWhoWroteWhatPlugin",
+          "prosemirror-who-wrote-what requires ySyncPlugin — add ySyncPlugin to your plugins before createWhoWroteWhatPlugin"
         );
       }
       const ydoc = ySyncState.doc as Doc;
@@ -118,7 +122,7 @@ export const createWhoWroteWhatPlugin = ({
           ySyncPluginState.binding,
           state,
           userMap,
-          options,
+          options
         );
 
         const meta: UpdateWhoWroteWhatDecorationsMeta = {
@@ -126,7 +130,7 @@ export const createWhoWroteWhatPlugin = ({
           type: WhoWroteWhatMetaType.UpdateDecorations,
         };
         editorView.dispatch(
-          editorView.state.tr.setMeta(whoWroteWhatPluginKey, meta),
+          editorView.state.tr.setMeta(whoWroteWhatPluginKey, meta)
         );
       };
 

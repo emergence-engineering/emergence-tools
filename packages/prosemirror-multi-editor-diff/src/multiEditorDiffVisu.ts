@@ -385,7 +385,9 @@ const multiEditorDiffVisuDecorationCreator: DecorationFactory<
     );
     // spacer rectangle
     const spacerDecoration = createSpacerDecoration(unit, contextState);
-    decorations.push(spacerDecoration as ResultDecoration<MultiEditorDiffVisuResponse>);
+    decorations.push(
+      spacerDecoration as ResultDecoration<MultiEditorDiffVisuResponse>,
+    );
   }
 
   return decorations;
@@ -400,14 +402,16 @@ const multiEditorDiffVisuUnitProcessor: UnitProcessor<
 ): Promise<UnitProcessorResult<MultiEditorDiffVisuResponse>> => {
   // Get textExtractionOptions from contextState
   const pluginState = multiEditorDiffVisuPluginKey.getState(view.state);
-  const textExtractionOptions = pluginState?.contextState?.textExtractionOptions;
+  const textExtractionOptions =
+    pluginState?.contextState?.textExtractionOptions;
 
   return new Promise((resolve) => {
     setTimeout(() => {
       const firstPair = unit.metadata.pairs?.[0];
-      const otherNode = (unit.metadata.editorId === "left"
-        ? firstPair?.rightNode
-        : firstPair?.leftNode
+      const otherNode = (
+        unit.metadata.editorId === "left"
+          ? firstPair?.rightNode
+          : firstPair?.leftNode
       )?.node;
       const prevText = otherNode
         ? docToTextWithMapping(otherNode, textExtractionOptions ?? {})
@@ -586,7 +590,9 @@ export const startingState: MultiEditorDiffVisuState = {
   otherEditorView: undefined,
 };
 
-export const createMultiEditorDiffVisuPlugin = (config?: MultiEditorDiffConfig): Plugin => {
+export const createMultiEditorDiffVisuPlugin = (
+  config?: MultiEditorDiffConfig,
+): Plugin => {
   return blockRunnerPlugin<
     MultiEditorDiffVisuResponse,
     MultiEditorDiffVisuState,
@@ -598,7 +604,9 @@ export const createMultiEditorDiffVisuPlugin = (config?: MultiEditorDiffConfig):
     widgetFactory: loadingWidgetFactory,
     initialContextState: startingState,
     options: {
-      nodeTypes: Array.from(config?.diffableNodeTypes ?? DEFAULT_DIFFABLE_NODE_TYPES),
+      nodeTypes: Array.from(
+        config?.diffableNodeTypes ?? DEFAULT_DIFFABLE_NODE_TYPES,
+      ),
       textExtractionOptions: config?.textExtractionOptions,
       dirtyHandling: {
         shouldRecalculate: true,

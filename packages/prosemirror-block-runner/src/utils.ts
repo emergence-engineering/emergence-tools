@@ -26,7 +26,7 @@ export function getUnitsInRange(
   from: number,
   to: number,
   nodeTypes: string | string[] = "paragraph",
-  textExtractionOptions?: Partial<MappingOptions>,
+  textExtractionOptions?: Partial<MappingOptions>
 ): UnitRange[] {
   const types = Array.isArray(nodeTypes) ? nodeTypes : [nodeTypes];
   const units: UnitRange[] = [];
@@ -125,7 +125,13 @@ export function remapPositions<ResponseType, ContextState, UnitMetadata>(
     const newNodes: ProcessingUnit<UnitMetadata>[] = [];
     const nodesFrom = pmMapping.map(nodes[0].from);
     const nodesTo = pmMapping.map(nodes[nodes.length - 1].to);
-    const helperNodes = getUnitsInRange(tr.doc, nodesFrom, nodesTo, nodeTypes, options.textExtractionOptions);
+    const helperNodes = getUnitsInRange(
+      tr.doc,
+      nodesFrom,
+      nodesTo,
+      nodeTypes,
+      options.textExtractionOptions
+    );
     for (const idx in nodes) {
       const node = nodes[idx];
       const refNode = helperNodes[idx];
@@ -251,9 +257,15 @@ export function createUnitsFromDocument<UnitMetadata>(
   to: number,
   metadataFactory: (unit: UnitRange, index: number) => UnitMetadata,
   nodeTypes: string | string[] = "paragraph",
-  textExtractionOptions?: Partial<MappingOptions>,
+  textExtractionOptions?: Partial<MappingOptions>
 ): ProcessingUnit<UnitMetadata>[] {
-  const ranges = getUnitsInRange(doc, from, to, nodeTypes, textExtractionOptions);
+  const ranges = getUnitsInRange(
+    doc,
+    from,
+    to,
+    nodeTypes,
+    textExtractionOptions
+  );
 
   return ranges.map((range, index) => ({
     id: {},

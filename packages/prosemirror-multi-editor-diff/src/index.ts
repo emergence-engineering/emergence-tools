@@ -1,5 +1,8 @@
 // Core algorithm
-export { stringNodePairing, defaultStringSimilarity } from "./stringNodePairing";
+export {
+  stringNodePairing,
+  defaultStringSimilarity,
+} from "./stringNodePairing";
 export type {
   NodeHelper,
   NodePairing,
@@ -38,10 +41,7 @@ export type {
 
 // Types & config
 export type { UuidWithVersion, MultiEditorDiffConfig } from "./types";
-export {
-  isSameVersion,
-  DEFAULT_DIFFABLE_NODE_TYPES,
-} from "./types";
+export { isSameVersion, DEFAULT_DIFFABLE_NODE_TYPES } from "./types";
 
 // Re-exported block-runner types for consumers
 export type {

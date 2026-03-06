@@ -13,7 +13,7 @@ import {
 export const createRelativePosition = (
   type: AbstractType<any>,
   item: ID | null,
-  assoc: number,
+  assoc: number
 ): RelativePosition => {
   let typeid = null;
   let tname = null;

@@ -60,8 +60,7 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
   let rightEditor: undefined | EditorWithIds = undefined;
 
   const sendClearTransaction = (editorId: MultiEditorStateHolderIdType) => {
-    const view =
-      editorId === "left" ? leftEditor?.view : rightEditor?.view;
+    const view = editorId === "left" ? leftEditor?.view : rightEditor?.view;
     if (!view) return;
     const meta: ClearAction = {
       type: ActionType.CLEAR,
@@ -147,21 +146,31 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
     | undefined => {
     if (leftEditor && rightEditor) {
       const leftUnitRanges = getUnitsInRange(
-        leftEditor.view.state.doc, 0, leftEditor.view.state.doc.content.size,
-        nodeTypes, textExtractionOptions,
+        leftEditor.view.state.doc,
+        0,
+        leftEditor.view.state.doc.content.size,
+        nodeTypes,
+        textExtractionOptions,
       );
-      const leftSideNodes = leftUnitRanges.map(u => u.node);
-      const leftSideNodeList: NodeListEntry[] = leftUnitRanges.map(u => ({
-        node: u.node, from: u.from + 1, text: u.text,
+      const leftSideNodes = leftUnitRanges.map((u) => u.node);
+      const leftSideNodeList: NodeListEntry[] = leftUnitRanges.map((u) => ({
+        node: u.node,
+        from: u.from + 1,
+        text: u.text,
       }));
 
       const rightUnitRanges = getUnitsInRange(
-        rightEditor.view.state.doc, 0, rightEditor.view.state.doc.content.size,
-        nodeTypes, textExtractionOptions,
+        rightEditor.view.state.doc,
+        0,
+        rightEditor.view.state.doc.content.size,
+        nodeTypes,
+        textExtractionOptions,
       );
-      const rightSideNodes = rightUnitRanges.map(u => u.node);
-      const rightSideNodeList: NodeListEntry[] = rightUnitRanges.map(u => ({
-        node: u.node, from: u.from + 1, text: u.text,
+      const rightSideNodes = rightUnitRanges.map((u) => u.node);
+      const rightSideNodeList: NodeListEntry[] = rightUnitRanges.map((u) => ({
+        node: u.node,
+        from: u.from + 1,
+        text: u.text,
       }));
 
       const pairings = stringNodePairing({
@@ -223,8 +232,7 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
     leftSideNodes: NodeListEntry[] | undefined,
     rightSideNodes: NodeListEntry[] | undefined,
   ) => {
-    const view =
-      editorId === "left" ? leftEditor?.view : rightEditor?.view;
+    const view = editorId === "left" ? leftEditor?.view : rightEditor?.view;
     if (!view) return;
     const meta: UpdateContextAction<MultiEditorDiffVisuState> = {
       contextState: {
@@ -238,10 +246,7 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
       },
       type: ActionType.UPDATE_CONTEXT,
     };
-    const tr = view.state.tr.setMeta(
-      multiEditorDiffVisuPluginKey,
-      meta,
-    );
+    const tr = view.state.tr.setMeta(multiEditorDiffVisuPluginKey, meta);
     view.dispatch(tr);
   };
 
@@ -249,17 +254,21 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
     editorId: MultiEditorStateHolderIdType,
     nodeAdditionalDataSideHelper: NodeAdditionalDataSideHelperFn,
   ) => {
-    const view =
-      editorId === "left" ? leftEditor?.view : rightEditor?.view;
+    const view = editorId === "left" ? leftEditor?.view : rightEditor?.view;
     if (!view) return;
 
     // Get unit ranges for this side to compute metadata array
     const unitRanges = getUnitsInRange(
-      view.state.doc, 0, view.state.doc.content.size,
-      nodeTypes, textExtractionOptions,
+      view.state.doc,
+      0,
+      view.state.doc.content.size,
+      nodeTypes,
+      textExtractionOptions,
     );
-    const nodeList: NodeListEntry[] = unitRanges.map(u => ({
-      node: u.node, from: u.from + 1, text: u.text,
+    const nodeList: NodeListEntry[] = unitRanges.map((u) => ({
+      node: u.node,
+      from: u.from + 1,
+      text: u.text,
     }));
 
     const metadataFactory = nodeAdditionalDataSideHelper(editorId, (pair) =>
@@ -312,15 +321,14 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
 
     const sourcePluginState = multiEditorDiffVisuPluginKey.getState(
       sourceView.state,
-    ) as RunnerState<
-      MultiEditorDiffVisuResponse,
-      MultiEditorDiffVisuState,
-      MultiEditorDiffVisuAdditionalNodeData
-    > | undefined;
-    if (
-      !sourcePluginState ||
-      sourcePluginState.status === RunnerStatus.IDLE
-    ) {
+    ) as
+      | RunnerState<
+          MultiEditorDiffVisuResponse,
+          MultiEditorDiffVisuState,
+          MultiEditorDiffVisuAdditionalNodeData
+        >
+      | undefined;
+    if (!sourcePluginState || sourcePluginState.status === RunnerStatus.IDLE) {
       return undefined;
     }
     const fixedPos = pos + 1;
@@ -333,15 +341,14 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
     if (!destNodeIndex) return;
     const destPluginState = multiEditorDiffVisuPluginKey.getState(
       destView.state,
-    ) as RunnerState<
-      MultiEditorDiffVisuResponse,
-      MultiEditorDiffVisuState,
-      MultiEditorDiffVisuAdditionalNodeData
-    > | undefined;
-    if (
-      !destPluginState ||
-      destPluginState.status === RunnerStatus.IDLE
-    ) {
+    ) as
+      | RunnerState<
+          MultiEditorDiffVisuResponse,
+          MultiEditorDiffVisuState,
+          MultiEditorDiffVisuAdditionalNodeData
+        >
+      | undefined;
+    if (!destPluginState || destPluginState.status === RunnerStatus.IDLE) {
       return undefined;
     }
     const destUnit = destPluginState.unitsInProgress?.find((unit) => {
@@ -391,11 +398,17 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
         );
 
         // Add plugins via reconfigure
-        const leftPlugins = [...leftEditor.view.state.plugins, leftHelperPlugin];
+        const leftPlugins = [
+          ...leftEditor.view.state.plugins,
+          leftHelperPlugin,
+        ];
         leftEditor.view.updateState(
           leftEditor.view.state.reconfigure({ plugins: leftPlugins }),
         );
-        const rightPlugins = [...rightEditor.view.state.plugins, rightHelperPlugin];
+        const rightPlugins = [
+          ...rightEditor.view.state.plugins,
+          rightHelperPlugin,
+        ];
         rightEditor.view.updateState(
           rightEditor.view.state.reconfigure({ plugins: rightPlugins }),
         );
@@ -417,7 +430,9 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
       } else {
         // Remove helper plugins via reconfigure
         [leftEditor.view, rightEditor.view].forEach((view: EditorView) => {
-          const helperPlugin = MultiEditorDiffVisuHelperPluginKey.get(view.state);
+          const helperPlugin = MultiEditorDiffVisuHelperPluginKey.get(
+            view.state,
+          );
           if (helperPlugin) {
             const filteredPlugins = view.state.plugins.filter(
               (p) => p !== helperPlugin,

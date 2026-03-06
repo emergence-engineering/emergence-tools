@@ -28,7 +28,8 @@ export const wordComplexityDecorationFactory: DecorationFactory<
   unit: ProcessingUnit<WordComplexityMetadata>
 ): ResultDecoration<WordComplexityResponse>[] => {
   return response.map((complexWord) => {
-    const docFrom = unit.from + 1 + textPosToDocPos(complexWord.from, unit.mapping);
+    const docFrom =
+      unit.from + 1 + textPosToDocPos(complexWord.from, unit.mapping);
     const docTo = unit.from + 1 + textPosToDocPos(complexWord.to, unit.mapping);
     const styles = COMPLEXITY_STYLES[complexWord.complexity];
 
