@@ -1,107 +1,91 @@
 # prosemirror-slash-menu-react
 
-[![made by Emergence Engineering](https://emergence-engineering.com/ee-logo.svg)](https://emergence-engineering.com)
+[![logo](https://emergence-engineering.com/ee-logo.svg)](https://emergence-engineering.com)
 
-[**Made by Emergence-Engineering**](https://emergence-engineering.com/)
+[**Made by Emergence Engineering**](https://emergence-engineering.com/)
 
-A UI package used together
-with [prosemirror-slash-menu](https://github.com/emergence-engineering/prosemirror-slash-menu) to display the menu with
-react.
+> React UI component for [prosemirror-slash-menu](https://github.com/emergence-engineering/emergence-tools/tree/main/packages/prosemirror-slash-menu) -- renders a positioned, keyboard-navigable command palette with icons and submenus.
 
-By Horváth Áron & [Viktor Váczi](https://emergence-engineering.com/cv/viktor)
-at [Emergence Engineering](https://emergence-engineering.com/)
+## Features
 
-Try it out at <https://emergence-engineering.com/blog/prosemirror-slash-menu>
-![alt text](https://github.com/emergence-engineering/prosemirror-slash-menu-react/blob/main/public/prosemirror-slash-menu.gif?raw=true)
+- Renders the slash menu as a React component
+- Positions at the cursor via Popper.js
+- Automatic flip when the menu would overflow the viewport
+- Default icons and menu elements included
+- Custom icons, right-side icons, and submenu icons
+- Clickable mode for mouse interaction
+- Customizable filter placeholder and main menu label
+- Optional Popper reference element and placement
+- Outside-click handling to close the menu
+- Ships with default CSS (overridable via class names)
 
-# Features
+## Installation
 
-- Displaying `prosemirror-slash-menu` with react
-- Menu positioning at the cursor position
-- Displaying the menu upwards in case of overflow
-- Default styling
-- Custom styling with css classnames
-- Optional popper reference element, placement and offset
-- Outside click handling
+```bash
+npm install prosemirror-slash-menu-react
+```
 
-# Behavior
+### Peer dependencies
 
-You can open the menu with the `/` key in an empty paragraph or after a space and you can filter the elements just by
-typing, or you can navigate with the keyboard. For exact behaviour description
-checkout [prosemirror-slash-menu](https://github.com/emergence-engineering/prosemirror-slash-menu).
+```bash
+npm install prosemirror-slash-menu prosemirror-commands prosemirror-schema-basic prosemirror-state prosemirror-view react react-dom
+```
 
-# Installation and Usage
-
-Install from npm with:
-
-`npm install prosemirror-slash-menu-react`
-
-Usage in the app:
+## Quick Start
 
 ```tsx
-import React, { useEffect, useRef, useState } from "react";
-import { exampleSetup } from "prosemirror-example-setup";
+import { useState, useEffect, useRef } from "react";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import schema from "./schema";
+import { schema } from "prosemirror-schema-basic";
+import { exampleSetup } from "prosemirror-example-setup";
 import { SlashMenuPlugin } from "prosemirror-slash-menu";
 import {
+  SlashMenuReact,
   defaultElements,
   defaultIcons,
   Icons,
-  SlashMenuReact,
 } from "prosemirror-slash-menu-react";
 
-const ProseMirrorSlashMenuDemo = () => {
-  const [pmState, setPmState] = useState<EditorState>();
-  const [editorView, setEditorView] = useState<EditorView>();
+// Import default styles
+import "prosemirror-slash-menu-react/dist/styles/menu-style.css";
+
+function Editor() {
   const editorRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<EditorView | null>(null);
+  const [editorState, setEditorState] = useState<EditorState>();
+
   useEffect(() => {
     if (!editorRef.current) return;
+
     const state = EditorState.create({
-      doc: schema.nodeFromJSON({
-        content: [
-          {
-            content: [
-              {
-                text: "Type '/' after a space to open the menu. ",
-                type: "text",
-              },
-            ],
-            type: "paragraph",
-          },
-        ],
-        type: "doc",
-      }),
-      plugins: [
-        SlashMenuPlugin(defaultElements),
-        ...exampleSetup({
-          schema,
-        }),
-      ],
+      schema,
+      plugins: [SlashMenuPlugin(defaultElements), ...exampleSetup({ schema })],
     });
-    const view: EditorView = new EditorView(editorRef.current, {
+
+    const view = new EditorView(editorRef.current, {
       state,
-      dispatchTransaction: (tr) => {
-        try {
-          const newState = view.state.apply(tr);
-          view.updateState(newState);
-          setPmState(newState);
-        } catch (e) {}
+      dispatchTransaction(tr) {
+        const newState = view.state.apply(tr);
+        view.updateState(newState);
+        setEditorState(newState);
       },
     });
-    setEditorView(view);
-    return () => {
-      view && view.destroy();
-    };
-  }, [editorRef]);
+
+    viewRef.current = view;
+    setEditorState(state);
+    return () => view.destroy();
+  }, []);
+
   return (
     <>
-      <div ref={editorRef} id="editor" />
-      {pmState && editorView && (
+      <div ref={editorRef} />
+      {editorState && viewRef.current && (
         <SlashMenuReact
+          editorState={editorState}
+          editorView={viewRef.current}
           icons={{
-            [Icons.HeaderMenu]: defaultIcons.H1Icon,
+            [Icons.HeaderMenu]: defaultIcons.HeadingIcon,
             [Icons.Level1]: defaultIcons.H1Icon,
             [Icons.Level2]: defaultIcons.H2Icon,
             [Icons.Level3]: defaultIcons.H3Icon,
@@ -110,49 +94,79 @@ const ProseMirrorSlashMenuDemo = () => {
             [Icons.Code]: defaultIcons.CodeIcon,
             [Icons.Link]: defaultIcons.LinkIcon,
           }}
-          editorState={pmState}
-          editorView={editorView}
+          filterPlaceHolder="Type to filter..."
+          clickable
         />
       )}
     </>
   );
-};
+}
 ```
 
-# Styling
+## Options
 
-To use the basic styling you can import `menu-style.css` into your project. If you want to use your own styling you can
-override the following classnames.
+`SlashMenuReact` props:
 
-- `menu-display-root` root div for the menu
-- `menu-element-wrapper` root of menu elements
-- `menu-element-wrapper-clickable` root of menu elements when the menu items are set to be clickable
-- `menu-element-selected` classname that is added alongside `menu-element-wrapper` when an element is selected
-- `menu-element-icon` if icon is provided for the element it's rendered in this div
-- `menu-element-right-icon` if right icon is provided its rendered in this div
-- `menu-element-label` label of the menu element
-- `menu-placeholder` when there is no matching items for the filter, this is displayed with the text "No matching items"
-- `menu-filter-wrapper` root of the filter display, positioned above the menu by default
-- `menu-filter` the filter text
-- `menu-filter-placeholder` placeholder text for the filter field
-- `menu-filter-icon` if icon is provided for the filter field it's rendered in this div
-- `submenu-label` The label of the submenu is shown above the menu elements when its opened
-- `group-wrapper` wrapper around the menu elements, if there are multiple groups of elements
-- `group-label` label/title of the group
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `editorState` | `EditorState` | **(required)** | Current ProseMirror editor state. |
+| `editorView` | `EditorView` | **(required)** | ProseMirror editor view instance. |
+| `icons` | `{ [id: string]: FC }` | `undefined` | Left-side icon components keyed by menu element id. |
+| `rightIcons` | `{ [id: string]: FC }` | `undefined` | Right-side icon components (e.g. submenu arrows). |
+| `subMenuIcon` | `ReactNode` | Arrow left icon | Icon shown next to the submenu back-label. |
+| `filterFieldIcon` | `ReactNode` | `undefined` | Icon rendered inside the filter input. |
+| `filterPlaceHolder` | `string` | `undefined` | Placeholder text for the filter field. |
+| `mainMenuLabel` | `string` | `undefined` | Label shown above top-level menu items. |
+| `popperReference` | `HTMLElement` | Cursor position | Anchor element for Popper.js positioning. |
+| `popperOptions` | `PopperOptions` | `{ placement: "bottom-start" }` | Placement and offset for Popper.js. |
+| `clickable` | `boolean` | `false` | Enable mouse clicks on menu items. |
+| `disableInput` | `boolean` | `false` | Hide the filter input area entirely. |
+| `emptySearchComponent` | `ReactNode` | `"No matching items"` | Component shown when filter matches nothing. |
 
-# Props
+## API
 
-- `editorState` prosemirrors editor state
-- `editorView` prosemirror editor view
-- `icons` Optional, if you want to provide icons for your menu elements. Type of `{[key: string]: FC}` where the key is
-  the id of the menu element and the value is a `FunctionComponent` that renders the icon
-- `rightIcons` Same as icons but these appear on the right on the menu element, most commonly used for indicating a
-  submenu with an arrow
-- `subMenuIcon` Optional icon for submenu label. By default, when a submenu is open an arrow is displayed indicating
-  that the user is in a subMenu, it can be replaced with a react node of your choice
-- `filterFieldIcon` Optional icon in the filter field.
-- `filterPlaceHolder` Optional placeholder text for the filter field.
-- `mainMenuLabel` Optional label for the main menu. By default, there is none.
-- `popperReference` Optional popper reference HTMLElement, for displaying the menu next to whatever element you want
-- `popperOptions` You can pass in `placement` and `offset` to position your menu around the reference Element
-- `clickable` Optional boolean, if true the menu items are clickable, by default they are used only with keyboard
+| Export | Type | Description |
+| --- | --- | --- |
+| `SlashMenuReact` | `FC<SlashMenuProps>` | The React menu component. |
+| `defaultElements` | `MenuElement[]` | Pre-built menu elements (headings, bold, italic, code, link). |
+| `defaultIcons` | `object` | Pre-built SVG icon components (`H1Icon`, `H2Icon`, `H3Icon`, `HeadingIcon`, `BoldIcon`, `ItalicIcon`, `CodeIcon`, `LinkIcon`, `ArrowLeft`, `ArrowRight`). |
+| `Icons` | `enum` | Enum of default element ids (`HeaderMenu`, `Level1`, `Level2`, `Level3`, `Bold`, `Italic`, `Code`, `Link`). |
+| `Placement` | `enum` | Popper.js placement values (`auto`, `top`, `bottom`, `left`, `right`, and variants). |
+| `PopperOptions` | `interface` | Shape for `popperOptions` prop (`placement`, `offsetModifier`). |
+| `SlashMenuProps` | `interface` | Full prop type for `SlashMenuReact`. |
+
+## Styles
+
+Import the default styles:
+
+```ts
+import "prosemirror-slash-menu-react/dist/styles/menu-style.css";
+```
+
+Override with your own CSS using these class names:
+
+| Class | Description |
+| --- | --- |
+| `menu-display-root` | Root container for the menu |
+| `menu-element-wrapper` | Wrapper for each menu item |
+| `menu-element-wrapper-clickable` | Menu item wrapper when `clickable` is enabled |
+| `menu-element-selected` | Added to the currently highlighted item |
+| `menu-element-icon` | Left icon container |
+| `menu-element-right-icon` | Right icon container |
+| `menu-element-label` | Item label text |
+| `menu-placeholder` | "No matching items" placeholder |
+| `menu-filter-wrapper` | Filter field container |
+| `menu-filter` | Filter text display |
+| `menu-filter-placeholder` | Filter placeholder text |
+| `menu-filter-icon` | Filter field icon container |
+| `submenu-label` | Submenu header label |
+| `group-wrapper` | Group container |
+| `group-label` | Group header label |
+
+## Playground
+
+See the [interactive demo](https://emergence-engineering.github.io/emergence-tools/#slashMenuReact) in the monorepo playground.
+
+## License
+
+MIT

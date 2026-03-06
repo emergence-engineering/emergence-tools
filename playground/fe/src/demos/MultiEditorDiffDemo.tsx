@@ -266,6 +266,7 @@ export function MultiEditorDiffDemo() {
   return (
     <DemoLayout
       title="@emergence-engineering/prosemirror-multi-editor-diff"
+      demoKey="multiEditorDiff"
       description={
         <>
           Multi-editor diff visualization for ProseMirror. Compare two editors

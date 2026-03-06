@@ -125,6 +125,7 @@ export function SuggestcatAutoCompleteDemo() {
       packageNames={["prosemirror-suggestcat-plugin"]}
       sourceUrl={SOURCE_URL}
       usage={<SuggestcatAutoCompleteUsage />}
+      demoKey="suggestcatAutoComplete"
     >
       <SuggestcatAutoCompleteEditor />
     </DemoLayout>

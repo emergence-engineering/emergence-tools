@@ -282,6 +282,7 @@ export function ImagePluginDemo() {
       }
       packageNames={["prosemirror-image-plugin"]}
       sourceUrl={SOURCE_URL}
+      demoKey="imagePlugin"
       usage={<ImagePluginUsage />}
     >
       <ImagePluginContent />

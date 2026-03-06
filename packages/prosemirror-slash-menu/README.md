@@ -1,137 +1,189 @@
 # prosemirror-slash-menu
 
-[![made by Emergence Engineering](https://emergence-engineering.com/ee-logo.svg)](https://emergence-engineering.com)
+[![logo](https://emergence-engineering.com/ee-logo.svg)](https://emergence-engineering.com)
 
-[**Made by Emergence-Engineering**](https://emergence-engineering.com/)
+[**Made by Emergence Engineering**](https://emergence-engineering.com/)
 
-A ProseMirror plugin to handle the state of a slash menu. It is intended to be opened inline with `/`, searched and navigated by keyboard.
-It can be used together with [prosemirror-slash-menu-react](https://github.com/emergence-engineering/prosemirror-slash-menu-react) to provide a UI element for
-the plugin, or you could write your own.
+> Headless slash menu plugin for ProseMirror -- type `/` to open, search, and execute commands via keyboard.
 
-By Horváth Áron & [Viktor Váczi](https://emergence-engineering.com/cv/viktor) at [Emergence Engineering](https://emergence-engineering.com/)
+## Features
 
-Try it out at <https://emergence-engineering.com/blog/prosemirror-slash-menu>
+- Opens with `/` in an empty paragraph or after a space
+- Keyboard navigation (arrow keys, Enter/Tab to execute, Escape to close)
+- Filter commands by typing while the menu is open
+- Nested submenus with arbitrary depth
+- Grouping support for visual separators in the UI
+- Dynamic item availability via `available` callbacks
+- Custom opening/closing conditions
+- Locked (hidden) submenus openable only via transactions
+- Headless — bring your own UI, or use [prosemirror-slash-menu-react](https://github.com/emergence-engineering/emergence-tools/tree/main/packages/prosemirror-slash-menu-react)
 
-![alt text](https://github.com/emergence-engineering/prosemirror-slash-menu-react/blob/main/public/prosemirror-slash-menu.gif?raw=true)
+## Installation
 
-# Features
-
-- Opening the menu with `/` in an empty paragraph or after a space by default
-- Option to add custom opening conditions
-- Navigation and selection with keyboard
-- Commands can be easily added to the menu as a `MenuElement[]`
-- Filtering commands simply by typing while menu is open
-- Nested sub menus
-
-# Usage
-
-Add to your editor plugins with an initial array of menu elements. You can import an example list of MenuElements from [prosemirror-slash-menu-react](https://github.com/emergence-engineering/prosemirror-slash-menu-react).
-
-```
- plugins: [
-    ...
-        SlashMenuPlugin(defaultElements),
-    ...
-      ],
+```bash
+npm install prosemirror-slash-menu
 ```
 
-### With tiptap
+### Peer dependencies
 
-For usage with tiptap simply create an extension with the plugin.
+```bash
+npm install prosemirror-model prosemirror-state prosemirror-view
+```
 
-```typescript
-Extension.create({
-  name: "SlashMenuPlugin",
-  addProseMirrorPlugins() {
-    return [SlashMenuPlugin(defaultElements)];
+## Quick Start
+
+> **Important:** Register `SlashMenuPlugin` **before** other plugins (e.g. `exampleSetup`) in the plugins array. This ensures the menu captures keyboard events (Arrow keys, Enter, Escape) for navigation before other key bindings consume them.
+
+```ts
+import { EditorState } from "prosemirror-state";
+import { EditorView } from "prosemirror-view";
+import { schema } from "prosemirror-schema-basic";
+import { exampleSetup } from "prosemirror-example-setup";
+import { setBlockType, toggleMark } from "prosemirror-commands";
+import {
+  SlashMenuPlugin,
+  SlashMenuKey,
+  type CommandItem,
+  type MenuElement,
+} from "prosemirror-slash-menu";
+
+const menuElements: MenuElement[] = [
+  {
+    id: "heading1",
+    label: "Heading 1",
+    type: "command",
+    command: (view) => {
+      setBlockType(view.state.schema.nodes.heading, { level: 1 })(
+        view.state, view.dispatch, view,
+      );
+    },
+    available: () => true,
+  } as CommandItem,
+  {
+    id: "bold",
+    label: "Bold",
+    type: "command",
+    command: (view) => {
+      toggleMark(view.state.schema.marks.strong)(view.state, view.dispatch, view);
+    },
+    available: () => true,
+  } as CommandItem,
+];
+
+// SlashMenuPlugin MUST come first so it handles keyboard events before other plugins
+const state = EditorState.create({
+  schema,
+  plugins: [
+    SlashMenuPlugin(menuElements),
+    ...exampleSetup({ schema }),
+  ],
+});
+
+const view = new EditorView(document.getElementById("editor")!, {
+  state,
+  dispatchTransaction(tr) {
+    const newState = view.state.apply(tr);
+    view.updateState(newState);
+    // Read menu state for your UI:
+    const menuState = SlashMenuKey.getState(newState);
   },
 });
 ```
 
-# Arguments
+## Options
 
-```typescript
-SlashMenuPlugin = (
-    menuElements: MenuElement[],
-    ignoredKeys?: string[],
-    customConditions?: OpeningConditions,
-    openInSelection?: boolean
-) => void;
-```
+`SlashMenuPlugin` accepts the following arguments:
 
-### Menu Elements
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `menuElements` | `MenuElement[]` | **(required)** | Array of `CommandItem` or `SubMenu` objects. Every element must have a unique `id`. |
+| `ignoredKeys` | `string[]` | `undefined` | Additional key codes the menu ignores during filtering (appended to built-in `defaultIgnoredKeys`). |
+| `customConditions` | `OpeningConditions` | `undefined` | Override when the menu opens/closes. |
+| `openInSelection` | `boolean` | `false` | Allow opening the menu even when text is selected. |
+| `inlineFilter` | `boolean` | `false` | When `true`, filter characters are also inserted into the document. |
+| `onMenuClose` | `(tr: Transaction, state: SlashMenuState) => void` | `undefined` | Callback fired when the menu closes. |
 
-A menu elements can either be a simple `CommandItem` that executes an action, or it can be a `SubMenu` that can be opened to show its elements.
-You can nest submenus into other submenus as needed.
-The `locked` property can be used to hide a menu element from the user. The main idea behind it is to have a `SubMenu` that can only be opened by sending a transaction with `openSubMenu` meta.
-Once opened it behaves like a second, hidden slash menu. For eg. you can have a command that needs approval or rejection after execution, you could open the slash menu with just these two options that are otherwise hidden.
-The `group` property can be used to group elements together in the menu. It is used to separate elements in the UI. It is not necessary to group elements, but it can be useful for better organization.
+### Menu Element Types
 
-NOTE: It is necessary to add unique ids to every menu element.
-
-```typescript
-export type ItemId = string | "root";
-export type ItemType = "command" | "submenu";
-
-type MenuItem = {
-  id: ItemId;
+```ts
+type CommandItem = {
+  id: string;
   label: string;
-  type: ItemType;
-  available: () => boolean;
-  locked?: boolean;
-  group?: string;
-};
-
-interface CommandItem extends MenuItem {
   type: "command";
   command: (view: EditorView) => void;
-}
+  available: (view: EditorView) => boolean;
+  locked?: boolean;   // hidden from the user
+  group?: string;      // visual group label
+};
 
-interface SubMenu extends MenuItem {
+type SubMenu = {
+  id: string;
+  label: string;
   type: "submenu";
   elements: MenuElement[];
-}
-type MenuElement = CommandItem | SubMenu;
+  available: (view: EditorView) => boolean;
+  locked?: boolean;
+  group?: string;
+  callbackOnClose?: () => void;
+};
 ```
-
-### Ignored Keys
-
-There is an option to provide an array of key codes that the slash menu will ignore while filtering the commands.
-This can be useful if you have a special key in your app
-that you don't want the slash menu to capture.
-Note that there is an array of keys that are ignored by default (`defaultIgnoredKeys`), these are keys such as "Shift", "Control", "Home" etc. that have no use in filtering. Your custom keys will be appended to this array, not replace it.
 
 ### Opening Conditions
 
-You can pass your own conditions on when should the menu open or close with `customConditions`.
-
-```typescript
+```ts
 interface OpeningConditions {
-  shouldOpen: (
-    state: SlashMenuState,
-    event: KeyboardEvent,
-    view: EditorView
-  ) => boolean;
-  shouldClose: (
-    state: SlashMenuState,
-    event: KeyboardEvent,
-    view: EditorView
-  ) => boolean;
+  shouldOpen: (state: SlashMenuState, event: KeyboardEvent, view: EditorView) => boolean;
+  shouldClose: (state: SlashMenuState, event: KeyboardEvent, view: EditorView) => boolean;
 }
 ```
 
-### Open in selection
+## API
 
-You have the option to open the menu even if you have something selected.
+| Export | Type | Description |
+| --- | --- | --- |
+| `SlashMenuPlugin` | `(menuElements, ignoredKeys?, customConditions?, openInSelection?, inlineFilter?, onMenuClose?) => Plugin` | Creates the slash menu plugin. |
+| `SlashMenuKey` | `PluginKey<SlashMenuState>` | Plugin key to read menu state from editor state. |
+| `SlashMetaTypes` | `enum` | Transaction meta types (`open`, `close`, `execute`, etc.). |
+| `dispatchWithMeta` | `(view, key, meta) => void` | Helper to dispatch a transaction with slash menu metadata. |
+| `getElementById` | `(id, state) => MenuElement \| undefined` | Look up a menu element by id. |
+| `defaultIgnoredKeys` | `string[]` | Default list of ignored key codes (Shift, Control, Home, etc.). |
 
-`openInSelection: boolean`
+### State Shape
 
-# Behaviour
+```ts
+type SlashMenuState = {
+  selected: string;              // id of the currently highlighted item
+  filteredElements: MenuElement[]; // items matching the current filter
+  open: boolean;
+  subMenuId?: string;            // id of the currently open submenu
+  filter: string;                // current filter text
+  elements: MenuElement[];       // all registered elements
+  ignoredKeys: string[];
+};
+```
 
-- The menu opens when '/' is pressed in an empty paragraph or after a space and will prevent the actual character to be inserted into the doc.
-- If you want to actually write the character '/', pressing the key again will close the menu and insert the character.
-- You can also close it with Backspace (in some cases) and Escape.
-- Up and Down arrow keys are used for selecting menu elements.
-- You can use Tab and Enter to execute commands or open the submenu. You can also open submenus with right arrow.
-- While Escape always closes the menu, Backspace will only close the sub menu if you are in one.
-- You can filter by simply typing while the menu is open, the menu will return any matches from the main menu elements and from all submenu elements. While filtering Backspace will not close the menu but work as intended.
+## TipTap
+
+```ts
+import { Extension } from "@tiptap/core";
+import { SlashMenuPlugin } from "prosemirror-slash-menu";
+
+const SlashMenuExtension = Extension.create({
+  name: "slashMenu",
+  addProseMirrorPlugins() {
+    return [SlashMenuPlugin(myMenuElements)];
+  },
+});
+```
+
+## React
+
+For a ready-made React UI component, see [prosemirror-slash-menu-react](https://github.com/emergence-engineering/emergence-tools/tree/main/packages/prosemirror-slash-menu-react).
+
+## Playground
+
+See the [interactive demo](https://emergence-engineering.github.io/emergence-tools/#slashMenuVanilla) in the monorepo playground.
+
+## License
+
+MIT

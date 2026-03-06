@@ -172,6 +172,7 @@ export function LinkPreviewDemo() {
       }
       packageNames={["prosemirror-link-preview"]}
       sourceUrl={SOURCE_URL}
+      demoKey="linkPreview"
       usage={<LinkPreviewUsage />}
     >
       <LinkPreviewEditor />

@@ -216,6 +216,7 @@ export function BlockRunnerDemo() {
   return (
     <DemoLayout
       title="@emergence-engineering/prosemirror-block-runner"
+      demoKey="blockRunner"
       description={
         <>
           A generic task queue processor for ProseMirror. It processes each document

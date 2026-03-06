@@ -196,6 +196,7 @@ export function SuggestcatGrammarDemo() {
       packageNames={["prosemirror-suggestcat-plugin", "prosemirror-suggestcat-plugin-react"]}
       sourceUrl={SOURCE_URL}
       usage={<SuggestcatGrammarUsage />}
+      demoKey="suggestcatGrammar"
     >
       <SuggestcatGrammarEditor />
     </DemoLayout>

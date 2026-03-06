@@ -266,6 +266,7 @@ export function LinkPluginDemo() {
       }
       packageNames={["prosemirror-link-plugin"]}
       sourceUrl={SOURCE_URL}
+      demoKey="linkPlugin"
       usage={<LinkPluginUsage />}
     >
       <LinkPluginContent />

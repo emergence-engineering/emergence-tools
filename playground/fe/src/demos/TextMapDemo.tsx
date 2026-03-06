@@ -299,6 +299,7 @@ export function TextMapDemo() {
         </>
       }
       packageNames={["@emergence-engineering/prosemirror-text-map"]}
+      demoKey="textMap"
       sourceUrl={SOURCE_URL}
       usage={<TextMapUsage />}
     >

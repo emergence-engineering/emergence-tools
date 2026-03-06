@@ -204,6 +204,7 @@ export function SlashMenuVanillaDemo() {
         </>
       }
       packageNames={["prosemirror-slash-menu"]}
+      demoKey="slashMenuVanilla"
       sourceUrl={SOURCE_URL}
       usage={<SlashMenuVanillaUsage />}
     >

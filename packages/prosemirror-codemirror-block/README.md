@@ -1,83 +1,69 @@
 # prosemirror-codemirror-block
 
-![alt text](https://gitlab.com/emergence-engineering/prosemirror-codemirror-block/-/raw/main/public/editorScreenshot.png)
+[![logo](https://emergence-engineering.com/ee-logo.svg)](https://emergence-engineering.com)
 
-Sponsored by [Skiff](https://www.skiff.org/) - a private, end-to-end encrypted, and decentralized workspace.
+[**Made by Emergence Engineering**](https://emergence-engineering.com/)
 
-By [Viktor Váczi](https://emergence-engineering.com/cv/viktor) at [Emergence Engineering](https://emergence-engineering.com/)
+> CodeMirror 6 code blocks inside ProseMirror — syntax highlighting for 100+ languages, a language selector, theme support, and keyboard shortcuts.
 
-Try it out at <https://emergence-engineering.com/blog/prosemirror-codemirror-block>
+## Features
 
-# Features
+- Replaces ProseMirror `code_block` nodes with full CodeMirror 6 editors
+- Lazy-loaded language support via dynamic `import()`
+- 100+ languages through CM6 native loaders and CM5 legacy modes
+- Customizable language selector dropdown
+- Theme switching at runtime (`updateTheme`)
+- Arrow-key escape from code blocks
+- Toggle shortcut (`Cmd/Ctrl+Alt+C`)
+- Read-only mode support
+- Copy button support
 
-- CodeMirror 6 `code_block` in ProseMirror
-- Customizable language selector
-- Lazy-loaded language support
-- Legacy ( CodeMirror 5 ) language support trough `@codemirror/legacy-modes`
-- Custom themes
+## Installation
 
-# How to use
+```bash
+npm install prosemirror-codemirror-block
+```
 
-```typescript
-import { schema as BasicSchema } from "prosemirror-schema-basic";
+### Peer dependencies
+
+```bash
+npm install @codemirror/state prosemirror-commands prosemirror-model prosemirror-state prosemirror-view
+```
+
+## Quick Start
+
+```ts
+import { Schema } from "prosemirror-model";
+import { schema as basicSchema } from "prosemirror-schema-basic";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { exampleSetup } from "prosemirror-example-setup";
+import { keymap } from "prosemirror-keymap";
+import { undo, redo } from "prosemirror-history";
 import {
   codeMirrorBlockPlugin,
   defaultSettings,
   languageLoaders,
-  codeBlockKeymap,
   legacyLanguageLoaders,
+  codeBlockKeymap,
   CodeBlockNodeName,
 } from "prosemirror-codemirror-block";
-import { undo, redo } from "prosemirror-history";
-import { Schema } from "prosemirror-model";
-import { keymap } from "prosemirror-keymap";
 
-const codeBlockSpec = BasicSchema.spec.nodes.get(CodeBlockNodeName);
-
-export const schema = new Schema({
-  nodes: BasicSchema.spec.nodes.update(CodeBlockNodeName, {
+// 1. Add a "lang" attr to the code_block node
+const codeBlockSpec = basicSchema.spec.nodes.get(CodeBlockNodeName);
+const schema = new Schema({
+  nodes: basicSchema.spec.nodes.update(CodeBlockNodeName, {
     ...(codeBlockSpec || {}),
     attrs: { ...codeBlockSpec?.attrs, lang: { default: null } },
   }),
-  marks: BasicSchema.spec.marks,
+  marks: basicSchema.spec.marks,
 });
 
-const codeBlockDoc = {
-  content: [
-    {
-      content: [
-        {
-          text: "prosemirror-codemirror-block",
-          type: "text",
-        },
-      ],
-      type: "paragraph",
-    },
-    {
-      content: [
-        {
-          text: "const jsFun = (arg) => {\n  console.log(arg); \n}",
-          type: "text",
-        },
-      ],
-      attrs: {
-        lang: "javascript",
-      },
-      type: CodeBlockNodeName,
-    },
-  ],
-  type: "doc",
-};
-
+// 2. Create the editor
 const state = EditorState.create({
-  doc: schema.nodeFromJSON(codeBlockDoc),
+  schema,
   plugins: [
-    ...exampleSetup({
-      schema,
-    }),
+    ...exampleSetup({ schema }),
     codeMirrorBlockPlugin({
       ...defaultSettings,
       languageLoaders: { ...languageLoaders, ...legacyLanguageLoaders },
@@ -88,35 +74,54 @@ const state = EditorState.create({
   ],
 });
 
-const view: EditorView = new EditorView(document.getElementById("editor"), {
-  state,
-});
+const view = new EditorView(document.getElementById("editor")!, { state });
 ```
 
-# Configuration
+## Options
 
-### CodeBlockSettings
+`CodeBlockSettings` — passed to `codeMirrorBlockPlugin()`:
 
-Interface for the settings used by this plugin.
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `createSelect` | `(settings, dom, node, view, getPos) => () => void` | Built-in `<select>` | Callback to create a language selector. Returns a cleanup function. |
+| `updateSelect` | `(settings, dom, node, view, getPos, oldNode) => void` | Built-in | Called when the node updates; should sync selector to the node's `lang` attr. |
+| `createCopyButton` | `(settings, dom, node, view, cmView, getPos) => () => void` | Built-in | Callback to create a copy button. Returns a cleanup function. |
+| `languageLoaders` | `Record<string, () => Promise<LanguageSupport>>` | `undefined` | Map of language names to lazy loader functions. |
+| `languageNameMap` | `Record<string, string>` | `undefined` | Display-name aliases for languages in the selector. |
+| `languageWhitelist` | `string[]` | `undefined` | Restrict the selector to only these languages. |
+| `undo` | `(state, dispatch) => void` | — | Undo command (`prosemirror-history` or `y-prosemirror`). |
+| `redo` | `(state, dispatch) => void` | — | Redo command (`prosemirror-history` or `y-prosemirror`). |
+| `theme` | `Extension[]` | `undefined` | Additional CodeMirror extensions (e.g. a theme). |
+| `themes` | `Array<{ extension: Extension; name: string }>` | `[]` | Named themes for runtime switching. |
+| `getCurrentTheme` | `() => string` | `undefined` | Returns the theme name to apply when creating a new code block. |
+| `stopEvent` | `(e, node, getPos, view, dom) => boolean` | Built-in | Override the NodeView `stopEvent` handler. |
+| `readOnly` | `boolean` | `false` | Whether the code blocks are read-only. |
+| `codeBlockName` | `string` | `"code_block"` | Name of the code block node in your schema. |
 
-| name              | type                                                                                                                                                                    | description                                                                                                           |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| createSelect      | (settings: CodeBlockSettings, dom: HTMLElement, node: ProseMirrorNode, view: EditorView, getPos: (() => number) &#124; boolean) => ()=> void)                           | Callback to create lanaguge selector. Returns function that is called when the NodeView is cleaned up. Has default.   |
-| updateSelect      | (settings: CodeBlockSettings, dom: HTMLElement, node: ProseMirrorNode, view: EditorView, getPos: (() => number) &#124; boolean, oldNode: ProseMirrorNode) => ()=> void) | Called when the codeblock node is updated. Should update the select value to reflect the `lang` property of the node. |
-| languageLoaders   | ?LanguageLoaders                                                                                                                                                        | Record of functions which return a code extension for a given language.                                               |
-| languageNameMap   | ?Record<string, string>                                                                                                                                                 | Can be used to give aliases to languages in the selector.                                                             |
-| languageWhitelist | ?string[]                                                                                                                                                               | List of used languages.                                                                                               |
-| undo              | (state: EditorState, dispatch: (tr: Transaction) => void) => void                                                                                                       | Undo provided by `prosemirror-history`. YJS uses a different one!                                                     |
-| redo              | (state: EditorState, dispatch: (tr: Transaction) => void) => void                                                                                                       | Redo provided by `prosemirror-history`. YJS uses a different one!                                                     |
-| theme             | Extension[]                                                                                                                                                             | Insert codemirror theme here. Or any other extension you want!                                                        |
-| stopEvent         | (e: Event) => boolean                                                                                                                                                   | Can be used to override stopEvent in NodeView. Can be used for custom drag handles for ex.                            |
-| readOnly          | boolean                                                                                                                                                                 | Read only editor mode. Defaults to false                                                                              |
-| themes            | Array<{ extension: Extension; name: string }>                                                                                                                           | Editor themes                                                                                                         |
-| getCurrentTheme   | () => string                                                                                                                                                            | Sets the current theme when creating a new code block                                                                 |
+## API
 
-### CSS & Styles
+| Export | Type | Description |
+| --- | --- | --- |
+| `codeMirrorBlockPlugin` | `(settings: CodeBlockSettings) => Plugin` | Creates the ProseMirror plugin with CodeMirror node views. |
+| `codeMirrorBlockNodeView` | `(settings: CodeBlockSettings) => NodeViewConstructor` | The raw node view factory (if you need manual registration). |
+| `codeMirrorBlockKey` | `PluginKey` | Plugin key for accessing plugin state. |
+| `defaultSettings` | `CodeBlockSettings` | Sensible defaults (built-in select, no languages, not read-only). |
+| `languageLoaders` | `LanguageLoaders` | CM6 native language loaders (JS, TS, Python, Rust, etc.). |
+| `legacyLanguageLoaders` | `LanguageLoaders` | CM5 legacy mode loaders via `@codemirror/legacy-modes`. |
+| `codeBlockKeymap` | `Record<string, Command>` | Keymap with toggle shortcut and arrow-key handlers. |
+| `codeBlockArrowHandlers` | `Keymap` | Arrow-key handlers for escaping code blocks. |
+| `CodeBlockNodeName` | `string` | The node name constant (`"code_block"`). |
+| `CodeBlockLanguages` | `enum` | Enum of built-in CM6 language names. |
+| `LegacyLanguages` | `enum` | Enum of legacy CM5 language names. |
+| `createCodeBlock` | `Command` | ProseMirror command to create a code block. |
+| `removeCodeBlock` | `Command` | ProseMirror command to remove a code block. |
+| `toggleCodeBlock` | `Command` | ProseMirror command to toggle a code block. |
+| `codeBlockToggleShortcut` | `Record<string, Command>` | Keymap entry for `Cmd/Ctrl+Alt+C`. |
+| `updateTheme` | `(theme: string) => void` | Switch all code blocks to a named theme at runtime. |
 
-The following is a good starter style for the language selector:
+## Styles
+
+A minimal starter style for the language selector:
 
 ```css
 .codeblock-select {
@@ -130,66 +135,42 @@ The following is a good starter style for the language selector:
 .codeblock-root {
   position: relative;
 }
-
 .codeblock-root:hover .codeblock-select {
   opacity: 1;
 }
 ```
 
-### Using and Customizing Themes
-
-- create your own themes, or use one from `npm`
+## TipTap
 
 ```ts
-import { gruvboxDark } from "cm6-theme-gruvbox-dark";
-import { basicLight } from "cm6-theme-basic-light";
+import { Extension } from "@tiptap/core";
+import {
+  codeMirrorBlockPlugin,
+  defaultSettings,
+  languageLoaders,
+  codeBlockKeymap,
+} from "prosemirror-codemirror-block";
+import { undo, redo } from "prosemirror-history";
+import { keymap } from "prosemirror-keymap";
 
-const themes = [
-  {
-    extension: gruvboxDark,
-    name: "Dark",
-  },
-  {
-    extension: basicLight,
-    name: "Light",
-  },
-];
-
-export const CodeBlockExtension = Extension.create({
-  name: "codeBlock",
+const CodeBlockExtension = Extension.create({
+  name: "codemirrorBlock",
   addProseMirrorPlugins: () => [
     codeMirrorBlockPlugin({
       ...defaultSettings,
-      languageLoaders: { ...languageLoaders },
+      languageLoaders,
       undo,
       redo,
-      // add themes
-      themes,
-      // tell the nodeView which theme should be used when adding a new code block
-      getCurrentTheme: () => {
-        const content = document.getElementById("html-root");
-        return content?.classList.contains("darkMode") ? "Dark" : "Light";
-      },
     }),
     keymap(codeBlockKeymap),
   ],
 });
 ```
 
-- use `updateTheme` to update the code blocks' theme
+## Playground
 
-```ts
-import { updateTheme } from "prosemirror-codemirror-block";
+See the [interactive demo](https://emergence-engineering.github.io/emergence-tools/#codeMirrorBlock) in the monorepo playground.
 
-// const updateTheme: (theme: string) => void;
-updateTheme("Dark")
-```
+## License
 
-### About us
-
-Emergence Engineering is dev shop from the EU:
-<https://emergence-engineering.com/>
-
-We're looking for work, especially with ProseMirror ;)
-
-Feel free to contact me at viktor.vaczi@emergence-engineering.com
+MIT

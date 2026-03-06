@@ -146,6 +146,7 @@ export function CodeMirrorBlockDemo() {
         </>
       }
       packageNames={["prosemirror-codemirror-block"]}
+      demoKey="codeMirrorBlock"
       sourceUrl={SOURCE_URL}
       usage={<CodeMirrorBlockUsage />}
     >

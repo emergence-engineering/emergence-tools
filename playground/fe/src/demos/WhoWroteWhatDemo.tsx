@@ -201,6 +201,7 @@ export function WhoWroteWhatDemo() {
       packageNames={["@emergence-engineering/prosemirror-who-wrote-what"]}
       sourceUrl={SOURCE_URL}
       usage={<WhoWroteWhatUsage />}
+      demoKey="whoWroteWhat"
     >
       <WhoWroteWhatEditor />
     </DemoLayout>

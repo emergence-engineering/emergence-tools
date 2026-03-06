@@ -240,6 +240,7 @@ export function SuggestcatDemo() {
       packageNames={["prosemirror-suggestcat-plugin", "prosemirror-suggestcat-plugin-react"]}
       sourceUrl={SOURCE_URL}
       usage={<SuggestcatUsage />}
+      demoKey="suggestcat"
     >
       <SuggestcatEditor />
     </DemoLayout>

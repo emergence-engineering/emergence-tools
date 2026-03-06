@@ -99,6 +99,7 @@ export function SlashMenuReactDemo() {
         </>
       }
       packageNames={["prosemirror-slash-menu-react"]}
+      demoKey="slashMenuReact"
       sourceUrl={SOURCE_URL}
       usage={<SlashMenuReactUsage />}
     >

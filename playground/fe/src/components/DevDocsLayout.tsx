@@ -1,53 +1,47 @@
 import type { ReactNode } from "react";
 import { InstallCommand } from "./InstallCommand";
 
-interface DemoLayoutProps {
+interface DevDocsLayoutProps {
   title: string;
-  description: ReactNode;
   packageNames: string[];
+  demoKey: string;
   sourceUrl: string;
-  usage: ReactNode;
-  demoKey?: string;
   children: ReactNode;
 }
 
-export function DemoLayout({
+export function DevDocsLayout({
   title,
-  description,
   packageNames,
-  sourceUrl,
-  usage,
   demoKey,
+  sourceUrl,
   children,
-}: DemoLayoutProps) {
+}: DevDocsLayoutProps) {
   return (
-    <div>
+    <div className="dev-docs">
       <div className="demo-header">
         <div className="demo-header-row">
           <h1 className="demo-title">{title}</h1>
           <div style={{ display: "flex", gap: "8px" }}>
-            {demoKey && (
-              <a
-                className="source-button"
-                href={`#${demoKey}/docs`}
-                title="How to use"
+            <a
+              className="source-button"
+              href={`#${demoKey}`}
+              title="Back to demo"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-                </svg>
-                How to use
-              </a>
-            )}
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+              </svg>
+              Back to demo
+            </a>
             <a
               className="source-button"
               href={sourceUrl}
@@ -67,16 +61,10 @@ export function DemoLayout({
             </a>
           </div>
         </div>
-        <p className="demo-description">{description}</p>
         <InstallCommand packageNames={packageNames} />
       </div>
 
-      <div className="demo-usage">
-        <h3 className="demo-usage-title">How to use this demo</h3>
-        {usage}
-      </div>
-
-      {children}
+      <div className="dev-docs-body">{children}</div>
     </div>
   );
 }

@@ -1530,6 +1530,249 @@ body {
   border-color: #fecaca;
 }
 
+/* ===== Sidebar Expandable Items ===== */
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-link-chevron {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-right: 1.5px solid var(--sidebar-text);
+  border-bottom: 1.5px solid var(--sidebar-text);
+  transform: rotate(-45deg);
+  transition: transform var(--transition);
+}
+
+.sidebar-link-chevron[data-expanded="true"] {
+  transform: rotate(45deg);
+}
+
+.sidebar-link[data-active="true"] .sidebar-link-chevron {
+  border-color: var(--sidebar-accent);
+}
+
+.sidebar-sub-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-left: 26px;
+  margin-bottom: 4px;
+}
+
+.sidebar-sub-link {
+  display: block;
+  padding: 4px 12px;
+  border: none;
+  background: transparent;
+  color: var(--sidebar-text);
+  font-size: 12px;
+  font-weight: 400;
+  font-family: inherit;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition);
+}
+
+.sidebar-sub-link:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text-active);
+}
+
+.sidebar-sub-link[data-active="true"] {
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-text-active);
+  font-weight: 550;
+}
+
+/* ===== Code Block (Shiki) ===== */
+.code-block {
+  position: relative;
+  margin: 12px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.code-block pre {
+  margin: 0;
+  padding: 16px 20px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.code-block pre code {
+  font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+}
+
+.code-block-fallback {
+  margin: 0;
+  padding: 16px 20px;
+  font-family: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  background: var(--surface-alt);
+  overflow-x: auto;
+}
+
+.code-block-copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  z-index: 1;
+  opacity: 0;
+}
+
+.code-block:hover .code-block-copy {
+  opacity: 1;
+}
+
+.code-block-copy:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ===== Docs Section (collapsible details) ===== */
+.docs-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.docs-section-summary {
+  padding: 16px 20px;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.docs-section-summary::-webkit-details-marker {
+  display: none;
+}
+
+.docs-section-summary::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(-45deg);
+  transition: transform var(--transition);
+  flex-shrink: 0;
+}
+
+.docs-section[open] > .docs-section-summary::before {
+  transform: rotate(45deg);
+}
+
+.docs-section-summary:hover {
+  color: var(--accent);
+}
+
+.docs-section-content {
+  padding: 0 20px 20px;
+}
+
+/* ===== Dev Docs Page ===== */
+.dev-docs {
+  max-width: 860px;
+}
+
+.dev-docs-body {
+  margin-top: 24px;
+}
+
+.docs-text {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+
+.docs-text a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.docs-text a:hover {
+  text-decoration: underline;
+}
+
+.docs-text code {
+  font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-light);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.docs-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 16px;
+  margin-bottom: 4px;
+}
+
+.docs-compat-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.docs-compat-item {
+  display: flex;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+}
+
+.docs-compat-item strong {
+  min-width: 100px;
+  flex-shrink: 0;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.docs-compat-item code {
+  font-family: "SF Mono", "Fira Code", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
 /* ===== Utilities ===== */
 .mt-4 { margin-top: 16px; }
 .mb-4 { margin-bottom: 16px; }

@@ -157,6 +157,7 @@ export function PasteLinkDemo() {
         </>
       }
       packageNames={["prosemirror-paste-link"]}
+      demoKey="pasteLink"
       sourceUrl={SOURCE_URL}
       usage={<PasteLinkUsage />}
     >

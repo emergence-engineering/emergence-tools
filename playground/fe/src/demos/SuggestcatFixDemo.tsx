@@ -131,6 +131,7 @@ export function SuggestcatFixDemo() {
       packageNames={["prosemirror-suggestcat-plugin", "prosemirror-suggestcat-plugin-react"]}
       sourceUrl={SOURCE_URL}
       usage={<SuggestcatFixUsage />}
+      demoKey="suggestcatFix"
     >
       <SuggestcatFixEditor />
     </DemoLayout>

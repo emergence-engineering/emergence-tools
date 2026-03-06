@@ -88,6 +88,7 @@ export function FastDiffMergeDemo() {
         </>
       }
       packageNames={["@emergence-engineering/fast-diff-merge"]}
+      demoKey="fastDiffMerge"
       sourceUrl={SOURCE_URL}
       usage={<FastDiffMergeUsage />}
     >

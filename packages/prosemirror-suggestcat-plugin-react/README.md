@@ -1,146 +1,111 @@
 # prosemirror-suggestcat-plugin-react
 
-[![made by Emergence Engineering](https://emergence-engineering.com/ee-logo.svg)](https://emergence-engineering.com)
+[![logo](https://emergence-engineering.com/ee-logo.svg)](https://emergence-engineering.com)
 
-[**Made by Emergence-Engineering**](https://emergence-engineering.com/)
+[**Made by Emergence Engineering**](https://emergence-engineering.com/)
 
-React UI for [prosemirror-suggestcat-plugin](https://github.com/emergence-engineering/prosemirror-suggestcat-plugin).
+> React UI components for prosemirror-suggestcat-plugin: slash menu, suggestion overlay, and grammar popup
 
 ## Features
 
-![feature-gif](https://suggestcat.com/basic-suggestr-eact-example.gif)
+- Slash menu to select and filter AI commands (Complete, Simplify, Translate, Change Tone, etc.)
+- "Ask AI" tooltip that appears when text is selected
+- Suggestion overlay showing streaming results with accept/reject controls
+- Grammar popup displaying corrections with accept, discard, and hint actions
+- Built on top of prosemirror-slash-menu-react for keyboard and mouse navigation
 
-- A slash menu to select and filter AI commands, implemented with [prosemirror-slash-menu-react](https://github.com/emergence-engineering/prosemirror-slash-menu-react)
-- An "Ask AI" tooltip that appears when text is selected
-- A suggestion overlay to show streaming results and accept/reject them
-- A grammar popup to display grammar suggestions with accept, discard, and hint actions
+## Installation
 
-## How to use?
+```bash
+npm install prosemirror-suggestcat-plugin-react
+```
 
-- Import `SlashMenuPlugin` from [`prosemirror-slash-menu`](https://github.com/emergence-engineering/prosemirror-slash-menu)
-- Import `ProsemirrorSuggestcatPluginReact` and `promptCommands` from this package
-- Add `SlashMenuPlugin` and `completePluginV2` to your editor
-- Add the component next to your editor div
+### Peer dependencies
+
+```bash
+npm install prosemirror-suggestcat-plugin prosemirror-slash-menu prosemirror-slash-menu-react prosemirror-state prosemirror-view react react-dom
+```
+
+## Quick Start
 
 ```tsx
 import { SlashMenuPlugin } from "prosemirror-slash-menu";
-import { completePluginV2 } from "prosemirror-suggestcat-plugin";
+import { completePluginV2, grammarSuggestPluginV2 } from "prosemirror-suggestcat-plugin";
 import {
-  promptCommands,
   ProsemirrorSuggestcatPluginReact,
+  GrammarPopup,
+  promptCommands,
+  slashOpeningCondition,
 } from "prosemirror-suggestcat-plugin-react";
 
-const Editor: FC = () => {
-  const [editorState, setEditorState] = useState<EditorState>();
-  const [editorView, setEditorView] = useState<EditorView>();
-  const editorRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const state = EditorState.create({
-      doc: schema.nodeFromJSON(initialDoc),
-      plugins: [
-        completePluginV2("<YOUR_API_KEY>"),
-        SlashMenuPlugin(promptCommands, undefined, undefined, false, true),
-      ],
-    });
-    const view = new EditorView(document.querySelector("#editor"), {
-      state,
-      dispatchTransaction: (tr) => {
-        try {
-          const newState = view.state.apply(tr);
-          view.updateState(newState);
-          setEditorState(newState);
-        } catch (e) {}
-      },
-    });
-    setEditorView(view);
-    setEditorState(view.state);
-    return () => {
-      view.destroy();
-    };
-  }, [editorRef]);
-
-  return (
-    <Root>
-      <StyledEditor id="editor" ref={editorRef} />
-      {editorView && editorView?.state && (
-        <ProsemirrorSuggestcatPluginReact
-          editorView={editorView}
-          editorState={editorView.state}
-        />
-      )}
-    </Root>
-  );
-};
-```
-
-### Props
-
-- `editorView` — ProseMirror EditorView
-- `editorState` — ProseMirror EditorState
-- `domReference` — optional HTMLElement for Popper positioning (defaults to the current selection node)
-
-## Grammar Popup
-
-The `GrammarPopup` component displays an inline popup for grammar suggestions created by `grammarSuggestPlugin`. It shows the original text with strikethrough, the suggested replacement, and action buttons to accept, discard, or request an explanation.
-
-### Usage
-
-```tsx
-import { grammarSuggestPlugin } from "prosemirror-suggestcat-plugin";
-import { GrammarPopup } from "prosemirror-suggestcat-plugin-react";
-
-// Add grammarSuggestPlugin to your editor plugins
+// 1. Add plugins to your editor
 const state = EditorState.create({
   plugins: [
-    grammarSuggestPlugin("<YOUR_API_KEY>"),
-    // ...other plugins
+    completePluginV2("<YOUR_API_KEY>"),
+    grammarSuggestPluginV2("<YOUR_API_KEY>", { createPopup: "react" }),
+    SlashMenuPlugin(promptCommands, undefined, slashOpeningCondition),
   ],
 });
 
-// Render the component alongside your editor
+const view = new EditorView(document.querySelector("#editor"), {
+  state,
+  dispatchTransaction(tr) {
+    const newState = view.state.apply(tr);
+    view.updateState(newState);
+    setEditorState(newState);
+  },
+});
+
+// 2. Render the React components alongside your editor
+<ProsemirrorSuggestcatPluginReact
+  editorView={view}
+  editorState={editorState}
+/>
 <GrammarPopup
-  editorView={editorView}
-  editorState={editorView.state}
+  editorView={view}
+  editorState={editorState}
   apiKey="<YOUR_API_KEY>"
-  model="cerebras:gpt-oss-120b" // optional
-  apiEndpoint="/custom"   // optional
 />
 ```
 
-### Grammar Popup Props
+## API
 
-- `editorView` — ProseMirror EditorView
-- `editorState` — ProseMirror EditorState
-- `apiKey` — API key used to fetch hint explanations
-- `apiEndpoint` — _(optional)_ custom endpoint for hint requests
-- `model` — _(optional)_ model to use for generating hint explanations
+| Export | Type | Description |
+|---|---|---|
+| `ProsemirrorSuggestcatPluginReact` | React component | Renders the slash menu and suggestion overlay |
+| `GrammarPopup` | React component | Renders the grammar suggestion popup |
+| `promptCommands` | `(CommandItem \| SubMenu)[]` | Pre-built slash menu commands for all AI actions |
+| `promptIcons` | `Record<string, string>` | Icon mapping for prompt commands |
+| `slashOpeningCondition` | `OpeningConditions` | Slash menu opening/closing rules (opens on `/` with text selected) |
 
-### How it works
+### ProsemirrorSuggestcatPluginReact Props
 
-When the cursor is inside a grammar decoration, the popup appears with:
+| Prop | Type | Required | Description |
+|---|---|---|---|
+| `editorView` | `EditorView` | Yes | ProseMirror EditorView instance |
+| `editorState` | `EditorState` | Yes | Current ProseMirror EditorState |
+| `domReference` | `HTMLElement` | No | Custom element for Popper positioning (defaults to selection node) |
 
-- The **original text** (red, strikethrough) and the **suggested replacement** (green)
-- **Accept** (`✓`) — applies the suggestion
-- **Discard** (`✕`) — removes the suggestion without applying
-- **Hint** (`?`) — fetches an AI explanation of why the change is suggested
+### GrammarPopup Props
 
-### Styles
+| Prop | Type | Required | Description |
+|---|---|---|---|
+| `editorView` | `EditorView` | Yes | ProseMirror EditorView instance |
+| `editorState` | `EditorState` | Yes | Current ProseMirror EditorState |
+| `apiKey` | `string` | Yes | API key for fetching hint explanations |
+| `apiEndpoint` | `string` | No | Custom endpoint for hint requests |
+| `model` | `string` | No | Model to use for generating hint explanations |
+
+## Styles
 
 ```typescript
 import "prosemirror-suggestcat-plugin-react/dist/styles/styles.css";
 ```
 
-### UI behaviour
+## Playground
 
-Navigation works with keyboard (arrows, Tab, Enter, Escape) and mouse clicks. The slash menu is powered by [prosemirror-slash-menu-react](https://github.com/emergence-engineering/prosemirror-slash-menu-react).
+See the [interactive demo](https://emergence-engineering.github.io/emergence-tools/#suggestcat) in the monorepo playground.
 
-### Customization
+## License
 
-This package is intended as a quick way to get a working UI. You can customize it by:
-
-- Providing your own `domReference` for positioning
-- Overriding the CSS classes
-- Passing your own commands into `SlashMenuPlugin` to change labels or icons
-
-The command functions themselves must stay the same to work with [prosemirror-suggestcat-plugin](https://github.com/emergence-engineering/prosemirror-suggestcat-plugin).
+MIT
