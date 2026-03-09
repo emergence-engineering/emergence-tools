@@ -1,5 +1,12 @@
 # prosemirror-suggestcat-plugin
 
+## 2.2.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @emergence-engineering/prosemirror-block-runner@0.1.0
+
 ## 2.2.1
 
 ### Patch Changes
