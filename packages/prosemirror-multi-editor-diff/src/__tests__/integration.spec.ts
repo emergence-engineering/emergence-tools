@@ -425,9 +425,7 @@ describe("Index 0 bug fix — MAP_UNIT_METADATA correctly handles node at index 
     };
 
     // This is the fixed mapFunction — uses `=== undefined` instead of `!`
-    const mapFunction = (
-      meta: typeof metadata,
-    ): typeof metadata | false => {
+    const mapFunction = (meta: typeof metadata): typeof metadata | false => {
       if (meta.pairs === undefined || meta.pairs.length === 0) return false;
       let hasChanged = false;
       const newPairs = meta.pairs.map((p: typeof pair) => {
@@ -464,9 +462,7 @@ describe("Identical text produces no diff highlights", () => {
     const text = "ProseMirror is a toolkit for building rich-text editors.";
     const diff = Diff.diffWordsWithSpace(text, text);
 
-    const changes = diff.filter(
-      (d: Diff.Change) => d.added || d.removed,
-    );
+    const changes = diff.filter((d: Diff.Change) => d.added || d.removed);
     expect(changes.length).toBe(0);
   });
 
@@ -502,9 +498,7 @@ describe("Identical text produces no diff highlights", () => {
         const leftText = docToTextWithMapping(pairing.leftNode.node);
         const rightText = docToTextWithMapping(pairing.rightNode.node);
         const diff = Diff.diffWordsWithSpace(leftText.text, rightText.text);
-        const changes = diff.filter(
-          (d: Diff.Change) => d.added || d.removed,
-        );
+        const changes = diff.filter((d: Diff.Change) => d.added || d.removed);
         expect(changes.length).toBe(0);
       }
     }
