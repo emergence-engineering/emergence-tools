@@ -1,5 +1,11 @@
 # prosemirror-suggestcat-plugin-react
 
+## 2.2.3
+
+### Patch Changes
+
+- prosemirror-suggestcat-plugin@2.2.3
+
 ## 2.2.2
 
 ### Patch Changes
