@@ -350,6 +350,7 @@ body {
   line-height: 1.65;
   color: var(--text);
   overflow: auto;
+  overflow-wrap: anywhere;
 }
 
 .editor-card .ProseMirror p {

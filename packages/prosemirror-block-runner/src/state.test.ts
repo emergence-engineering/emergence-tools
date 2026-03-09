@@ -576,6 +576,160 @@ describe("handleAction", () => {
     });
   });
 
+  describe("UNIT_SUCCESS decoration replacement", () => {
+    it("replaces old decorations for the same unit", () => {
+      const unitId = {};
+      const unit = createProcessingUnit({
+        id: unitId,
+        status: UnitStatus.PROCESSING,
+        from: 0,
+        to: 10,
+        text: "new text",
+        requestText: "new text",
+      });
+      const oldDecoration = createResultDecoration(
+        0,
+        5,
+        { result: "old" },
+        { unitId }
+      );
+      const state = createActiveState<TestResponse, TestContext, TestMetadata>({
+        unitsInProgress: [unit],
+        decorations: [oldDecoration],
+      });
+
+      const response: TestResponse = { result: "new" };
+      const newState = handleAction(
+        state,
+        { type: ActionType.UNIT_SUCCESS, unitId, response },
+        mockDecorationFactory,
+        mockEditorState
+      );
+
+      expect(newState.decorations.length).toBe(1);
+      expect(newState.decorations[0].spec.unitId).toBe(unitId);
+      // The decoration should be from the new factory call, not the old one
+      if (newState.status === RunnerStatus.ACTIVE) {
+        expect(newState.unitsInProgress[0].status).toBe(UnitStatus.DONE);
+      }
+    });
+
+    it("preserves decorations from other units", () => {
+      const unitId1 = {};
+      const unitId2 = {};
+      const unit1 = createProcessingUnit({
+        id: unitId1,
+        status: UnitStatus.PROCESSING,
+        from: 0,
+        to: 10,
+        text: "text1",
+        requestText: "text1",
+      });
+      const unit2 = createProcessingUnit({
+        id: unitId2,
+        status: UnitStatus.DONE,
+        from: 15,
+        to: 25,
+        text: "text2",
+      });
+      const otherDecoration = createResultDecoration(
+        15,
+        25,
+        { result: "other" },
+        { unitId: unitId2 }
+      );
+      const state = createActiveState<TestResponse, TestContext, TestMetadata>({
+        unitsInProgress: [unit1, unit2],
+        decorations: [otherDecoration],
+      });
+
+      const response: TestResponse = { result: "new" };
+      const newState = handleAction(
+        state,
+        { type: ActionType.UNIT_SUCCESS, unitId: unitId1, response },
+        mockDecorationFactory,
+        mockEditorState
+      );
+
+      // Should have both: the preserved decoration from unit2 + new one from unit1
+      expect(newState.decorations.length).toBe(2);
+      expect(newState.decorations.some((d) => d.spec.unitId === unitId2)).toBe(
+        true
+      );
+      expect(newState.decorations.some((d) => d.spec.unitId === unitId1)).toBe(
+        true
+      );
+    });
+  });
+
+  describe("MAP_UNIT_METADATA", () => {
+    it("marks affected units DIRTY and preserves decorations until re-processed", () => {
+      const unitId = {};
+      const unit = createProcessingUnit({
+        id: unitId,
+        status: UnitStatus.DONE,
+        from: 0,
+        to: 10,
+        text: "text",
+      });
+      const decoration = createResultDecoration(
+        0,
+        5,
+        { result: "old" },
+        { unitId }
+      );
+      const state = createActiveState<TestResponse, TestContext, TestMetadata>({
+        unitsInProgress: [unit],
+        decorations: [decoration],
+      });
+
+      const newState = handleAction(
+        state,
+        {
+          type: ActionType.MAP_UNIT_METADATA,
+          mapFunction: (metadata: TestMetadata) => ({
+            ...metadata,
+            label: "updated",
+          }),
+        },
+        mockDecorationFactory,
+        mockEditorState
+      );
+
+      if (newState.status === RunnerStatus.ACTIVE) {
+        expect(newState.unitsInProgress[0].status).toBe(UnitStatus.DIRTY);
+      }
+      // Decorations should be preserved (not removed eagerly)
+      expect(newState.decorations.length).toBe(1);
+    });
+
+    it("returns unchanged state when no units affected", () => {
+      const unitId = {};
+      const unit = createProcessingUnit({
+        id: unitId,
+        status: UnitStatus.DONE,
+        from: 0,
+        to: 10,
+        text: "text",
+      });
+      const state = createActiveState<TestResponse, TestContext, TestMetadata>({
+        unitsInProgress: [unit],
+      });
+
+      const newState = handleAction(
+        state,
+        {
+          type: ActionType.MAP_UNIT_METADATA,
+          mapFunction: () => false,
+        },
+        mockDecorationFactory,
+        mockEditorState
+      );
+
+      expect(newState).toBe(state);
+    });
+  });
+
   describe("unknown action", () => {
     it("returns unchanged state", () => {
       const state = createActiveState<

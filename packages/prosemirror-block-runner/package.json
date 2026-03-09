@@ -2,6 +2,7 @@
   "name": "@emergence-engineering/prosemirror-block-runner",
   "version": "0.1.0",
   "description": "Generic task queue processor for ProseMirror — process document blocks through configurable parallel workers with state management, retry logic, and visual feedback decorations",
+  "source": "src/index.ts",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "types": "dist/src/index.d.ts",

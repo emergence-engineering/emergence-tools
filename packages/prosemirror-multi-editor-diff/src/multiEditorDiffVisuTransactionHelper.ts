@@ -202,7 +202,7 @@ export const multiEditorDiffVisuHelperPlugin = (
                   metadata.editorId,
                   pair,
                 )?.index;
-                if (!otherNodeIdx) return pair;
+                if (otherNodeIdx === undefined) return pair;
                 const idx = changedNodes.findIndex((changedNode) => {
                   return otherNodeIdx === changedNode.index;
                 });
@@ -255,7 +255,7 @@ export const multiEditorDiffVisuHelperPlugin = (
             const newPairs = metadata.pairs
               .map((pair) => {
                 const thisNodeIdx = getThisNode(metadata.editorId, pair)?.index;
-                if (!thisNodeIdx) return pair;
+                if (thisNodeIdx === undefined) return pair;
                 const idx = changedNodes.findIndex((changedNode) => {
                   return thisNodeIdx === changedNode.index;
                 });

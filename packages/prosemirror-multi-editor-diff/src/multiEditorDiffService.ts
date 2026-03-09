@@ -338,7 +338,7 @@ export const multiEditorDiffStateHolder = (config?: MultiEditorDiffConfig) => {
     const sourcePair = sourceUnit?.metadata.pairs?.[0];
     if (!sourcePair) return;
     const destNodeIndex = getOtherNode(sourceEditorId, sourcePair)?.index;
-    if (!destNodeIndex) return;
+    if (destNodeIndex === undefined) return;
     const destPluginState = multiEditorDiffVisuPluginKey.getState(
       destView.state,
     ) as

@@ -2,6 +2,7 @@
   "name": "@emergence-engineering/prosemirror-multi-editor-diff",
   "version": "0.1.0",
   "description": "Multi-editor diff visualization for ProseMirror — compare two editors side-by-side with inline diff decorations, spacer synchronization, and node pairing",
+  "source": "src/index.ts",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",

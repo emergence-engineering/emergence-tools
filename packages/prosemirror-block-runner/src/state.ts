@@ -123,9 +123,14 @@ function handleUnitSuccess<ResponseType, ContextState, UnitMetadata>(
     requestText: undefined,
   });
 
+  // Remove old decorations for this unit before adding new ones
+  const filteredDecorations = updatedState.decorations.filter(
+    (d) => d.spec.unitId !== action.unitId
+  );
+
   return {
     ...updatedState,
-    decorations: [...updatedState.decorations, ...newDecorations],
+    decorations: [...filteredDecorations, ...newDecorations],
   };
 }
 

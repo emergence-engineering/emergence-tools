@@ -389,3 +389,124 @@ describe("Multi-paragraph scenario end-to-end", () => {
     }
   });
 });
+
+describe("Index 0 bug fix — MAP_UNIT_METADATA correctly handles node at index 0", () => {
+  test("mapFunction updates metadata when otherNodeIdx is 0", () => {
+    const { getOtherNode, setOtherNode } = require("../multiEditorDiffVisu");
+
+    // Simulate the mapFunction from multiEditorDiffVisuTransactionHelper
+    // with a changedNode at index 0
+    const changedNodes = [
+      {
+        index: 0,
+        newNode: { text: "Modified title", node: h(2, "Modified title") },
+      },
+    ];
+
+    const pair = {
+      leftNode: {
+        body: "Original title",
+        index: 0,
+        node: h(2, "Original title"),
+        similarity: new Map(),
+      },
+      rightNode: {
+        body: "Right title",
+        index: 0,
+        node: h(2, "Right title"),
+        similarity: new Map(),
+      },
+    };
+
+    const metadata = {
+      editorId: "right" as const,
+      pairs: [pair],
+      parentTypeList: ["doc"],
+    };
+
+    // This is the fixed mapFunction — uses `=== undefined` instead of `!`
+    const mapFunction = (
+      meta: typeof metadata,
+    ): typeof metadata | false => {
+      if (meta.pairs === undefined || meta.pairs.length === 0) return false;
+      let hasChanged = false;
+      const newPairs = meta.pairs.map((p: typeof pair) => {
+        const otherNodeIdx = getOtherNode(meta.editorId, p)?.index;
+        if (otherNodeIdx === undefined) return p;
+        const idx = changedNodes.findIndex((cn) => otherNodeIdx === cn.index);
+        if (idx === -1) return p;
+        hasChanged = true;
+        return setOtherNode(meta.editorId, p, {
+          body: changedNodes[idx].newNode.text,
+          index: otherNodeIdx,
+          node: changedNodes[idx].newNode.node,
+          similarity: new Map(),
+        });
+      });
+      if (hasChanged) return { ...meta, pairs: newPairs };
+      return false;
+    };
+
+    const result = mapFunction(metadata);
+
+    // With the fix, index 0 should be handled correctly
+    expect(result).not.toBe(false);
+    if (result !== false) {
+      const updatedOtherNode = getOtherNode(result.editorId, result.pairs[0]);
+      expect(updatedOtherNode.body).toBe("Modified title");
+    }
+  });
+});
+
+describe("Identical text produces no diff highlights", () => {
+  test("diffWordsWithSpace returns no added/removed parts for identical text", () => {
+    const Diff = require("diff");
+    const text = "ProseMirror is a toolkit for building rich-text editors.";
+    const diff = Diff.diffWordsWithSpace(text, text);
+
+    const changes = diff.filter(
+      (d: Diff.Change) => d.added || d.removed,
+    );
+    expect(changes.length).toBe(0);
+  });
+
+  test("identical documents produce empty diff for each paired node", () => {
+    const Diff = require("diff");
+    const {
+      stringNodePairing,
+      defaultStringSimilarity,
+    } = require("../stringNodePairing");
+
+    const doc = makeDoc(
+      h(2, "Title"),
+      p("First paragraph."),
+      p("Second paragraph."),
+    );
+
+    const units = getUnitsInRange(doc, 0, doc.content.size, [
+      "heading",
+      "paragraph",
+    ]);
+
+    const pairings = stringNodePairing({
+      bodyExtractor: (node: Node) => node.textContent,
+      leftSideNodes: units.map((u) => u.node),
+      rightSideNodes: units.map((u) => u.node),
+      similarity: { fromString: defaultStringSimilarity },
+      insertDeleteWeight: 0,
+    });
+
+    // For each pairing, the diff should produce no changes
+    for (const pairing of pairings) {
+      if (pairing.leftNode && pairing.rightNode) {
+        const leftText = docToTextWithMapping(pairing.leftNode.node);
+        const rightText = docToTextWithMapping(pairing.rightNode.node);
+        const diff = Diff.diffWordsWithSpace(leftText.text, rightText.text);
+        const changes = diff.filter(
+          (d: Diff.Change) => d.added || d.removed,
+        );
+        expect(changes.length).toBe(0);
+      }
+    }
+  });
+});

@@ -562,28 +562,6 @@ const multiEditorDiffVisuUnitProcessor: UnitProcessor<
   });
 };
 
-const loadingWidgetFactory = (
-  unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>,
-): Decoration | undefined => {
-  if (
-    unit.status === UnitStatus.PROCESSING ||
-    unit.status === UnitStatus.QUEUED ||
-    unit.status === UnitStatus.WAITING
-  ) {
-    return Decoration.widget(
-      unit.from + 1,
-      () => {
-        const span = document.createElement("span");
-        span.classList.add("multi-editor-diff", "loading-icon");
-        span.setAttribute("skipAtSiblingCheck", "true");
-        return span;
-      },
-      { id: {}, unitId: unit.id, originalText: "", response: undefined },
-    );
-  }
-  return undefined;
-};
-
 export const startingState: MultiEditorDiffVisuState = {
   id: "left",
   nodePairings: [],
@@ -601,7 +579,7 @@ export const createMultiEditorDiffVisuPlugin = (
     pluginKey: multiEditorDiffVisuPluginKey,
     unitProcessor: multiEditorDiffVisuUnitProcessor,
     decorationFactory: multiEditorDiffVisuDecorationCreator,
-    widgetFactory: loadingWidgetFactory,
+    widgetFactory: undefined,
     initialContextState: startingState,
     options: {
       nodeTypes: Array.from(

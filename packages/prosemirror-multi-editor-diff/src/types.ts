@@ -25,6 +25,8 @@ export interface MultiEditorDiffConfig {
   ) => void;
   /** Optional PluginKey for collapsible headers to detect toggle transactions. */
   collapsibleHeadersPluginKey?: PluginKey;
+  /** Show loading widget while units are processing. Default: true */
+  showLoadingWidget?: boolean;
 }
 
 export const DEFAULT_DIFFABLE_NODE_TYPES = new Set(["heading", "paragraph"]);

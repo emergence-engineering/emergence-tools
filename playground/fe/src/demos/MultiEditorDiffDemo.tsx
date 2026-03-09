@@ -133,7 +133,7 @@ function MultiEditorDiffEditor() {
       doc: createLeftDoc(),
       plugins: [
         ...exampleSetup({ schema, menuBar: false }),
-        createMultiEditorDiffVisuPlugin(),
+        createMultiEditorDiffVisuPlugin({ showLoadingWidget: false }),
       ],
     });
 
@@ -141,7 +141,7 @@ function MultiEditorDiffEditor() {
       doc: createRightDoc(),
       plugins: [
         ...exampleSetup({ schema, menuBar: false }),
-        createMultiEditorDiffVisuPlugin(),
+        createMultiEditorDiffVisuPlugin({ showLoadingWidget: false }),
       ],
     });
 
@@ -175,7 +175,28 @@ function MultiEditorDiffEditor() {
     stateHolder.selectEditor("left", { uuid: "left", versionId: 1 });
     stateHolder.selectEditor("right", { uuid: "right", versionId: 1 });
 
+    const onLeftScroll = () => {
+      if (leftScrollRef.current) {
+        stateHolder.scrollChanged(
+          leftScrollRef.current.scrollTop,
+          { uuid: "left", versionId: 1 },
+        );
+      }
+    };
+    const onRightScroll = () => {
+      if (rightScrollRef.current) {
+        stateHolder.scrollChanged(
+          rightScrollRef.current.scrollTop,
+          { uuid: "right", versionId: 1 },
+        );
+      }
+    };
+    leftScrollRef.current?.addEventListener("scroll", onLeftScroll);
+    rightScrollRef.current?.addEventListener("scroll", onRightScroll);
+
     return () => {
+      leftScrollRef.current?.removeEventListener("scroll", onLeftScroll);
+      rightScrollRef.current?.removeEventListener("scroll", onRightScroll);
       leftViewRef.current?.destroy();
       rightViewRef.current?.destroy();
       leftViewRef.current = null;
@@ -244,7 +265,7 @@ function MultiEditorDiffEditor() {
           <div className="card-header">
             <span className="card-label">Left Editor (Version A)</span>
           </div>
-          <div ref={leftScrollRef} style={{ overflow: "auto" }}>
+          <div ref={leftScrollRef} style={{ overflow: "auto", maxHeight: "70vh" }}>
             <div ref={leftEditorRef} />
           </div>
         </div>
@@ -253,7 +274,7 @@ function MultiEditorDiffEditor() {
           <div className="card-header">
             <span className="card-label">Right Editor (Version B)</span>
           </div>
-          <div ref={rightScrollRef} style={{ overflow: "auto" }}>
+          <div ref={rightScrollRef} style={{ overflow: "auto", maxHeight: "70vh" }}>
             <div ref={rightEditorRef} />
           </div>
         </div>
