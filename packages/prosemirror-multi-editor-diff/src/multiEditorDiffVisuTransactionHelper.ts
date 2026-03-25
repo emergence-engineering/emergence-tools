@@ -37,7 +37,7 @@ interface MultiEditorDiffPluginState {
 interface MultiEditorDiffVisuHelperPluginProps {
   handleToggleEvent: (
     editorId: MultiEditorStateHolderIdType,
-    pos: number,
+    pos: number
   ) => void;
   otherEditorView: EditorView;
   otherEditorId: MultiEditorStateHolderIdType;
@@ -49,7 +49,7 @@ export const MultiEditorDiffVisuHelperPluginKey =
 
 export const multiEditorDiffVisuHelperPlugin = (
   props: MultiEditorDiffVisuHelperPluginProps,
-  config?: MultiEditorDiffConfig,
+  config?: MultiEditorDiffConfig
 ) => {
   const diffableNodeTypes =
     config?.diffableNodeTypes ?? DEFAULT_DIFFABLE_NODE_TYPES;
@@ -69,7 +69,7 @@ export const multiEditorDiffVisuHelperPlugin = (
 
         if (toggleTransaction) {
           const meta = toggleTransaction.getMeta(
-            config.collapsibleHeadersPluginKey,
+            config.collapsibleHeadersPluginKey
           ) as { enableEscalation: boolean; pos: number };
           if (meta.enableEscalation) {
             props.handleToggleEvent(thisEditorId, meta.pos);
@@ -91,7 +91,7 @@ export const multiEditorDiffVisuHelperPlugin = (
         0,
         oldState.doc.content.size,
         nodeTypes,
-        textExtractionOptions,
+        textExtractionOptions
       );
       const oldStateNodes: NodeListEntry[] = oldUnitRanges.map((u) => ({
         node: u.node,
@@ -104,7 +104,7 @@ export const multiEditorDiffVisuHelperPlugin = (
         0,
         newState.doc.content.size,
         nodeTypes,
-        textExtractionOptions,
+        textExtractionOptions
       );
       const newStateNodes: NodeListEntry[] = newUnitRanges.map((u) => ({
         node: u.node,
@@ -113,7 +113,7 @@ export const multiEditorDiffVisuHelperPlugin = (
       }));
 
       const otherPluginState = multiEditorDiffVisuPluginKey.getState(
-        props.otherEditorView.state,
+        props.otherEditorView.state
       ) as
         | RunnerState<
             MultiEditorDiffVisuResponse,
@@ -134,8 +134,8 @@ export const multiEditorDiffVisuHelperPlugin = (
       props.otherEditorView.dispatch(
         props.otherEditorView.state.tr.setMeta(
           multiEditorDiffVisuPluginKey,
-          updatedNodeList,
-        ),
+          updatedNodeList
+        )
       );
 
       if (oldStateNodes.length !== newStateNodes.length) {
@@ -149,7 +149,7 @@ export const multiEditorDiffVisuHelperPlugin = (
           newNode: newStateNodes[index],
           newNodeParents: getParentTypeList(
             newState.doc,
-            newStateNodes[index].from,
+            newStateNodes[index].from
           ),
           index,
         };
@@ -187,7 +187,7 @@ export const multiEditorDiffVisuHelperPlugin = (
         {
           type: ActionType.MAP_UNIT_METADATA,
           mapFunction: (
-            metadata: MultiEditorDiffVisuAdditionalNodeData,
+            metadata: MultiEditorDiffVisuAdditionalNodeData
           ): MultiEditorDiffVisuAdditionalNodeData | false => {
             if (metadata.pairs === undefined) {
               return false;
@@ -200,7 +200,7 @@ export const multiEditorDiffVisuHelperPlugin = (
               .map((pair) => {
                 const otherNodeIdx = getOtherNode(
                   metadata.editorId,
-                  pair,
+                  pair
                 )?.index;
                 if (otherNodeIdx === undefined) return pair;
                 const idx = changedNodes.findIndex((changedNode) => {
@@ -233,8 +233,8 @@ export const multiEditorDiffVisuHelperPlugin = (
         props.otherEditorView.dispatch(
           props.otherEditorView.state.tr.setMeta(
             multiEditorDiffVisuPluginKey,
-            metaValue1,
-          ),
+            metaValue1
+          )
         );
       }, 0);
 
@@ -243,7 +243,7 @@ export const multiEditorDiffVisuHelperPlugin = (
         {
           type: ActionType.MAP_UNIT_METADATA,
           mapFunction: (
-            metadata: MultiEditorDiffVisuAdditionalNodeData,
+            metadata: MultiEditorDiffVisuAdditionalNodeData
           ): MultiEditorDiffVisuAdditionalNodeData | false => {
             if (metadata.pairs === undefined) {
               return false;

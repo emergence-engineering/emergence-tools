@@ -21,7 +21,7 @@ export interface MultiEditorDiffConfig {
   onToggleCollapsible?: (
     view: EditorView,
     pos: number,
-    enableEscalation: boolean,
+    enableEscalation: boolean
   ) => void;
   /** Optional PluginKey for collapsible headers to detect toggle transactions. */
   collapsibleHeadersPluginKey?: PluginKey;

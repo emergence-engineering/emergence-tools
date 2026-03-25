@@ -66,14 +66,14 @@ export const multiEditorDiffVisuPluginKey = new PluginKey<
 
 export const getOtherNode = (
   editorId: MultiEditorStateHolderIdType,
-  pair: NodePairing<Node>,
+  pair: NodePairing<Node>
 ): NodeHelper<Node> | undefined => {
   return editorId === "left" ? pair.rightNode : pair.leftNode;
 };
 
 export const getThisNode = (
   editorId: MultiEditorStateHolderIdType,
-  pair: NodePairing<Node>,
+  pair: NodePairing<Node>
 ): NodeHelper<Node> | undefined => {
   return editorId === "right" ? pair.rightNode : pair.leftNode;
 };
@@ -81,7 +81,7 @@ export const getThisNode = (
 export const setOtherNode = (
   editorId: MultiEditorStateHolderIdType,
   pair: NodePairing<Node>,
-  node: NodeHelper<Node>,
+  node: NodeHelper<Node>
 ): NodePairing<Node> | undefined => {
   if (editorId === "left") {
     return { ...pair, rightNode: node };
@@ -92,7 +92,7 @@ export const setOtherNode = (
 export const setThisNode = (
   editorId: MultiEditorStateHolderIdType,
   pair: NodePairing<Node>,
-  node: NodeHelper<Node>,
+  node: NodeHelper<Node>
 ): NodePairing<Node> | undefined => {
   if (editorId === "right") {
     return { ...pair, rightNode: node };
@@ -108,7 +108,7 @@ const nodeHeightInclMarginBottom = (node: HTMLElement): number => {
 };
 
 const widgetSpecGenerator = (
-  unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>,
+  unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>
 ): ResultDecorationSpec<MultiEditorDiffVisuResponse> => {
   return {
     id: {},
@@ -125,7 +125,7 @@ const widgetSpecGenerator = (
 
 const createSpacerDecoration = (
   unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>,
-  contextState: MultiEditorDiffVisuState,
+  contextState: MultiEditorDiffVisuState
 ) => {
   // block-runner uses from = pos (at node boundary), content starts at from + 1
   const nodeContentFrom = unit.from + 1;
@@ -151,7 +151,7 @@ const createSpacerDecoration = (
         if (otherNode === undefined) return;
         if (contextState.otherEditorView === undefined) return;
         const htmlNode = contextState.otherEditorView.domAtPos(
-          nodeListFromOtherEditor[otherNode.index].from,
+          nodeListFromOtherEditor[otherNode.index].from
         ).node;
 
         if (htmlNode === null) return;
@@ -202,13 +202,13 @@ const createSpacerDecoration = (
       });
       return div;
     },
-    { ...widgetSpecGenerator(unit), spacer: true },
+    { ...widgetSpecGenerator(unit), spacer: true }
   );
 };
 
 const renderInlineDecorators = (
   response: MultiEditorDiffVisuResponse,
-  unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>,
+  unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>
 ) => {
   const decorations: ResultDecoration<MultiEditorDiffVisuResponse>[] = [];
   // block-runner uses from = pos (at node boundary), content starts at from + 1
@@ -240,7 +240,7 @@ const renderInlineDecorators = (
           unitId: unit.id,
           originalText: response.nextText.text,
           response,
-        } as ResultDecorationSpec<MultiEditorDiffVisuResponse>,
+        } as ResultDecorationSpec<MultiEditorDiffVisuResponse>
       ) as ResultDecoration<MultiEditorDiffVisuResponse>;
       decorations.push(decoration);
       posThis += value.length;
@@ -258,7 +258,7 @@ const renderInlineDecorators = (
 const renderNodeTypeMismatchWidgets = (
   unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>,
   otherEditorView: EditorView,
-  nodeListFromOtherEditor: NodeListEntry[],
+  nodeListFromOtherEditor: NodeListEntry[]
 ) => {
   const decorations: ResultDecoration<MultiEditorDiffVisuResponse>[] = [];
   // block-runner uses from = pos (at node boundary), content starts at from + 1
@@ -267,11 +267,11 @@ const renderNodeTypeMismatchWidgets = (
   if (unit.metadata.pairs !== undefined) {
     const otherNode = getOtherNode(
       unit.metadata.editorId,
-      unit.metadata.pairs[0],
+      unit.metadata.pairs[0]
     );
     const thisNode = getThisNode(
       unit.metadata.editorId,
-      unit.metadata.pairs[0],
+      unit.metadata.pairs[0]
     );
     if (otherNode !== undefined && thisNode !== undefined) {
       if (otherNode.node.type.name !== thisNode.node.type.name) {
@@ -286,8 +286,8 @@ const renderNodeTypeMismatchWidgets = (
               div.setAttribute("skipAtSiblingCheck", "true");
               return div;
             },
-            widgetSpecGenerator(unit),
-          ) as ResultDecoration<MultiEditorDiffVisuResponse>,
+            widgetSpecGenerator(unit)
+          ) as ResultDecoration<MultiEditorDiffVisuResponse>
         );
       } else {
         if (otherNode.node.type.name === "heading") {
@@ -303,14 +303,14 @@ const renderNodeTypeMismatchWidgets = (
                   div.setAttribute("skipAtSiblingCheck", "true");
                   return div;
                 },
-                widgetSpecGenerator(unit),
-              ) as ResultDecoration<MultiEditorDiffVisuResponse>,
+                widgetSpecGenerator(unit)
+              ) as ResultDecoration<MultiEditorDiffVisuResponse>
             );
           }
         } else if (otherNode.node.type.name === "paragraph") {
           const otherNodeParentTypeList = getParentTypeList(
             otherEditorView.state.doc,
-            nodeListFromOtherEditor[otherNode.index].from,
+            nodeListFromOtherEditor[otherNode.index].from
           );
           if (
             unit.metadata.parentTypeList.length !==
@@ -327,14 +327,14 @@ const renderNodeTypeMismatchWidgets = (
                   div.setAttribute("skipAtSiblingCheck", "true");
                   return div;
                 },
-                widgetSpecGenerator(unit),
-              ) as ResultDecoration<MultiEditorDiffVisuResponse>,
+                widgetSpecGenerator(unit)
+              ) as ResultDecoration<MultiEditorDiffVisuResponse>
             );
           } else {
             const differentParent = unit.metadata.parentTypeList.some(
               (parentType, index) => {
                 return parentType !== otherNodeParentTypeList[index];
-              },
+              }
             );
             if (differentParent) {
               decorations.push(
@@ -348,8 +348,8 @@ const renderNodeTypeMismatchWidgets = (
                     div.setAttribute("skipAtSiblingCheck", "true");
                     return div;
                   },
-                  widgetSpecGenerator(unit),
-                ) as ResultDecoration<MultiEditorDiffVisuResponse>,
+                  widgetSpecGenerator(unit)
+                ) as ResultDecoration<MultiEditorDiffVisuResponse>
               );
             }
           }
@@ -367,7 +367,7 @@ const multiEditorDiffVisuDecorationCreator: DecorationFactory<
 > = (
   response: MultiEditorDiffVisuResponse,
   unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>,
-  contextState: MultiEditorDiffVisuState,
+  contextState: MultiEditorDiffVisuState
 ): ResultDecoration<MultiEditorDiffVisuResponse>[] => {
   const decorations: ResultDecoration<MultiEditorDiffVisuResponse>[] = [];
 
@@ -380,13 +380,13 @@ const multiEditorDiffVisuDecorationCreator: DecorationFactory<
       ...renderNodeTypeMismatchWidgets(
         unit,
         contextState.otherEditorView,
-        contextState.nodeListFromOtherEditor,
-      ),
+        contextState.nodeListFromOtherEditor
+      )
     );
     // spacer rectangle
     const spacerDecoration = createSpacerDecoration(unit, contextState);
     decorations.push(
-      spacerDecoration as ResultDecoration<MultiEditorDiffVisuResponse>,
+      spacerDecoration as ResultDecoration<MultiEditorDiffVisuResponse>
     );
   }
 
@@ -398,7 +398,7 @@ const multiEditorDiffVisuUnitProcessor: UnitProcessor<
   MultiEditorDiffVisuAdditionalNodeData
 > = async (
   view: EditorView,
-  unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>,
+  unit: ProcessingUnit<MultiEditorDiffVisuAdditionalNodeData>
 ): Promise<UnitProcessorResult<MultiEditorDiffVisuResponse>> => {
   // Get textExtractionOptions from contextState
   const pluginState = multiEditorDiffVisuPluginKey.getState(view.state);
@@ -425,7 +425,7 @@ const multiEditorDiffVisuUnitProcessor: UnitProcessor<
         newText.text,
         {
           ignoreCase: false,
-        },
+        }
       );
 
       // Normalize deletion-addition orders
@@ -471,7 +471,7 @@ const multiEditorDiffVisuUnitProcessor: UnitProcessor<
                 ...keep,
                 value: part.value[part.value.length - 1],
                 count: 1,
-              },
+              }
             );
           } else {
             addition ? resplitedSpaces.push(addition) : {};
@@ -512,7 +512,7 @@ const multiEditorDiffVisuUnitProcessor: UnitProcessor<
                 ...addition,
                 value: "",
                 count: 0,
-              },
+              }
             );
           } else {
             keep ? resplitedSpaces.push(keep) : {};
@@ -569,7 +569,7 @@ export const startingState: MultiEditorDiffVisuState = {
 };
 
 export const createMultiEditorDiffVisuPlugin = (
-  config?: MultiEditorDiffConfig,
+  config?: MultiEditorDiffConfig
 ): Plugin => {
   return blockRunnerPlugin<
     MultiEditorDiffVisuResponse,
@@ -583,7 +583,7 @@ export const createMultiEditorDiffVisuPlugin = (
     initialContextState: startingState,
     options: {
       nodeTypes: Array.from(
-        config?.diffableNodeTypes ?? DEFAULT_DIFFABLE_NODE_TYPES,
+        config?.diffableNodeTypes ?? DEFAULT_DIFFABLE_NODE_TYPES
       ),
       textExtractionOptions: config?.textExtractionOptions,
       dirtyHandling: {

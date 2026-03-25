@@ -18,7 +18,14 @@ export const GrammarPopup: FC<{
   apiEndpoint?: string;
   model?: string;
   hintSystemPrompt?: string;
-}> = ({ editorView, editorState, apiKey, apiEndpoint, model, hintSystemPrompt }) => {
+}> = ({
+  editorView,
+  editorState,
+  apiKey,
+  apiEndpoint,
+  model,
+  hintSystemPrompt,
+}) => {
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(
     null,
   );
@@ -108,7 +115,15 @@ export const GrammarPopup: FC<{
         setHintState({ visible: true, loading: false, error: true });
       },
     );
-  }, [spec, apiKey, apiEndpoint, model, hintSystemPrompt, hintState.visible, hintState.text]);
+  }, [
+    spec,
+    apiKey,
+    apiEndpoint,
+    model,
+    hintSystemPrompt,
+    hintState.visible,
+    hintState.text,
+  ]);
 
   // Reset hint state when selection changes
   const prevSpecId = React.useRef<object | undefined>();

@@ -175,12 +175,12 @@ describe("Full metadata + diff flow simulation", () => {
   const leftDoc = makeDoc(
     h(2, "Project Overview"),
     p("ProseMirror is a toolkit for building rich-text editors."),
-    p("It provides tools and concepts for building editors."),
+    p("It provides tools and concepts for building editors.")
   );
   const rightDoc = makeDoc(
     h(2, "Project Overview"),
     p("ProseMirror is a powerful toolkit for building editors."),
-    p("It provides comprehensive tools for building editors."),
+    p("It provides comprehensive tools for building editors.")
   );
 
   test("node identity is preserved across multiple getUnitsInRange calls", () => {
@@ -267,7 +267,7 @@ describe("Full metadata + diff flow simulation", () => {
     const metadataArray = leftUnits.map((unit) => {
       const { node } = unit;
       const firstIdx = pairings.findIndex(
-        (pair: any) => sideNode(pair) === node,
+        (pair: any) => sideNode(pair) === node
       );
       return {
         found: firstIdx !== -1,
@@ -312,7 +312,7 @@ describe("Full metadata + diff flow simulation", () => {
     for (const leftUnit of leftUnits) {
       const sideNode = (pair: any) => pair.leftNode?.node;
       const firstIdx = pairings.findIndex(
-        (pair: any) => sideNode(pair) === leftUnit.node,
+        (pair: any) => sideNode(pair) === leftUnit.node
       );
       expect(firstIdx).not.toBe(-1);
 
@@ -338,7 +338,7 @@ describe("Multi-paragraph scenario end-to-end", () => {
       h(2, "Document Title"),
       p("First paragraph with some text."),
       p("Second paragraph with different text."),
-      p("Third paragraph that is unique."),
+      p("Third paragraph that is unique.")
     );
 
     const units = getUnitsInRange(doc, 0, doc.content.size, [
@@ -373,7 +373,7 @@ describe("Multi-paragraph scenario end-to-end", () => {
       p(""),
       p("Paragraph one"),
       p(""),
-      p("Paragraph two"),
+      p("Paragraph two")
     );
 
     const units = getUnitsInRange(doc, 0, doc.content.size, [
@@ -476,7 +476,7 @@ describe("Identical text produces no diff highlights", () => {
     const doc = makeDoc(
       h(2, "Title"),
       p("First paragraph."),
-      p("Second paragraph."),
+      p("Second paragraph.")
     );
 
     const units = getUnitsInRange(doc, 0, doc.content.size, [

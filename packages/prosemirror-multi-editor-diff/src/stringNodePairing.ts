@@ -34,7 +34,7 @@ export interface NodePairing<T> {
 // Initialize scoring matrix and traceback matrix
 const initializeMatrices = (
   leftSeq: unknown[],
-  rightSeq: unknown[],
+  rightSeq: unknown[]
 ): {
   scoreMatrix: number[][];
   tracebackMatrix: (string | null)[][];
@@ -43,10 +43,10 @@ const initializeMatrices = (
   const rightSeqLen = rightSeq.length + 1;
 
   const scoreMatrix: number[][] = Array.from({ length: leftSeqLen }, () =>
-    Array<number>(rightSeqLen).fill(0),
+    Array<number>(rightSeqLen).fill(0)
   );
   const tracebackMatrix = Array.from({ length: leftSeqLen }, () =>
-    Array<string | null>(rightSeqLen).fill(null),
+    Array<string | null>(rightSeqLen).fill(null)
   );
 
   return { scoreMatrix, tracebackMatrix };
@@ -55,7 +55,7 @@ const initializeMatrices = (
 const getSimilarity = <T>(
   leftNode: NodeHelper<T>,
   rightNode: NodeHelper<T>,
-  similarity: AtLeastOne<SimilarityOptions<T>>,
+  similarity: AtLeastOne<SimilarityOptions<T>>
 ): number => {
   const memorizedSimilarity = leftNode.similarity.get(rightNode.index);
   if (memorizedSimilarity !== undefined) {
@@ -80,12 +80,12 @@ const getSimilarity = <T>(
 const renderMatrix = (matrix: unknown[][]): void => {
   // Calculate the maximum length of strings in each column
   const maxLengths = matrix[0].map((_, i) =>
-    Math.max(...matrix.map((row) => String(row[i]).length)),
+    Math.max(...matrix.map((row) => String(row[i]).length))
   );
 
   // Create an array of padded rows
   const paddedRows = matrix.map((row) =>
-    row.map((str, i) => String(str).padEnd(maxLengths[i])).join(" "),
+    row.map((str, i) => String(str).padEnd(maxLengths[i])).join(" ")
   );
 
   // Log the padded rows to the console as a single string
@@ -93,7 +93,7 @@ const renderMatrix = (matrix: unknown[][]): void => {
 };
 
 export const stringNodePairing = <T>(
-  algoProps: AlgoProps<T>,
+  algoProps: AlgoProps<T>
 ): NodePairing<T>[] => {
   // init params
   const { bodyExtractor, leftSideNodes, rightSideNodes, similarity } =
@@ -121,7 +121,7 @@ export const stringNodePairing = <T>(
 
   const { scoreMatrix, tracebackMatrix } = initializeMatrices(
     leftSeq,
-    rightSeq,
+    rightSeq
   );
 
   // fill matrices

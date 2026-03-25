@@ -109,9 +109,6 @@ export function getCompleteState(
  * Start a custom task with a system prompt
  * Convenience wrapper around startTask with Custom task type
  */
-export function startCustomTask(
-  view: EditorView,
-  systemPrompt: string,
-): void {
+export function startCustomTask(view: EditorView, systemPrompt: string): void {
   startTask(view, AiPromptsWithParam.Custom, { systemPrompt });
 }

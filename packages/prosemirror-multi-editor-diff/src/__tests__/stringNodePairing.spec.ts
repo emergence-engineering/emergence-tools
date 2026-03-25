@@ -23,12 +23,12 @@ const printPairings = (nodePairings: NodePairing<TextNode>[]) => {
   const rightAlignment: string[] = [];
   const formatPairing = (
     node: NodeHelper<TextNode> | undefined,
-    otherNode: NodeHelper<TextNode> | undefined,
+    otherNode: NodeHelper<TextNode> | undefined
   ) => {
     if (node) {
       if (otherNode) {
         return `${node.index}:${node.body}`.padEnd(
-          otherNode.index.toString().length + 1 + otherNode.body.length,
+          otherNode.index.toString().length + 1 + otherNode.body.length
         );
       }
       return `${node.index}:${node.body}`;
@@ -36,7 +36,7 @@ const printPairings = (nodePairings: NodePairing<TextNode>[]) => {
       if (otherNode) {
         return "".padEnd(
           otherNode.index.toString().length + 1 + otherNode.body.length,
-          "-",
+          "-"
         );
       }
       return "-";
@@ -44,10 +44,10 @@ const printPairings = (nodePairings: NodePairing<TextNode>[]) => {
   };
   nodePairings.forEach((nodePairing) => {
     leftAlignment.push(
-      formatPairing(nodePairing.leftNode, nodePairing.rightNode),
+      formatPairing(nodePairing.leftNode, nodePairing.rightNode)
     );
     rightAlignment.push(
-      formatPairing(nodePairing.rightNode, nodePairing.leftNode),
+      formatPairing(nodePairing.rightNode, nodePairing.leftNode)
     );
   });
 
@@ -57,7 +57,7 @@ const printPairings = (nodePairings: NodePairing<TextNode>[]) => {
 const testAlignments = (
   nodePairings: NodePairing<TextNode>[],
   leftExpected: string,
-  rightExpected: string,
+  rightExpected: string
 ) => {
   const { leftAlignment, rightAlignment } = getAlignmentStrings(nodePairings);
   expect(leftAlignment).toEqual(leftExpected);

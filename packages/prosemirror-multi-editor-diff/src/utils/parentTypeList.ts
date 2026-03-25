@@ -2,7 +2,7 @@ import { Node } from "prosemirror-model";
 
 export const getParentTypeList = (
   doc: Node | undefined,
-  pos: number,
+  pos: number
 ): string[] => {
   if (doc === undefined) return [];
   const parentTypeList: string[] = [];

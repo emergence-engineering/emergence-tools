@@ -428,8 +428,9 @@ export function autoCompletePlugin(
             }
 
             isRequestInFlight = true;
-            const currentSystemPrompt =
-              autoCompleteKey.getState(view.state)?.systemPrompt;
+            const currentSystemPrompt = autoCompleteKey.getState(
+              view.state,
+            )?.systemPrompt;
             streamingRequest({
               view,
               pluginKey: autoCompleteKey,

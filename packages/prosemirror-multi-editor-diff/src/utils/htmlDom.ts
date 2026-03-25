@@ -2,7 +2,7 @@ export const oneIteration = (
   consumedArr: HTMLElement[],
   siblingFilter: (element: Element) => boolean = () => true,
   accArray: HTMLElement[] = [],
-  hadChange: boolean = false,
+  hadChange: boolean = false
 ): { elements: HTMLElement[]; hadChange: boolean } => {
   if (consumedArr.length > 0) {
     const mainElement = consumedArr[0];
@@ -12,11 +12,11 @@ export const oneIteration = (
         consumedArr.slice(1),
         siblingFilter,
         [...accArray, mainElement],
-        hadChange,
+        hadChange
       );
     }
     const mainParentChildren = Array.from(mainParent.children).filter(
-      siblingFilter,
+      siblingFilter
     ) as HTMLElement[];
     if (mainParentChildren.length === 1) {
       //easy mode, we just change the main node with its parent
@@ -24,14 +24,14 @@ export const oneIteration = (
         consumedArr.slice(1),
         siblingFilter,
         [...accArray, mainParent],
-        true,
+        true
       );
     } else {
       // hard mode, we need to check if we can merge the main node with its siblings
       const mainParentChildrenFoundInConsumed = consumedArr.filter(
         (element) => {
           return mainParentChildren.includes(element);
-        },
+        }
       );
       if (
         mainParentChildrenFoundInConsumed.length === mainParentChildren.length
@@ -43,7 +43,7 @@ export const oneIteration = (
           }),
           siblingFilter,
           [...accArray, mainParent],
-          true,
+          true
         );
       } else {
         // we can't merge all the children of the main parent
@@ -51,7 +51,7 @@ export const oneIteration = (
           consumedArr.slice(1),
           siblingFilter,
           [...accArray, mainElement],
-          hadChange,
+          hadChange
         );
       }
     }
@@ -62,7 +62,7 @@ export const oneIteration = (
 
 export const mergeUpNodesWithParents = (
   nodes: HTMLElement[],
-  siblingFilter: (element: Element) => boolean = () => true,
+  siblingFilter: (element: Element) => boolean = () => true
 ): HTMLElement[] => {
   const { elements, hadChange } = oneIteration(nodes, siblingFilter);
   if (hadChange) {
