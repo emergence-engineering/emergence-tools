@@ -7,9 +7,11 @@ import { SlashMenuPlugin } from "prosemirror-slash-menu";
 import {
   grammarSuggestPluginV2,
   grammarSuggestV2Key,
+  grammarSuggestInit,
   completePluginV2,
   autoCompletePlugin,
   setAutoCompleteEnabled,
+  setAutoCompleteSystemPrompt,
   isAutoCompleteEnabled,
 } from "prosemirror-suggestcat-plugin";
 import {
@@ -30,6 +32,12 @@ const SOURCE_URL =
 
 const apiKey = "-qKivjCv6MfQSmgF438PjEY7RnLfqoVe";
 const mainModel = "cerebras:gpt-oss-120b";
+
+const SAMPLE_GRAMMAR_PROMPT =
+  "You are a strict academic writing reviewer. Flag informal language, passive voice, and suggest formal alternatives. Return only the fixed text, keeping all separators intact.";
+
+const SAMPLE_AUTOCOMPLETE_PROMPT =
+  "You are a creative fiction writer. Complete sentences in a whimsical, storytelling tone with vivid imagery. If the text does not appear to be mid-sentence, do not generate anything.";
 
 const initialDoc = schema.nodes.doc.create(null, [
   schema.nodes.heading.create({ level: 2 }, schema.text("Suggestcat Full Demo")),
@@ -82,6 +90,9 @@ function SuggestcatEditor() {
   const [editorState, setEditorState] = useState<EditorState | null>(null);
   const [grammarRunning, setGrammarRunning] = useState(true);
   const [autoCompleteOn, setAutoCompleteOn] = useState(true);
+  const [useCustomGrammarPrompt, setUseCustomGrammarPrompt] = useState(false);
+  const [useCustomAutoCompletePrompt, setUseCustomAutoCompletePrompt] =
+    useState(false);
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -133,12 +144,7 @@ function SuggestcatEditor() {
     setEditorState(state);
 
     // Auto-start grammar checking
-    view.dispatch(
-      view.state.tr.setMeta(grammarSuggestV2Key, {
-        type: ActionType.INIT,
-        metadata: {},
-      }),
-    );
+    grammarSuggestInit(view, grammarSuggestV2Key);
 
     return () => {
       view.destroy();
@@ -166,12 +172,7 @@ function SuggestcatEditor() {
       }),
     );
     setTimeout(() => {
-      view.dispatch(
-        view.state.tr.setMeta(grammarSuggestV2Key, {
-          type: ActionType.INIT,
-          metadata: {},
-        }),
-      );
+      grammarSuggestInit(view, grammarSuggestV2Key);
       setGrammarRunning(true);
     }, 10);
   };
@@ -182,6 +183,38 @@ function SuggestcatEditor() {
     const current = isAutoCompleteEnabled(view);
     setAutoCompleteEnabled(view, !current);
     setAutoCompleteOn(!current);
+  };
+
+  const handleCustomGrammarPromptToggle = () => {
+    const view = viewRef.current;
+    if (!view) return;
+    const next = !useCustomGrammarPrompt;
+    setUseCustomGrammarPrompt(next);
+    // Clear and re-init with new prompt
+    view.dispatch(
+      view.state.tr.setMeta(grammarSuggestV2Key, {
+        type: ActionType.CLEAR,
+      }),
+    );
+    setTimeout(() => {
+      grammarSuggestInit(
+        view,
+        grammarSuggestV2Key,
+        next ? SAMPLE_GRAMMAR_PROMPT : undefined,
+      );
+      setGrammarRunning(true);
+    }, 10);
+  };
+
+  const handleCustomAutoCompletePromptToggle = () => {
+    const view = viewRef.current;
+    if (!view) return;
+    const next = !useCustomAutoCompletePrompt;
+    setUseCustomAutoCompletePrompt(next);
+    setAutoCompleteSystemPrompt(
+      view,
+      next ? SAMPLE_AUTOCOMPLETE_PROMPT : undefined,
+    );
   };
 
   return (
@@ -202,6 +235,38 @@ function SuggestcatEditor() {
         >
           Autocomplete: {autoCompleteOn ? "ON" : "OFF"}
         </button>
+      </div>
+
+      <div className="suggestcat-custom-prompt-section">
+        <div className="suggestcat-custom-prompt-row">
+          <button
+            className={`suggestcat-toggle-btn ${useCustomGrammarPrompt ? "suggestcat-toggle-on" : "suggestcat-toggle-off"}`}
+            onClick={handleCustomGrammarPromptToggle}
+          >
+            Custom Grammar Prompt: {useCustomGrammarPrompt ? "ON" : "OFF"}
+          </button>
+          <textarea
+            className="suggestcat-prompt-preview"
+            readOnly
+            value={SAMPLE_GRAMMAR_PROMPT}
+            rows={2}
+          />
+        </div>
+        <div className="suggestcat-custom-prompt-row">
+          <button
+            className={`suggestcat-toggle-btn ${useCustomAutoCompletePrompt ? "suggestcat-toggle-on" : "suggestcat-toggle-off"}`}
+            onClick={handleCustomAutoCompletePromptToggle}
+          >
+            Custom Autocomplete Prompt:{" "}
+            {useCustomAutoCompletePrompt ? "ON" : "OFF"}
+          </button>
+          <textarea
+            className="suggestcat-prompt-preview"
+            readOnly
+            value={SAMPLE_AUTOCOMPLETE_PROMPT}
+            rows={2}
+          />
+        </div>
       </div>
 
       <div className="card editor-card">

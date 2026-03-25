@@ -6,6 +6,7 @@ import { exampleSetup } from "prosemirror-example-setup";
 import {
   autoCompletePlugin,
   setAutoCompleteEnabled,
+  setAutoCompleteSystemPrompt,
   isAutoCompleteEnabled,
 } from "prosemirror-suggestcat-plugin";
 import { DemoLayout } from "../components/DemoLayout";
@@ -15,6 +16,9 @@ const SOURCE_URL =
 
 const apiKey = "-qKivjCv6MfQSmgF438PjEY7RnLfqoVe";
 const mainModel = "cerebras:gpt-oss-120b";
+
+const SAMPLE_AUTOCOMPLETE_PROMPT =
+  "You are a creative fiction writer. Complete sentences in a whimsical, storytelling tone with vivid imagery. If the text does not appear to be mid-sentence, do not generate anything.";
 
 const initialDoc = schema.nodes.doc.create(null, [
   schema.nodes.heading.create(
@@ -55,6 +59,7 @@ function SuggestcatAutoCompleteEditor() {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [enabled, setEnabled] = useState(true);
+  const [useCustomPrompt, setUseCustomPrompt] = useState(false);
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -93,6 +98,17 @@ function SuggestcatAutoCompleteEditor() {
     setEnabled(!current);
   };
 
+  const handleCustomPromptToggle = () => {
+    const view = viewRef.current;
+    if (!view) return;
+    const next = !useCustomPrompt;
+    setUseCustomPrompt(next);
+    setAutoCompleteSystemPrompt(
+      view,
+      next ? SAMPLE_AUTOCOMPLETE_PROMPT : undefined,
+    );
+  };
+
   return (
     <>
       <div className="suggestcat-controls">
@@ -102,6 +118,23 @@ function SuggestcatAutoCompleteEditor() {
         >
           Autocomplete: {enabled ? "ON" : "OFF"}
         </button>
+      </div>
+
+      <div className="suggestcat-custom-prompt-section">
+        <div className="suggestcat-custom-prompt-row">
+          <button
+            className={`suggestcat-toggle-btn ${useCustomPrompt ? "suggestcat-toggle-on" : "suggestcat-toggle-off"}`}
+            onClick={handleCustomPromptToggle}
+          >
+            Custom Prompt: {useCustomPrompt ? "ON" : "OFF"}
+          </button>
+          <textarea
+            className="suggestcat-prompt-preview"
+            readOnly
+            value={SAMPLE_AUTOCOMPLETE_PROMPT}
+            rows={2}
+          />
+        </div>
       </div>
 
       <div className="card editor-card">

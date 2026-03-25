@@ -75,6 +75,7 @@ view.dispatch(
 | `maxRetries` | `number` | `3` | Max retries per paragraph |
 | `backoffBase` | `number` | `2000` | Base backoff delay in ms |
 | `debounceMs` | `number` | `1000` | Debounce delay before re-checking |
+| `systemPrompt` | `string` | -- | Custom system prompt for grammar requests (overrides default behavior) |
 | `createPopup` | `"react" \| function` | -- | `"react"` for React popups, or a factory function returning an HTMLElement |
 
 ### CompleteV2Options
@@ -94,6 +95,7 @@ view.dispatch(
 | `apiEndpoint` | `string` | SuggestCat API | Custom endpoint URL |
 | `model` | `string` | `"openai:gpt-4o-mini"` | AI model to use |
 | `ghostTextClass` | `string` | `"autoCompleteGhostText"` | CSS class for ghost text decoration |
+| `systemPrompt` | `string` | -- | Custom system prompt for autocomplete requests |
 
 ## API
 
@@ -107,8 +109,10 @@ view.dispatch(
 | `discardSuggestion(view, id)` | function | Discard a grammar suggestion |
 | `selectSuggestion(view, id)` | function | Select a suggestion (for popup) |
 | `deselectSuggestion(view)` | function | Deselect the current suggestion |
-| `requestHint(view, id)` | function | Request an AI explanation for a suggestion |
-| `getSelectedDecoration(state)` | function | Get the currently selected decoration |
+| `requestHint(apiKey, original, replacement, options?)` | function | Request an AI explanation for a suggestion (options: `{ endpoint?, model?, systemPrompt? }`) |
+| `getSelectedDecoration(view, key)` | function | Get the currently selected decoration |
+| `setGrammarSystemPrompt(view, key, prompt?)` | function | Set or clear a custom system prompt for grammar checking |
+| `grammarSuggestInit(view, key, systemPrompt?)` | function | Initialize grammar checking, optionally with a custom system prompt |
 | `setGrammarSuggestEnabled(view, enabled)` | function | Enable/disable grammar checking |
 
 ### Complete plugin
@@ -118,6 +122,7 @@ view.dispatch(
 | `completePluginV2(apiKey, options?)` | Plugin factory | Creates the completion plugin |
 | `completeV2Key` | `PluginKey` | Plugin key |
 | `startTask(view, taskType, params?)` | function | Start an AI task |
+| `startCustomTask(view, systemPrompt)` | function | Start a task with a custom system prompt |
 | `acceptResult(view)` | function | Accept the streamed result |
 | `rejectResult(view)` | function | Reject the streamed result |
 | `cancelTask(view)` | function | Cancel an in-progress task |
@@ -134,7 +139,9 @@ view.dispatch(
 |---|---|---|
 | `autoCompletePlugin(apiKey, options?)` | Plugin factory | Creates the autocomplete plugin |
 | `autoCompleteKey` | `PluginKey` | Plugin key |
-| `setAutoCompleteEnabled(view, enabled)` | function | Enable/disable autocomplete |
+| `setAutoCompleteEnabled(view, enabled, systemPrompt?)` | function | Enable/disable autocomplete, optionally with a custom prompt |
+| `autoCompleteInit(view, systemPrompt?)` | function | Enable autocomplete with an optional custom system prompt |
+| `setAutoCompleteSystemPrompt(view, prompt?)` | function | Set or clear a custom system prompt without toggling enabled |
 | `acceptAutoCompletion(view)` | function | Accept the ghost text |
 | `dismissAutoCompletion(view)` | function | Dismiss the ghost text |
 | `isAutoCompleteEnabled(view)` | function | Check if autocomplete is enabled |
@@ -149,6 +156,90 @@ view.dispatch(
 | `createApiConfig(apiKey, endpoint?, model?)` | function | Build an API config object |
 | `createGrammarApiConfig(apiKey, endpoint?, model?)` | function | Build a grammar-specific API config |
 | `getDiff(oldText, newText)` | function | Re-exported from `@emergence-engineering/fast-diff-merge` |
+
+## Custom Prompts
+
+All three plugins support custom system prompts, allowing you to control the AI behavior for your use case.
+
+### Grammar — custom system prompt
+
+Set a system prompt at plugin creation, at init time, or dynamically at runtime:
+
+```typescript
+// At creation time (baked into plugin options)
+const grammarPlugin = grammarSuggestPluginV2("<API_KEY>", {
+  systemPrompt: "You are a strict academic reviewer. Return only the fixed text, keeping separators intact.",
+});
+
+// At init time (recommended — combines init + system prompt)
+import { grammarSuggestInit, grammarSuggestV2Key } from "prosemirror-suggestcat-plugin";
+
+grammarSuggestInit(view, grammarSuggestV2Key, "Your custom prompt here");
+// Without a custom prompt (uses default behavior):
+grammarSuggestInit(view, grammarSuggestV2Key);
+
+// Or dynamically at runtime (change prompt without re-init)
+import { setGrammarSystemPrompt } from "prosemirror-suggestcat-plugin";
+
+setGrammarSystemPrompt(view, grammarSuggestV2Key, "Your custom prompt here");
+// Clear custom prompt to restore defaults:
+setGrammarSystemPrompt(view, grammarSuggestV2Key, undefined);
+```
+
+### Autocomplete — custom system prompt
+
+```typescript
+// At creation time (baked into plugin options)
+const autoComplete = autoCompletePlugin("<API_KEY>", {
+  systemPrompt: "Complete sentences in a formal, technical tone.",
+});
+
+// At enable time (recommended — combines enable + system prompt)
+import { autoCompleteInit } from "prosemirror-suggestcat-plugin";
+
+autoCompleteInit(view, "Your custom prompt here");
+// Or with setAutoCompleteEnabled:
+setAutoCompleteEnabled(view, true, "Your custom prompt here");
+
+// Dynamically change prompt without toggling enabled
+import { setAutoCompleteSystemPrompt } from "prosemirror-suggestcat-plugin";
+
+setAutoCompleteSystemPrompt(view, "Your custom prompt here");
+// Clear:
+setAutoCompleteSystemPrompt(view, undefined);
+```
+
+### Complete — custom task
+
+```typescript
+import { startCustomTask } from "prosemirror-suggestcat-plugin";
+
+// Select text first, then:
+startCustomTask(view, "Rewrite this text as API documentation.");
+```
+
+### Hint — custom system prompt
+
+The grammar hint (the "?" button explaining a correction) also supports a custom prompt:
+
+```typescript
+import { requestHint } from "prosemirror-suggestcat-plugin";
+
+const hint = await requestHint(apiKey, originalText, replacement, {
+  systemPrompt: "Explain the correction as a writing tutor would, with examples.",
+});
+```
+
+When using the React `GrammarPopup`, pass the `hintSystemPrompt` prop:
+
+```tsx
+<GrammarPopup
+  editorView={view}
+  editorState={editorState}
+  apiKey={apiKey}
+  hintSystemPrompt="Explain the correction in simple terms."
+/>
+```
 
 ## Styles
 

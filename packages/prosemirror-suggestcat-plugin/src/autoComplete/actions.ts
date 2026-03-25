@@ -11,11 +11,12 @@ import { AutoCompleteState, AutoCompleteActionType } from "./types";
 import { cancelActiveRequest } from "./streaming";
 
 /**
- * Enable or disable the auto-complete plugin
+ * Enable or disable the auto-complete plugin, optionally setting a custom system prompt
  */
 export function setAutoCompleteEnabled(
   view: EditorView,
   enabled: boolean,
+  systemPrompt?: string,
 ): void {
   if (!enabled) {
     // Cancel any active request when disabling
@@ -26,6 +27,39 @@ export function setAutoCompleteEnabled(
     view.state.tr.setMeta(autoCompleteKey, {
       type: AutoCompleteActionType.SET_ENABLED,
       enabled,
+      systemPrompt,
+    }),
+  );
+}
+
+/**
+ * Set or clear the custom system prompt for auto-complete without toggling enabled state
+ */
+export function setAutoCompleteSystemPrompt(
+  view: EditorView,
+  systemPrompt: string | undefined,
+): void {
+  view.dispatch(
+    view.state.tr.setMeta(autoCompleteKey, {
+      type: AutoCompleteActionType.SET_SYSTEM_PROMPT,
+      systemPrompt,
+    }),
+  );
+}
+
+/**
+ * Enable auto-complete with an optional custom system prompt.
+ * Convenience wrapper combining enable + system prompt in one call.
+ */
+export function autoCompleteInit(
+  view: EditorView,
+  systemPrompt?: string,
+): void {
+  view.dispatch(
+    view.state.tr.setMeta(autoCompleteKey, {
+      type: AutoCompleteActionType.SET_ENABLED,
+      enabled: true,
+      systemPrompt,
     }),
   );
 }

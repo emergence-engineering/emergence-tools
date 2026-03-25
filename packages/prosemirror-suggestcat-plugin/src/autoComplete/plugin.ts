@@ -48,6 +48,13 @@ function reducer(
       return {
         ...initialState,
         enabled: action.enabled,
+        systemPrompt: action.systemPrompt ?? state.systemPrompt,
+      };
+
+    case AutoCompleteActionType.SET_SYSTEM_PROMPT:
+      return {
+        ...state,
+        systemPrompt: action.systemPrompt,
       };
 
     case AutoCompleteActionType.START_DEBOUNCE:
@@ -181,8 +188,14 @@ export function autoCompletePlugin(
     ...defaultAutoCompleteOptions,
     ...options,
   };
-  const { debounceMs, maxContextLength, apiEndpoint, model, ghostTextClass } =
-    mergedOptions;
+  const {
+    debounceMs,
+    maxContextLength,
+    apiEndpoint,
+    model,
+    ghostTextClass,
+    systemPrompt: initialSystemPrompt,
+  } = mergedOptions;
 
   // Timer ID for debouncing
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -195,7 +208,7 @@ export function autoCompletePlugin(
 
     state: {
       init(): AutoCompleteState {
-        return { ...initialState };
+        return { ...initialState, systemPrompt: initialSystemPrompt };
       },
 
       apply(tr, pluginState, _oldState, newState): AutoCompleteState {
@@ -415,6 +428,8 @@ export function autoCompletePlugin(
             }
 
             isRequestInFlight = true;
+            const currentSystemPrompt =
+              autoCompleteKey.getState(view.state)?.systemPrompt;
             streamingRequest({
               view,
               pluginKey: autoCompleteKey,
@@ -422,6 +437,7 @@ export function autoCompletePlugin(
               context,
               apiEndpoint,
               model,
+              systemPrompt: currentSystemPrompt,
             }).finally(() => {
               isRequestInFlight = false;
             });

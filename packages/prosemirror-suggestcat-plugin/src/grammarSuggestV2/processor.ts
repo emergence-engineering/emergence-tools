@@ -1,11 +1,15 @@
 import { EditorView } from "prosemirror-view";
+import { PluginKey } from "prosemirror-state";
 import { getDiff, isIdentity } from "@emergence-engineering/fast-diff-merge";
 import {
   ProcessingUnit,
+  RunnerState,
   UnitProcessorResult,
 } from "@emergence-engineering/prosemirror-block-runner";
 import { grammarRequest } from "../api";
+import { AiPromptsWithParam } from "../types";
 import {
+  GrammarContextState,
   GrammarFixResult,
   GrammarSuggestion,
   GrammarUnitMetadata,
@@ -35,6 +39,9 @@ export interface GrammarProcessorOptions {
   apiEndpoint?: string;
   model?: string;
   modelStateManager?: ModelStateManager;
+  pluginKey?: PluginKey<
+    RunnerState<GrammarFixResult, GrammarContextState, GrammarUnitMetadata>
+  >;
 }
 
 // Create processor with API options
@@ -42,23 +49,29 @@ export const createGrammarProcessor = (
   options: GrammarProcessorOptions | string,
 ) => {
   // Support both old (string) and new (object) API
-  const { apiKey, apiEndpoint, model, modelStateManager } =
+  const { apiKey, apiEndpoint, model, modelStateManager, pluginKey } =
     typeof options === "string"
       ? {
           apiKey: options,
           apiEndpoint: undefined,
           model: undefined,
           modelStateManager: undefined,
+          pluginKey: undefined,
         }
       : options;
 
   return async (
-    _view: EditorView,
+    view: EditorView,
     unit: ProcessingUnit<GrammarUnitMetadata>,
   ): Promise<UnitProcessorResult<GrammarFixResult>> => {
     try {
       // Get current model (may be fallback if primary has failed)
       const currentModel = modelStateManager?.getCurrentModel() ?? model;
+
+      // Read systemPrompt from plugin context state if available
+      const systemPrompt = pluginKey
+        ? pluginKey.getState(view.state)?.contextState.systemPrompt
+        : undefined;
 
       // Call the grammar API using centralized request
       const result = await grammarRequest({
@@ -66,6 +79,10 @@ export const createGrammarProcessor = (
         text: unit.text,
         endpoint: apiEndpoint,
         model: currentModel,
+        ...(systemPrompt && {
+          task: AiPromptsWithParam.Custom,
+          params: { systemPrompt },
+        }),
       });
 
       // Handle model state based on result

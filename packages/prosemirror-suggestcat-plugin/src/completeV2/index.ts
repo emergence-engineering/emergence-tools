@@ -34,6 +34,7 @@ export { completePluginV2, completeV2Key } from "./plugin";
 // Actions
 export {
   startTask,
+  startCustomTask,
   acceptResult,
   rejectResult,
   cancelTask,

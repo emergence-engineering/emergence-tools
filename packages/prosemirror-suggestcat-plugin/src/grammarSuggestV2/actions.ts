@@ -129,6 +129,39 @@ export function getSelectedDecoration(
   );
 }
 
+// Set or clear the custom system prompt for grammar checking
+export function setGrammarSystemPrompt(
+  view: EditorView,
+  pluginKey: PluginKey<GrammarState>,
+  systemPrompt: string | undefined,
+): void {
+  dispatchAction(view, pluginKey, {
+    type: ActionType.UPDATE_CONTEXT,
+    contextState: { systemPrompt },
+  });
+}
+
+// Initialize grammar checking, optionally with a custom system prompt.
+// Sets the system prompt (if provided) and dispatches the INIT action.
+export function grammarSuggestInit(
+  view: EditorView,
+  pluginKey: PluginKey<GrammarState>,
+  systemPrompt?: string,
+): void {
+  if (systemPrompt !== undefined) {
+    dispatchAction(view, pluginKey, {
+      type: ActionType.UPDATE_CONTEXT,
+      contextState: { systemPrompt },
+    });
+  }
+  view.dispatch(
+    view.state.tr.setMeta(pluginKey, {
+      type: ActionType.INIT,
+      metadata: {},
+    }),
+  );
+}
+
 // Request a hint explaining why the grammar correction is suggested
 export async function requestHint(
   apiKey: string,
@@ -138,6 +171,7 @@ export async function requestHint(
     endpoint?: string;
     model?: string;
     modelStateManager?: ModelStateManager;
+    systemPrompt?: string;
   },
 ): Promise<string> {
   const endpoint = options?.endpoint ?? DEFAULT_COMPLETION_ENDPOINT;
@@ -147,17 +181,27 @@ export async function requestHint(
     modelStateManager?.getCurrentModel() ?? options?.model ?? DEFAULT_MODEL;
 
   return new Promise((resolve, reject) => {
-    const params: HintParams = {
-      previousPromptType: "Grammar",
-      oldVersion: originalText,
-      newVersion: replacement,
-    };
+    // When a custom systemPrompt is provided, use Custom task type instead of Hint
+    const task = options?.systemPrompt
+      ? AiPromptsWithParam.Custom
+      : AiPromptsWithParam.Hint;
+    const params = options?.systemPrompt
+      ? { systemPrompt: options.systemPrompt }
+      : ({
+          previousPromptType: "Grammar",
+          oldVersion: originalText,
+          newVersion: replacement,
+        } as HintParams);
+
+    const text = options?.systemPrompt
+      ? `Original: \n\`\`\`\n${originalText}\n\`\`\`\n\nReplacement: \n\`\`\`\n${replacement}\n\`\`\`\n`
+      : originalText;
 
     streamingRequest(
       {
         apiKey,
-        text: originalText,
-        task: AiPromptsWithParam.Hint,
+        text,
+        task,
         params,
         endpoint,
         model,

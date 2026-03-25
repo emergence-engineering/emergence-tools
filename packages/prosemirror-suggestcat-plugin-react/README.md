@@ -95,6 +95,7 @@ const view = new EditorView(document.querySelector("#editor"), {
 | `apiKey` | `string` | Yes | API key for fetching hint explanations |
 | `apiEndpoint` | `string` | No | Custom endpoint for hint requests |
 | `model` | `string` | No | Model to use for generating hint explanations |
+| `hintSystemPrompt` | `string` | No | Custom system prompt for hint explanations (overrides default hint behavior) |
 
 ## Styles
 

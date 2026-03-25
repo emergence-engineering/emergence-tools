@@ -15,6 +15,7 @@ export interface ApiRequestBody {
     input: string[];
     task?: TaskType;
     params?: TaskParams;
+    stream?: boolean;
   };
 }
 

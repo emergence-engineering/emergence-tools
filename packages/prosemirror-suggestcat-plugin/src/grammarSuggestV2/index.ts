@@ -19,6 +19,8 @@ export {
   selectSuggestion,
   deselectSuggestion,
   getSelectedDecoration,
+  setGrammarSystemPrompt,
+  grammarSuggestInit,
   requestHint,
 } from "./actions";
 

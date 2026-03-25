@@ -38,6 +38,7 @@ export async function streamingRequest(
       input: [text],
       task,
       params,
+      stream: true,
     },
   };
 

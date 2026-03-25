@@ -1,3 +1,4 @@
+import type { TaskType, TaskParams } from "../types";
 import type { ApiRequestBody } from "./types";
 import { DEFAULT_GRAMMAR_ENDPOINT, DEFAULT_MODEL } from "./config";
 
@@ -6,6 +7,8 @@ export interface GrammarRequestOptions {
   text: string;
   endpoint?: string;
   model?: string;
+  task?: TaskType;
+  params?: TaskParams;
 }
 
 export interface GrammarRequestResult {
@@ -26,6 +29,8 @@ export async function grammarRequest(
     text,
     endpoint = DEFAULT_GRAMMAR_ENDPOINT,
     model = DEFAULT_MODEL,
+    task,
+    params,
   } = options;
 
   const input = [...text.split("\n")];
@@ -34,6 +39,9 @@ export async function grammarRequest(
     model,
     modelParams: {
       input,
+      stream: false,
+      ...(task && { task }),
+      ...(params && { params }),
     },
   };
 

@@ -26,6 +26,7 @@ export interface GrammarFixResult {
 // Context state for the plugin
 export interface GrammarContextState {
   selectedSuggestionId?: object; // For popup highlighting
+  systemPrompt?: string; // Custom system prompt for grammar requests
 }
 
 // Unit metadata per paragraph
@@ -43,6 +44,7 @@ export interface GrammarSuggestV2Options {
   maxRetries?: number; // Default: 3
   backoffBase?: number; // Default: 2000
   debounceMs?: number; // Default: 1000
+  systemPrompt?: string; // Custom system prompt for grammar requests
   createPopup?:
     | "react"
     | ((

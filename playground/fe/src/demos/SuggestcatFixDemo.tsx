@@ -4,7 +4,10 @@ import { EditorView } from "prosemirror-view";
 import { schema } from "prosemirror-schema-basic";
 import { exampleSetup } from "prosemirror-example-setup";
 import { SlashMenuPlugin } from "prosemirror-slash-menu";
-import { completePluginV2 } from "prosemirror-suggestcat-plugin";
+import {
+  completePluginV2,
+  startCustomTask,
+} from "prosemirror-suggestcat-plugin";
 import {
   ProsemirrorSuggestcatPluginReact,
   promptCommands,
@@ -17,6 +20,9 @@ const SOURCE_URL =
 
 const apiKey = "-qKivjCv6MfQSmgF438PjEY7RnLfqoVe";
 const mainModel = "cerebras:gpt-oss-120b";
+
+const SAMPLE_CUSTOM_PROMPT =
+  "You are a technical documentation writer. Rewrite text to be precise, concise, and suitable for API documentation.";
 
 const initialDoc = schema.nodes.doc.create(null, [
   schema.nodes.heading.create(
@@ -64,6 +70,7 @@ function SuggestcatFixEditor() {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const [editorState, setEditorState] = useState<EditorState | null>(null);
+  const [useCustomPrompt, setUseCustomPrompt] = useState(false);
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -103,16 +110,45 @@ function SuggestcatFixEditor() {
     };
   }, []);
 
+  const handleCustomPrompt = () => {
+    const view = viewRef.current;
+    if (!view) return;
+    if (view.state.selection.empty) {
+      alert("Select some text first, then click this button.");
+      return;
+    }
+    startCustomTask(view, SAMPLE_CUSTOM_PROMPT);
+  };
+
   return (
-    <div className="card editor-card">
-      <div ref={editorRef} />
-      {editorState && viewRef.current && (
-        <ProsemirrorSuggestcatPluginReact
-          editorView={viewRef.current}
-          editorState={editorState}
-        />
-      )}
-    </div>
+    <>
+      <div className="suggestcat-custom-prompt-section">
+        <div className="suggestcat-custom-prompt-row">
+          <button
+            className="suggestcat-action-btn"
+            onClick={handleCustomPrompt}
+          >
+            Run Custom Prompt
+          </button>
+          <textarea
+            className="suggestcat-prompt-preview"
+            readOnly
+            value={SAMPLE_CUSTOM_PROMPT}
+            rows={2}
+          />
+        </div>
+      </div>
+
+      <div className="card editor-card">
+        <div ref={editorRef} />
+        {editorState && viewRef.current && (
+          <ProsemirrorSuggestcatPluginReact
+            editorView={viewRef.current}
+            editorState={editorState}
+          />
+        )}
+      </div>
+    </>
   );
 }
 

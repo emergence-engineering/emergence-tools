@@ -163,6 +163,7 @@ export function grammarSuggestPluginV2(
     maxRetries = 3,
     backoffBase = 2000,
     debounceMs = 1000,
+    systemPrompt,
     createPopup = defaultCreatePopup,
   } = options;
 
@@ -180,6 +181,7 @@ export function grammarSuggestPluginV2(
     apiEndpoint,
     model: model as string | undefined,
     modelStateManager,
+    pluginKey: grammarSuggestV2Key,
   });
 
   // Create the base block runner plugin
@@ -193,7 +195,7 @@ export function grammarSuggestPluginV2(
     decorationFactory: grammarDecorationFactory,
     decorationTransformer: grammarDecorationTransformer,
     widgetFactory: grammarWidgetFactory,
-    initialContextState: DEFAULT_CONTEXT,
+    initialContextState: { ...DEFAULT_CONTEXT, systemPrompt },
     options: {
       batchSize,
       maxRetries,

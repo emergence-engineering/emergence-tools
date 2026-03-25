@@ -2,11 +2,13 @@ import { TextSelection } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { completeV2Key } from "./plugin";
 import {
+  AiPromptsWithParam,
   CompleteActionType,
   CompleteV2State,
   TaskType,
   MoodParams,
   TranslationParams,
+  CustomParams,
 } from "./types";
 import { cancelActiveRequest } from "./streaming";
 
@@ -16,7 +18,7 @@ import { cancelActiveRequest } from "./streaming";
 export function startTask(
   view: EditorView,
   taskType: TaskType,
-  params?: MoodParams | TranslationParams,
+  params?: MoodParams | TranslationParams | CustomParams,
 ): void {
   const selection = view.state.selection as TextSelection;
 
@@ -101,4 +103,15 @@ export function getCompleteState(
   view: EditorView,
 ): CompleteV2State | undefined {
   return completeV2Key.getState(view.state);
+}
+
+/**
+ * Start a custom task with a system prompt
+ * Convenience wrapper around startTask with Custom task type
+ */
+export function startCustomTask(
+  view: EditorView,
+  systemPrompt: string,
+): void {
+  startTask(view, AiPromptsWithParam.Custom, { systemPrompt });
 }

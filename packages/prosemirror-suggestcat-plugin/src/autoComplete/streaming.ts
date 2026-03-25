@@ -7,7 +7,7 @@
 import { EditorView } from "prosemirror-view";
 import { PluginKey } from "prosemirror-state";
 import { streamingRequest as apiStreamingRequest } from "../api";
-import { AiPromptsWithoutParam } from "../types";
+import { AiPromptsWithoutParam, AiPromptsWithParam } from "../types";
 import { AutoCompleteState, AutoCompleteActionType } from "./types";
 
 // Active abort controllers for cancellation (per view)
@@ -38,6 +38,7 @@ interface AutoCompleteStreamingParams {
   context: string;
   apiEndpoint?: string;
   model?: string;
+  systemPrompt?: string;
 }
 
 /**
@@ -83,6 +84,7 @@ export async function streamingRequest({
   context,
   apiEndpoint,
   model,
+  systemPrompt,
 }: AutoCompleteStreamingParams): Promise<void> {
   // Cancel any existing request
   cancelActiveRequest(view);
@@ -96,7 +98,10 @@ export async function streamingRequest({
       {
         apiKey,
         text: context,
-        task: AiPromptsWithoutParam.SmallComplete,
+        task: systemPrompt
+          ? AiPromptsWithParam.Custom
+          : AiPromptsWithoutParam.SmallComplete,
+        ...(systemPrompt && { params: { systemPrompt } }),
         endpoint: apiEndpoint,
         model,
         signal: controller.signal,

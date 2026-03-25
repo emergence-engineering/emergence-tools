@@ -38,6 +38,7 @@ export {
   type AutoCompleteAction,
   type AutoCompleteOptions,
   type AutoCompleteSetEnabledAction,
+  type AutoCompleteSetSystemPromptAction,
   type AutoCompleteStartDebounceAction,
   type AutoCompleteStartRequestAction,
   type AutoCompleteStreamUpdateAction,
@@ -54,6 +55,8 @@ export { autoCompletePlugin, autoCompleteKey } from "./plugin";
 // Actions
 export {
   setAutoCompleteEnabled,
+  setAutoCompleteSystemPrompt,
+  autoCompleteInit,
   acceptAutoCompletion,
   dismissAutoCompletion,
   getAutoCompleteState,

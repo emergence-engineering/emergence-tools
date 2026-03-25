@@ -21,11 +21,13 @@ export interface AutoCompleteState {
   suggestion: string; // Ghost text content
   cursorPos: number; // Position for ghost text
   error?: string;
+  systemPrompt?: string; // Custom system prompt for autocomplete requests
 }
 
 // Action types for state transitions
 export enum AutoCompleteActionType {
   SET_ENABLED = "SET_ENABLED",
+  SET_SYSTEM_PROMPT = "SET_SYSTEM_PROMPT",
   START_DEBOUNCE = "START_DEBOUNCE",
   START_REQUEST = "START_REQUEST",
   STREAM_UPDATE = "STREAM_UPDATE",
@@ -39,6 +41,12 @@ export enum AutoCompleteActionType {
 export interface AutoCompleteSetEnabledAction {
   type: AutoCompleteActionType.SET_ENABLED;
   enabled: boolean;
+  systemPrompt?: string;
+}
+
+export interface AutoCompleteSetSystemPromptAction {
+  type: AutoCompleteActionType.SET_SYSTEM_PROMPT;
+  systemPrompt?: string;
 }
 
 export interface AutoCompleteStartDebounceAction {
@@ -76,6 +84,7 @@ export interface AutoCompleteAcceptAction {
 // Union type for all actions
 export type AutoCompleteAction =
   | AutoCompleteSetEnabledAction
+  | AutoCompleteSetSystemPromptAction
   | AutoCompleteStartDebounceAction
   | AutoCompleteStartRequestAction
   | AutoCompleteStreamUpdateAction
@@ -91,6 +100,7 @@ export interface AutoCompleteOptions {
   apiEndpoint?: string;
   model?: string;
   ghostTextClass?: string; // Default: "autoCompleteGhostText"
+  systemPrompt?: string; // Custom system prompt for autocomplete requests
 }
 
 // Default options
