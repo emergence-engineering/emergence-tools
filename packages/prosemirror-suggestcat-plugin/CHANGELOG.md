@@ -1,5 +1,11 @@
 # prosemirror-suggestcat-plugin
 
+## 2.3.0
+
+### Minor Changes
+
+- custom systemPrompts
+
 ## 2.2.3
 
 ### Patch Changes

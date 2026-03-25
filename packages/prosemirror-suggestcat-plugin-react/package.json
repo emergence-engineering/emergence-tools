@@ -1,6 +1,6 @@
 {
   "name": "prosemirror-suggestcat-plugin-react",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "React UI components for prosemirror-suggestcat-plugin",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

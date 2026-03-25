@@ -1,6 +1,6 @@
 {
   "name": "prosemirror-suggestcat-plugin",
-  "version": "2.2.3",
+  "version": "2.3.0",
   "description": "AI-powered grammar checking, text completion, and prompt-based editing for ProseMirror",
   "main": "dist/index.js",
   "types": "dist/src/index.d.ts",
