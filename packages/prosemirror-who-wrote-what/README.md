@@ -4,6 +4,8 @@
 
 [**Made by Emergence Engineering**](https://emergence-engineering.com/)
 
+Sponsored by [<img src="https://lex.page/apple-touch-icon.png" alt="Lex" width="16" height="16" style="vertical-align: middle;" /> **Lex**](https://lex.page) & **Nathan Baschez**
+
 > Track text authorship in collaborative ProseMirror editors using Yjs. Highlights which user wrote which text with colored inline decorations.
 
 ## Features

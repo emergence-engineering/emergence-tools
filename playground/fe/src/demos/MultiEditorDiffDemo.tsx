@@ -293,6 +293,15 @@ export function MultiEditorDiffDemo() {
           Multi-editor diff visualization for ProseMirror. Compare two editors
           side-by-side with inline diff decorations, spacer synchronization, and
           automatic node pairing using sequence alignment.
+          <div style={{ fontSize: "0.85em", opacity: 0.85, marginTop: "0.75rem", marginBottom: "0.5rem" }}>
+            Sponsored by{" "}
+            <a href="https://lex.page" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", color: "inherit" }}>
+              <img src="https://lex.page/apple-touch-icon.png" alt="Lex" width="14" height="14" style={{ verticalAlign: "middle", marginRight: 3 }} />
+              <strong>Lex</strong>
+            </a>
+            {" & "}
+            <strong>Nathan Baschez</strong>
+          </div>
         </>
       }
       packageNames={["@emergence-engineering/prosemirror-multi-editor-diff"]}

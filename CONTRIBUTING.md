@@ -53,6 +53,12 @@ pnpm typecheck
 
 This monorepo uses [Changesets](https://github.com/changesets/changesets) for versioning. Each package is versioned independently.
 
+### 0. Run format and eslint before anything
+
+```bash
+pnpm format
+```
+
 ### 1. Create a changeset (before merging a PR)
 
 ```bash
@@ -100,6 +106,7 @@ The `v*` tag triggers CI to:
 ### Summary
 
 ```
+turbo format               # format all changed files (optional, but recommended before committing)
 pnpm changeset            # 1. describe your changes (per PR)
 pnpm version-packages     # 2. bump versions & changelogs
 pnpm release              # 3. build & publish to npm

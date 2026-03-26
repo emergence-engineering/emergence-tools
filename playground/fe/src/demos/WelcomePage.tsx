@@ -94,6 +94,7 @@ const packages = [
     description:
       "Track text authorship in collaborative ProseMirror editors using Yjs — highlights which user wrote which text with colored inline decorations.",
     demoKey: "whoWroteWhat",
+    sponsor: true,
   },
   {
     name: "prosemirror-multi-editor-diff",
@@ -101,6 +102,7 @@ const packages = [
     description:
       "Multi-editor diff visualization — compare two ProseMirror editors side-by-side with inline diff decorations, spacer synchronization, and automatic node pairing.",
     demoKey: "multiEditorDiff",
+    sponsor: true,
   },
 ];
 
@@ -142,6 +144,14 @@ export function WelcomePage() {
                 {pkg.name}
               </div>
               <div className="welcome-card-desc">{pkg.description}</div>
+              {pkg.sponsor && (
+                <div style={{ marginTop: "auto", paddingTop: "0.5rem", fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                  Sponsored by{" "}
+                  <img src="https://lex.page/apple-touch-icon.png" alt="Lex" width="12" height="12" style={{ verticalAlign: "middle", marginRight: 2 }} />
+                  {" "}
+                  <strong>Lex</strong> & <strong>Nathan Baschez</strong>
+                </div>
+              )}
             </a>
           ))}
         </div>

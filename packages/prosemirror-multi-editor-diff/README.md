@@ -4,6 +4,8 @@
 
 [**Made by Emergence Engineering**](https://emergence-engineering.com/)
 
+Sponsored by [<img src="https://lex.page/apple-touch-icon.png" alt="Lex" width="16" height="16" style="vertical-align: middle;" /> **Lex**](https://lex.page) & **Nathan Baschez**
+
 > Multi-editor diff visualization for ProseMirror — compare two editors side-by-side with inline diff decorations, spacer synchronization, and node pairing.
 
 ## Features

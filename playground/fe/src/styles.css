@@ -964,7 +964,8 @@ body {
 }
 
 .welcome-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
