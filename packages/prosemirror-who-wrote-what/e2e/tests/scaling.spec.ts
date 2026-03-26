@@ -67,7 +67,13 @@ test.describe("Scaling", () => {
       await page.waitForTimeout(300);
 
       await insertLargeDoc(page, paragraphs, users);
-      const time = await measureDecorationTime(page);
+      // Median of 3 for stability
+      const m: number[] = [];
+      for (let r = 0; r < 3; r++) {
+        m.push(await measureDecorationTime(page));
+      }
+      m.sort((a, b) => a - b);
+      const time = m[1];
       times.push(time);
       console.log(
         `${paragraphs} paragraphs, ${users} users: ${time.toFixed(2)}ms`,
