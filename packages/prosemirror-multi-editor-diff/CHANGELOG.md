@@ -1,5 +1,11 @@
 # @emergence-engineering/prosemirror-multi-editor-diff
 
+## 0.2.1
+
+### Patch Changes
+
+- lex added as sponsor
+
 ## 0.2.0
 
 ### Minor Changes

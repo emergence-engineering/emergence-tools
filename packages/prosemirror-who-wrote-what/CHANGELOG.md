@@ -1,5 +1,11 @@
 # @emergence-engineering/prosemirror-who-wrote-what
 
+## 0.1.1
+
+### Patch Changes
+
+- lex added as sponsor
+
 ## 0.1.0
 
 ### Minor Changes

@@ -1,6 +1,6 @@
 {
   "name": "@emergence-engineering/prosemirror-who-wrote-what",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Track text authorship in collaborative ProseMirror editors using Yjs — highlights which user wrote which text with colored inline decorations",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
