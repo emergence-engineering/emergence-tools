@@ -1,5 +1,11 @@
 # @emergence-engineering/prosemirror-who-wrote-what
 
+## 0.2.0
+
+### Minor Changes
+
+- destroy callback fix
+
 ## 0.1.1
 
 ### Patch Changes
