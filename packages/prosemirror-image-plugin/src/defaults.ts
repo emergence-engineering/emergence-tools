@@ -122,8 +122,15 @@ const defaultCreateState = () => ({
     const action: ImagePluginAction = tr.getMeta(imagePluginKey);
     if (action?.type === "add") {
       const widget = document.createElement("placeholder");
+      if (action.previewSrc) {
+        widget.setAttribute("data-preview", "");
+        const previewImg = document.createElement("img");
+        previewImg.src = action.previewSrc;
+        widget.appendChild(previewImg);
+      }
       const deco = Decoration.widget(action.pos, widget, {
         id: action.id,
+        previewSrc: action.previewSrc,
       });
       set = set.add(tr.doc, [deco]);
     } else if (action?.type === "remove") {
@@ -151,6 +158,7 @@ export const defaultSettings: ImagePluginSettings = {
   minSize: 50,
   maxSize: 2000,
   scaleImage: true,
+  showPreviewDuringUpload: false,
   createState: defaultCreateState,
   createDecorations: defaultCreateDecorations,
   findPlaceholder: defaultFindPlaceholder,

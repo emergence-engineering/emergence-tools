@@ -94,6 +94,10 @@ export const startImageUpload = (
   // A fresh object to act as the ID for this upload
   const id = {};
 
+  const previewSrc = pluginSettings.showPreviewDuringUpload
+    ? URL.createObjectURL(file)
+    : undefined;
+
   // Replace the selection with a placeholder
   const { tr } = view.state;
   if (!tr.selection.empty && !pos) tr.deleteSelection();
@@ -101,39 +105,45 @@ export const startImageUpload = (
     type: "add",
     pos: pos || tr.selection.from,
     id,
+    previewSrc,
   };
   tr.setMeta(imagePluginKey, imageMeta);
   view.dispatch(tr);
 
-  pluginSettings.uploadFile(file).then(
-    (url) => {
-      const placholderPos = pluginSettings.findPlaceholder(view.state, id);
-      // If the content around the placeholder has been deleted, drop
-      // the image
-      if (placholderPos == null) return;
-      // Otherwise, insert it at the placeholder's position, and remove
-      // the placeholder
-      const removeMeta: RemoveImagePlaceholder = { type: "remove", id };
-      view.dispatch(
-        view.state.tr
-          .insert(
-            placholderPos,
-            schema.nodes.image.create(
-              { src: url, alt },
-              pluginSettings.hasTitle
-                ? schema.text(pluginSettings.defaultTitle)
-                : undefined
+  pluginSettings
+    .uploadFile(file)
+    .then(
+      (url) => {
+        const placholderPos = pluginSettings.findPlaceholder(view.state, id);
+        // If the content around the placeholder has been deleted, drop
+        // the image
+        if (placholderPos == null) return;
+        // Otherwise, insert it at the placeholder's position, and remove
+        // the placeholder
+        const removeMeta: RemoveImagePlaceholder = { type: "remove", id };
+        view.dispatch(
+          view.state.tr
+            .insert(
+              placholderPos,
+              schema.nodes.image.create(
+                { src: url, alt },
+                pluginSettings.hasTitle
+                  ? schema.text(pluginSettings.defaultTitle)
+                  : undefined
+              )
             )
-          )
-          .setMeta(imagePluginKey, removeMeta)
-      );
-    },
-    () => {
-      const removeMeta: RemoveImagePlaceholder = { type: "remove", id };
-      // On failure, just clean up the placeholder
-      view.dispatch(tr.setMeta(imagePluginKey, removeMeta));
-    }
-  );
+            .setMeta(imagePluginKey, removeMeta)
+        );
+      },
+      () => {
+        const removeMeta: RemoveImagePlaceholder = { type: "remove", id };
+        // On failure, just clean up the placeholder
+        view.dispatch(tr.setMeta(imagePluginKey, removeMeta));
+      }
+    )
+    .finally(() => {
+      if (previewSrc) URL.revokeObjectURL(previewSrc);
+    });
 };
 
 export const generateChangeAlignment =

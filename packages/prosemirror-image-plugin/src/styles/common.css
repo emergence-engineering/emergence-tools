@@ -3,11 +3,21 @@ placeholder {
     position: relative;
     top: 6px;
 }
-placeholder:after {
+placeholder:not([data-preview]):after {
     content: "☁";
     font-size: 200%;
     line-height: 0.1;
     font-weight: bold;
+}
+placeholder[data-preview] {
+    display: block;
+    opacity: 0.6;
+    top: 0;
+    text-align: center;
+}
+placeholder[data-preview] img {
+    max-width: 100%;
+    height: auto;
 }
 
 .imagePluginRoot {
