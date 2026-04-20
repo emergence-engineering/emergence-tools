@@ -1,7 +1,7 @@
 import { Plugin, PluginKey } from "prosemirror-state";
 import { DecorationSet, EditorView } from "prosemirror-view";
 import { ySyncPluginKey } from "y-prosemirror";
-import { Doc, XmlFragment } from "yjs";
+import { Doc, Map as YMap, XmlFragment } from "yjs";
 
 import { getDecorationSet, writeClientIdsToYDoc } from "./core";
 import { UserMapEntry, WhoWroteWhatOptions } from "./types";
@@ -149,11 +149,18 @@ export const createWhoWroteWhatPlugin = ({
         }, delay);
       };
 
-      // Delay initial observation to let ySyncPlugin initialize
+      // Delay initial observation to let ySyncPlugin initialize.
+      // Track registration so destroy() doesn't unobserve handlers that
+      // were never registered (e.g. when the view is destroyed within
+      // 100ms under React strict mode / fast-refresh).
+      let observedFragment: XmlFragment | null = null;
+      let observedUserMap: YMap<UserMapEntry> | null = null;
       const initTimeout = setTimeout(() => {
         computeDecorations();
         xmlFragment.observeDeep(scheduleCompute);
+        observedFragment = xmlFragment;
         userMap.observe(scheduleCompute);
+        observedUserMap = userMap;
       }, 100);
 
       let prevVisible = startVisible;
@@ -173,8 +180,14 @@ export const createWhoWroteWhatPlugin = ({
         destroy() {
           clearTimeout(initTimeout);
           if (debounceTimer) clearTimeout(debounceTimer);
-          xmlFragment.unobserveDeep(scheduleCompute);
-          userMap.unobserve(scheduleCompute);
+          if (observedFragment) {
+            observedFragment.unobserveDeep(scheduleCompute);
+            observedFragment = null;
+          }
+          if (observedUserMap) {
+            observedUserMap.unobserve(scheduleCompute);
+            observedUserMap = null;
+          }
         },
       };
     },

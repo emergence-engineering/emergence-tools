@@ -323,3 +323,10 @@ $("btn-measure").addEventListener("click", () => {
 });
 
 console.log("Who Wrote What test harness initialized");
+
+// Test hook: ?destroyAfterMs=<N> destroys the EditorView N ms after init.
+// Used by observer-lifecycle.spec.ts to reproduce the pre-100ms-init unmount race.
+const destroyAfterMs = new URL(location.href).searchParams.get("destroyAfterMs");
+if (destroyAfterMs !== null) {
+  setTimeout(() => view.destroy(), parseInt(destroyAfterMs, 10));
+}
