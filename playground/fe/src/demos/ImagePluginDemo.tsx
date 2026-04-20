@@ -105,6 +105,75 @@ function NormalEditor() {
   );
 }
 
+// --- Upload Preview mode editor ---
+
+const UPLOAD_DELAY_MS = 3000;
+
+const delayedUploadFile = (file: File): Promise<string> =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        const { result } = reader;
+        if (result) resolve(result.toString());
+      });
+      reader.readAsDataURL(file);
+    }, UPLOAD_DELAY_MS);
+  });
+
+function UploadPreviewEditor() {
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!editorRef.current) return;
+
+    const imageSettings: ImagePluginSettings = {
+      ...defaultSettings,
+      showPreviewDuringUpload: true,
+      uploadFile: delayedUploadFile,
+    };
+    const imageSchema = new Schema({
+      nodes: updateImageNode(schema.spec.nodes, imageSettings),
+      marks: schema.spec.marks,
+    });
+
+    const state = EditorState.create({
+      doc: imageSchema.nodeFromJSON(initialDoc),
+      plugins: [
+        ...exampleSetup({ schema: imageSchema }),
+        imagePlugin(imageSettings),
+      ],
+    });
+
+    const view = new EditorView(editorRef.current, {
+      state,
+      dispatchTransaction: (tr) => {
+        try {
+          const newState = view.state.apply(tr);
+          view.updateState(newState);
+        } catch (e) {
+          // ignore
+        }
+      },
+    });
+
+    return () => {
+      view.destroy();
+    };
+  }, []);
+
+  return (
+    <div className="card editor-card">
+      <div className="card-header">
+        <span className="card-label">
+          Upload Preview Mode (3s simulated upload)
+        </span>
+      </div>
+      <div ref={editorRef} />
+    </div>
+  );
+}
+
 // --- Infinite Load mode editor ---
 
 // Direct image URL (no redirects) to avoid CORS/redirect issues
@@ -227,6 +296,13 @@ function ImagePluginUsage() {
         the editor. Resize and align using the handles.
       </li>
       <li>
+        <strong>Upload Preview mode:</strong> Drop or paste an image to see
+        the local file rendered inside the placeholder (via{" "}
+        <code>showPreviewDuringUpload</code>) during a simulated 3&nbsp;second
+        upload. The preview lives only in the decoration — no{" "}
+        <code>blob:</code> URL enters the document.
+      </li>
+      <li>
         <strong>Infinite Load mode:</strong> Click &quot;Add image&quot; to
         insert an image with a deferred download. Click &quot;Resolve All
         Image&quot; to resolve pending downloads and load images.
@@ -235,7 +311,7 @@ function ImagePluginUsage() {
   );
 }
 
-type Mode = "normal" | "infiniteLoad";
+type Mode = "normal" | "uploadPreview" | "infiniteLoad";
 
 function ImagePluginContent() {
   const [mode, setMode] = useState<Mode>("normal");
@@ -252,6 +328,13 @@ function ImagePluginContent() {
         </button>
         <button
           type="button"
+          style={mode === "uploadPreview" ? activeButtonStyle : buttonStyle}
+          onClick={() => setMode("uploadPreview")}
+        >
+          Upload Preview
+        </button>
+        <button
+          type="button"
           style={mode === "infiniteLoad" ? activeButtonStyle : buttonStyle}
           onClick={() => setMode("infiniteLoad")}
         >
@@ -259,9 +342,11 @@ function ImagePluginContent() {
         </button>
       </div>
 
-      {mode === "normal" ? (
-        <NormalEditor key="normal" />
-      ) : (
+      {mode === "normal" && <NormalEditor key="normal" />}
+      {mode === "uploadPreview" && (
+        <UploadPreviewEditor key="uploadPreview" />
+      )}
+      {mode === "infiniteLoad" && (
         <InfiniteLoadEditor key="infiniteLoad" />
       )}
     </>

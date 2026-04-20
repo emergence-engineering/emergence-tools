@@ -89,6 +89,7 @@ const view = new EditorView(document.getElementById("editor")!, { state });
 | `minSize` | `number` | `50` | Minimum image width in px |
 | `maxSize` | `number` | `2000` | Maximum image width in px |
 | `scaleImage` | `boolean` | `true` | Scale images proportionally with editor width |
+| `showPreviewDuringUpload` | `boolean` | `false` | Shows the local image inside the upload placeholder (via `URL.createObjectURL`) until `uploadFile` resolves. The preview lives only in the decoration — no `blob:` URL enters the document. Only applies to `startImageUpload` (drop / paste / file picker); `startImageUploadFn` has no `File` to preview. |
 | `downloadImage` | `(url: string) => Promise<string>` | `undefined` | Custom image download function (for auth or caching) |
 | `downloadPlaceholder` | `(url, view) => string \| {src?, className?}` | `undefined` | Placeholder shown while `downloadImage` runs |
 | `createDecorations` | `(state) => DecorationSet` | built-in | Custom decoration factory (needed with Yjs) |
@@ -123,6 +124,25 @@ import "prosemirror-image-plugin/dist/styles/sideResize.css";
 // or for non-resize mode:
 import "prosemirror-image-plugin/dist/styles/withoutResize.css";
 ```
+
+### Showing the local image while upload is in progress
+
+If you enable `showPreviewDuringUpload`, the placeholder widget renders the
+local image via an object URL while the upload runs. The preview lives
+entirely in the widget decoration — nothing is written to the document —
+so autosaves, Yjs sync, and reloads stay clean.
+
+When the preview is active, the placeholder element carries a
+`data-preview` attribute and contains an `<img>` child, so you can style
+it with:
+
+```css
+placeholder[data-preview] { /* your styles */ }
+placeholder[data-preview] img { /* your image styles */ }
+```
+
+The object URL is revoked when the upload resolves, rejects, or the
+placeholder is removed.
 
 ## TipTap
 
